@@ -1,0 +1,17 @@
+.reports-page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+}
+
+.reports-chart-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:24px;
+}

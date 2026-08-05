@@ -1,0 +1,31 @@
+.status-legend{
+    display:flex;
+    gap:30px;
+    margin-bottom:35px;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:600;
+    color:#334155;
+}
+
+.dot{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+}
+
+.available{
+    background:#22c55e;
+}
+
+.occupied{
+    background:#ef4444;
+}
+
+.cleaning{
+    background:#f59e0b;
+}

@@ -1,0 +1,85 @@
+.room-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.45);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:3000;
+}
+
+.room-modal{
+    width:900px;
+    max-width:90vw;
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.room-modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 25px;
+    border-bottom:1px solid #e2e8f0;
+}
+
+.room-modal-header button{
+    border:none;
+    background:none;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.available-room-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:20px;
+    padding:25px;
+}
+
+.available-room-card{
+
+    border:1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    text-align:center;
+
+    background:white;
+}
+
+.available-room-card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:#2563eb;
+
+    box-shadow:0 15px 35px rgba(37,99,235,.15);
+}
+
+.available-room-card h3{
+
+    margin-bottom:10px;
+}
+
+.status{
+
+    color:#16a34a;
+
+    font-weight:600;
+}
+
+.no-room-message{
+    grid-column:1/-1;
+    text-align:center;
+    color:#64748b;
+    padding:30px;
+    font-size:16px;
+}

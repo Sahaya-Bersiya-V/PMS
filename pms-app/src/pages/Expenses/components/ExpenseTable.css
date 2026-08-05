@@ -1,0 +1,115 @@
+.expense-table-container{
+
+    background:#fff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    overflow:hidden;
+}
+
+.expense-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.expense-table thead{
+
+    background:#f8fafc;
+}
+
+.expense-table th{
+
+    padding:18px;
+
+    text-align:left;
+
+    color:#475569;
+
+    font-size:14px;
+
+    border-bottom:1px solid #e2e8f0;
+}
+
+.expense-table td{
+
+    padding:18px;
+
+    color:#334155;
+
+    border-bottom:1px solid #f1f5f9;
+}
+
+.expense-table tbody tr:hover{
+
+    background:#f8fafc;
+}
+
+.amount-cell{
+
+    font-weight:700;
+
+    color:#2563eb;
+}
+
+.expense-actions{
+
+    display:flex;
+
+    gap:10px;
+}
+
+.expense-actions button{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.expense-actions button svg{
+
+    font-size:18px;
+}
+
+.view-btn{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+}
+
+.edit-btn{
+
+    background:#dcfce7;
+
+    color:#16a34a;
+}
+
+.delete-btn{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}
+
+.expense-actions button:hover{
+
+    transform:translateY(-2px);
+}

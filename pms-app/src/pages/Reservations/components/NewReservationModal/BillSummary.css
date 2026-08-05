@@ -1,0 +1,51 @@
+.bill-summary{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    margin-top:20px;
+}
+
+.bill-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:12px 0;
+
+    border-bottom:1px solid #e2e8f0;
+
+    font-size:16px;
+
+    color:#334155;
+}
+
+.bill-row span:last-child{
+
+    font-weight:600;
+
+    color:#0f172a;
+}
+
+.bill-row.total{
+
+    margin-top:10px;
+
+    padding-top:18px;
+
+    border-top:2px solid #2563eb;
+
+    border-bottom:none;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#2563eb;
+}

@@ -1,0 +1,31 @@
+.status-badge{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.confirmed{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.checked-in{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.cancelled{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.checked-out{
+    background:#e5e7eb;
+    color:#374151;
+}

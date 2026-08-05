@@ -1,0 +1,39 @@
+.report-chart-card{
+
+    background:#fff;
+
+    border-radius:16px;
+
+    padding:22px;
+
+    box-shadow:0 2px 10px rgba(15,23,42,.05);
+
+    border:1px solid #e2e8f0;
+}
+
+.chart-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.chart-header h3{
+
+    color:#0f172a;
+
+    font-size:18px;
+
+    font-weight:600;
+}
+
+.chart-header p{
+
+    color:#64748b;
+
+    font-size:14px;
+}

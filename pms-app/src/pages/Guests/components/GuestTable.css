@@ -1,0 +1,108 @@
+.guest-table-container{
+
+    background:#fff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    overflow:hidden;
+}
+
+.guest-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.guest-table thead{
+
+    background:#f8fafc;
+}
+
+.guest-table th{
+
+    padding:18px;
+
+    text-align:left;
+
+    color:#475569;
+
+    font-size:14px;
+
+    border-bottom:1px solid #e2e8f0;
+}
+
+.guest-table td{
+
+    padding:18px;
+
+    border-bottom:1px solid #f1f5f9;
+
+    color:#334155;
+}
+
+.guest-table tbody tr:hover{
+
+    background:#f8fafc;
+}
+
+.guest-actions{
+
+    display:flex;
+
+    gap:10px;
+}
+
+.guest-actions button{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.guest-actions button svg{
+
+    font-size:18px;
+}
+
+.view-btn{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+}
+
+.edit-btn{
+
+    background:#dcfce7;
+
+    color:#16a34a;
+}
+
+.delete-btn{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}
+
+.guest-actions button:hover{
+
+    transform:translateY(-2px);
+}

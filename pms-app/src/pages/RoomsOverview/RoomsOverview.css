@@ -1,0 +1,6 @@
+.rooms-overview{
+
+    display:flex;
+
+    flex-direction:column;
+}

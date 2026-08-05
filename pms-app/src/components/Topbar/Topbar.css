@@ -1,0 +1,74 @@
+.topbar {
+  height: 75px;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.topbar-left h2 {
+  font-size: 28px;
+  color: #0f172a;
+  text-transform: capitalize;
+}
+.topbar-left p{
+    margin-top:4px;
+    color:#64748b;
+    font-size:14px;
+}
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.date-time {
+  text-align: right;
+}
+
+.date-time p {
+  font-size: 14px;
+  color: #475569;
+}
+
+.date-time span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.notification-btn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #f1f5f9;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.notification-btn:hover {
+  background: #e2e8f0;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-icon {
+  font-size: 42px;
+  color: #2563eb;
+}
+
+.user-profile h4 {
+  font-size: 15px;
+  color: #1e293b;
+}
+
+.user-profile p {
+  font-size: 13px;
+  color: #64748b;
+}

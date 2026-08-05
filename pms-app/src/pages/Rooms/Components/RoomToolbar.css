@@ -1,0 +1,62 @@
+.room-toolbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    background:#fff;
+
+    padding:18px 20px;
+
+    border-radius:14px;
+
+    border:1px solid #e2e8f0;
+}
+
+.toolbar-left{
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:center;
+}
+
+.search-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    padding:10px 14px;
+
+    min-width:260px;
+}
+
+.search-box input{
+
+    border:none;
+
+    outline:none;
+
+    width:100%;
+}
+
+.room-toolbar select{
+
+    padding:10px 14px;
+
+    border-radius:10px;
+
+    border:1px solid #d1d5db;
+}

@@ -1,0 +1,48 @@
+const staffData = [
+  {
+    id: 1,
+    employeeId: "EMP001",
+    name: "John David",
+    role: "Manager",
+    department: "Management",
+    shift: "Morning",
+    phone: "9876543210",
+    email: "john@hotel.com",
+    status: "Active",
+  },
+  {
+    id: 2,
+    employeeId: "EMP002",
+    name: "Maria Rose",
+    role: "Receptionist",
+    department: "Front Office",
+    shift: "Evening",
+    phone: "9123456789",
+    email: "maria@hotel.com",
+    status: "Active",
+  },
+  {
+    id: 3,
+    employeeId: "EMP003",
+    name: "Peter James",
+    role: "Housekeeping",
+    department: "Housekeeping",
+    shift: "Morning",
+    phone: "9988776655",
+    email: "peter@hotel.com",
+    status: "Active",
+  },
+  {
+    id: 4,
+    employeeId: "EMP004",
+    name: "Kevin Roy",
+    role: "Accountant",
+    department: "Finance",
+    shift: "Day",
+    phone: "9090909090",
+    email: "kevin@hotel.com",
+    status: "Inactive",
+  },
+];
+
+export default staffData;

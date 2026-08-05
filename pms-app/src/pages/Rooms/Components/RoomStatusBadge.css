@@ -1,0 +1,31 @@
+.room-status{
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    font-size:13px;
+
+    font-weight:600;
+}
+
+.available{
+
+    background:#dcfce7;
+
+    color:#15803d;
+}
+
+.occupied{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}
+
+.cleaning{
+
+    background:#fef3c7;
+
+    color:#b45309;
+}

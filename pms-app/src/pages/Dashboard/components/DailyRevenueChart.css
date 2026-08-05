@@ -1,0 +1,12 @@
+.chart-card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 8px 20px rgba(15,23,42,.05);
+    transition: .3s;
+}
+
+.chart-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 45px rgba(0,0,0,.08);
+}

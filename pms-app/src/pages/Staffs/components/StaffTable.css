@@ -1,0 +1,142 @@
+.staff-table-container{
+
+    background:#fff;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    overflow:hidden;
+}
+
+.staff-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.staff-table thead{
+
+    background:#f8fafc;
+}
+
+.staff-table th{
+
+    padding:18px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    color:#475569;
+
+    border-bottom:1px solid #e2e8f0;
+}
+
+.staff-table td{
+
+    padding:18px;
+
+    color:#334155;
+
+    border-bottom:1px solid #f1f5f9;
+}
+
+.staff-table tbody tr:hover{
+
+    background:#f8fafc;
+}
+
+.employee-info{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.employee-avatar{
+
+    font-size:42px;
+
+    color:#94a3b8;
+}
+
+.employee-info h4{
+
+    margin:0;
+
+    font-size:15px;
+
+    color:#0f172a;
+}
+
+.employee-info p{
+
+    margin-top:4px;
+
+    font-size:13px;
+
+    color:#64748b;
+}
+
+.staff-actions{
+
+    display:flex;
+
+    gap:10px;
+}
+
+.staff-actions button{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.staff-actions button svg{
+
+    font-size:18px;
+}
+
+.view-btn{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+}
+
+.edit-btn{
+
+    background:#dcfce7;
+
+    color:#16a34a;
+}
+
+.delete-btn{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}
+
+.staff-actions button:hover{
+
+    transform:translateY(-2px);
+}

@@ -1,0 +1,49 @@
+.expense-stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+}
+
+.expense-stat-card{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    box-shadow:0 2px 10px rgba(15,23,42,.05);
+}
+
+.stat-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+.stat-header h4{
+
+    color:#64748b;
+
+    font-size:14px;
+
+    margin-bottom:10px;
+}
+
+.stat-header h2{
+
+    color:#0f172a;
+
+    font-size:26px;
+}
+
+.stat-icon{
+
+    font-size:32px;
+}
