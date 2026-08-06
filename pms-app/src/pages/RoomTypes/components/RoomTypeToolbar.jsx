@@ -33,13 +33,13 @@ const RoomTypeToolbar = () => {
 
             </div>
 
-            <button className="add-roomtype-btn">
+            {/* <button className="add-roomtype-btn">
 
                 <FaPlus />
 
                 Add Room Type
 
-            </button>
+            </button> */}
 
         </div>
 

@@ -1,10 +1,16 @@
+import RoomCategory from "../RoomsOverview/components/RoomCategory";
+import StatusLegend from "../RoomsOverview/components/StatusLegend";
+import { roomCategories } from "../RoomsOverview/data";
 import "./Dashboard.css";
 import DailyRevenueChart from "./components/DailyRevenueChart";
 import OccupancyChart from "./components/OccupancyChart";
 import RevenueChart from "./components/RevenueChart";
+import RoomCategoryModal from "./components/RoomCategoryModal";
 import RoomStatusChart from "./components/RoomStatusChart";
 import StatCard from "./components/StatCard";
 import { dashboardStats } from "./data";
+import { useState } from "react";
+
 const colors=[
 "#2563eb",
 "#10b981",
@@ -12,10 +18,13 @@ const colors=[
 "#ef4444"
 ];
 const Dashboard = () => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="dashboard">
 
-      <div className="stats-grid">
+      {/* <div className="stats-grid">
         {dashboardStats.map((card,index) => (
           <StatCard
             key={card.id}
@@ -27,16 +36,46 @@ const Dashboard = () => {
             color={colors[index]}
           />
         ))}
-      </div>
+      </div> */}
+      <div className="rooms-overview">
+
+      <StatusLegend />
+
+      {roomCategories.map((category) => (
+        // <RoomCategory
+        //   key={category.id}
+        //   category={category}
+        // />
+        <RoomCategory
+    key={category.id}
+    category={category}
+    onViewAll={(category)=>{
+
+        setSelectedCategory(category);
+
+        setIsModalOpen(true);
+
+    }}
+/>
+      ))}
+
+
+    </div>
       
     
-      <RevenueChart />
+      {/* <RevenueChart /> */}
       <div className="middle-grid">
-  <OccupancyChart />
-  <RoomStatusChart />
+  {/* <OccupancyChart /> */}
+  {/* <RoomStatusChart /> */}
 
 </div>
-<DailyRevenueChart />
+{/* <DailyRevenueChart /> */}
+
+<RoomCategoryModal
+    isOpen={isModalOpen}
+    category={selectedCategory}
+    onClose={() => setIsModalOpen(false)}
+/>
 
     </div>
   );

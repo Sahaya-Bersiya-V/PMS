@@ -21,16 +21,16 @@ const AppRoutes = () => {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/rooms-overview" element={<RoomsOverview />} />
+          {/* <Route path="/rooms-overview" element={<RoomsOverview />} /> */}
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/guests" element={<Guests />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/room-types" element={<RoomTypes />} />
-          <Route path="/staffs" element={<Staffs />} />
-          <Route path="/roles" element={<Roles />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/expenses" element={<Expenses />} />
-          <Route path="/settings" element={<Settings />} />
+          {/* <Route path="/staffs" element={<Staffs />} /> */}
+          {/* <Route path="/roles" element={<Roles />} /> */}
+          {/* <Route path="/reports" element={<Reports />} /> */}
+          {/* <Route path="/expenses" element={<Expenses />} /> */}
+          {/* <Route path="/settings" element={<Settings />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>

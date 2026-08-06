@@ -4,7 +4,7 @@ import "./GuestTable.css";
 
 import GuestStatusBadge from "./GuestStatusBadge";
 
-const GuestTable = ({ guests }) => {
+const GuestTable = ({ guests,onEditGuest }) => {
 
     return (
 
@@ -42,7 +42,7 @@ const GuestTable = ({ guests }) => {
 
                         <tr key={guest.id}>
 
-                            <td>{guest.name}</td>
+                            <td>{guest.guestName}</td>
 
                             <td>{guest.phone}</td>
 
@@ -70,10 +70,14 @@ const GuestTable = ({ guests }) => {
                                         <MdVisibility />
                                     </button>
 
-                                    <button className="edit-btn">
-                                        {/* <MdEdit/> */}
-                                       ✏️
-                                    </button>
+                                    <button
+    className="edit-btn"
+    onClick={() => onEditGuest(guest)}
+>
+
+    ✏️
+
+</button>
 
                                     <button className="delete-btn">
                                         <MdDelete />

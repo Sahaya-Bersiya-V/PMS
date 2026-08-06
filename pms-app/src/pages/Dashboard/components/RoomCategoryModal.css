@@ -1,0 +1,69 @@
+.room-category-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(15,23,42,.45);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:1000;
+}
+
+.room-category-modal{
+
+    width:900px;
+
+    max-height:85vh;
+
+    overflow:hidden;
+
+    background:#fff;
+
+    border-radius:16px;
+
+    box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+.room-category-modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 24px;
+
+    border-bottom:1px solid #e2e8f0;
+}
+
+.room-category-modal-header h2{
+
+    color:#1e293b;
+}
+
+.room-category-modal-header button{
+
+    background:none;
+
+    border:none;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+.room-category-modal-body{
+
+    padding:24px;
+
+    max-height:70vh;
+
+    overflow:auto;
+}

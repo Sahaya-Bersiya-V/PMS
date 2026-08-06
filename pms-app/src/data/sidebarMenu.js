@@ -138,11 +138,11 @@ const sidebarMenu = [
         path: "/",
         icon: MdDashboard,
       },
-      {
-        name: "Rooms Overview",
-        path: "/rooms-overview",
-        icon: MdOutlineMeetingRoom,
-      },
+      // {
+      //   name: "Rooms Overview",
+      //   path: "/rooms-overview",
+      //   icon: MdOutlineMeetingRoom,
+      // },
       {
         name: "Reservations",
         path: "/reservations",
@@ -164,31 +164,31 @@ const sidebarMenu = [
         path: "/guests",
         icon: FaUsers,
       },
-      {
-        name: "Staffs",
-        path: "/staffs",
-        icon: FaUserTie,
-      },
-      {
-        name: "Roles",
-        path: "/roles",
-        icon: MdAdminPanelSettings ,
-      },
-       {
-        name: "Expenses",
-        path: "/expenses",
-        icon: FaMoneyBillWave,
-      },
-      {
-        name: "Reports",
-        path: "/reports",
-        icon: FaChartBar ,
-      },
-       {
-        name: "Settings",
-        path: "/settings",
-        icon: IoSettingsSharp ,
-      },
+      // {
+      //   name: "Staffs",
+      //   path: "/staffs",
+      //   icon: FaUserTie,
+      // },
+      // {
+      //   name: "Roles",
+      //   path: "/roles",
+      //   icon: MdAdminPanelSettings ,
+      // },
+      //  {
+      //   name: "Expenses",
+      //   path: "/expenses",
+      //   icon: FaMoneyBillWave,
+      // },
+      // {
+      //   name: "Reports",
+      //   path: "/reports",
+      //   icon: FaChartBar ,
+      // },
+      //  {
+      //   name: "Settings",
+      //   path: "/settings",
+      //   icon: IoSettingsSharp ,
+      // },
     ],
   },
 

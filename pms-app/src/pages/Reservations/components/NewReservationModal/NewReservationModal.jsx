@@ -1,15 +1,15 @@
 import "./NewReservationModal.css";
-
+import { useHotel } from "../../../../context/HotelContext";
 import PersonalDetails from "./PersonalDetails";
 import RoomDetails from "./RoomDetails";
 import BillSummary from "./BillSummary";
-
+import ReservationDetails from "./ReservationDetails";
 import { FaTimes } from "react-icons/fa";
 import { useState } from "react";
 
 const NewReservationModal = ({ isOpen, onClose }) => {
 
-    
+    const { saveReservation } = useHotel();
     const [guestData, setGuestData] = useState({
     guestName: "",
     phone: "",
@@ -75,6 +75,7 @@ if (!isOpen) return null;
 
         return false;
     }
+    
 
     return true;
 };
@@ -91,25 +92,51 @@ const generateReservationId = () => {
     )}`;
 
 };
+// const handleSave = () => {
+
+//     if (!validate()) return;
+
+//     const payload = {
+
+//     reservationId: generateReservationId(),
+
+//     guest: guestData,
+
+//     rooms,
+
+//     createdAt: new Date(),
+
+// };
+
+//     console.log(payload);
+
+//     alert("Reservation Created Successfully");
+
+// };
+
 const handleSave = () => {
 
     if (!validate()) return;
 
     const payload = {
 
-    reservationId: generateReservationId(),
+        reservationId: generateReservationId(),
 
-    guest: guestData,
+        guest: guestData,
 
-    rooms,
+        rooms,
 
-    createdAt: new Date(),
+        createdAt: new Date(),
 
-};
+    };
+
+    saveReservation(payload);
 
     console.log(payload);
 
     alert("Reservation Created Successfully");
+
+    onClose();
 
 };
 const handleReset = () => {
@@ -145,6 +172,7 @@ const handleReset = () => {
     ]);
 
 };
+
 
 
     return (

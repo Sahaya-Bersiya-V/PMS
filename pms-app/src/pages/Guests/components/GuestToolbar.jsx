@@ -2,7 +2,7 @@ import { FaPlus, FaSearch } from "react-icons/fa";
 
 import "./GuestToolbar.css";
 
-const GuestToolbar = () => {
+const GuestToolbar = ({ onAddGuest }) => {
 
     return (
 
@@ -45,13 +45,13 @@ const GuestToolbar = () => {
 
             </div>
 
-            <button className="add-guest-btn">
-
-                <FaPlus />
-
-                Add Guest
-
-            </button>
+            <button
+    className="add-guest-btn"
+    onClick={onAddGuest}
+>
+    <FaPlus />
+    Add Guest
+</button>
 
         </div>
 

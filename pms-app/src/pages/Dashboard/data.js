@@ -22,22 +22,22 @@ export const dashboardStats = [
     trendType: "down",
     icon: FaUsers,
   },
-  {
-    id: 3,
-    title: "Today's Earnings",
-    value: "₹48,650",
-    trend: "+18%",
-    trendType: "up",
-    icon: FaIndianRupeeSign,
-  },
-  {
-    id: 4,
-    title: "Total Dues",
-    value: "₹18,200",
-    trend: "-12%",
-    trendType: "down",
-    icon: FaFileInvoiceDollar,
-  },
+  // {
+  //   id: 3,
+  //   title: "Today's Earnings",
+  //   value: "₹48,650",
+  //   trend: "+18%",
+  //   trendType: "up",
+  //   icon: FaIndianRupeeSign,
+  // },
+  // {
+  //   id: 4,
+  //   title: "Total Dues",
+  //   value: "₹18,200",
+  //   trend: "-12%",
+  //   trendType: "down",
+  //   icon: FaFileInvoiceDollar,
+  // },
 ];
 
 

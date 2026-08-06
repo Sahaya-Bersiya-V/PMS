@@ -10,6 +10,13 @@ export const roomCategories = [
       { roomNo: "105", status: "Occupied" },
       { roomNo: "106", status: "Available" },
       { roomNo: "107", status: "Occupied" },
+      { roomNo: "108", status: "Available" },
+      { roomNo: "109", status: "Occupied" },
+      { roomNo: "110", status: "Needs Cleaning" },
+      { roomNo: "111", status: "Available" },
+      { roomNo: "112", status: "Occupied" },
+      { roomNo: "113", status: "Available" },
+      { roomNo: "114", status: "Occupied" },
 
     ],
   },
