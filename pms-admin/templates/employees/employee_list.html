@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %}Employees{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold">Employees</h2>
+
+        <p class="text-muted">
+
+            Manage hotel employees.
+
+        </p>
+
+    </div>
+
+    <a href="{% url 'add-employee' %}"
+
+       class="btn btn-primary">
+
+        <i class="bi bi-person-plus"></i>
+
+        Add Employee
+
+    </a>
+
+</div>
+
+<!-- Filters -->
+
+<div class="card shadow-sm border-0 mb-4">
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-4">
+
+<input
+class="form-control"
+placeholder="Search employee..."
+>
+
+</div>
+
+<div class="col-md-3">
+
+<select class="form-select">
+
+<option>All Roles</option>
+
+<option>Admin</option>
+
+<option>Frontdesk</option>
+
+<option>Manager</option>
+
+</select>
+
+</div>
+
+<div class="col-md-3">
+
+<select class="form-select">
+
+<option>All Status</option>
+
+<option>Active</option>
+
+<option>Inactive</option>
+
+</select>
+
+</div>
+
+<div class="col-md-2">
+
+<button class="btn btn-outline-primary w-100">
+
+Filter
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm border-0">
+
+<div class="table-responsive">
+
+<table class="table table-hover mb-0">
+
+<thead class="table-light">
+
+<tr>
+
+<th>Photo</th>
+
+<th>Name</th>
+
+<th>Employee ID</th>
+
+<th>Role</th>
+
+<th>Phone</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>
+
+<img
+src="https://ui-avatars.com/api/?name=John+Doe"
+class="rounded-circle"
+width="40"
+>
+
+</td>
+
+<td>John Doe</td>
+
+<td>EMP001</td>
+
+<td>
+
+<span class="badge bg-primary">
+
+Frontdesk
+
+</span>
+
+</td>
+
+<td>9876543210</td>
+
+<td>
+
+<span class="badge bg-success">
+
+Active
+
+</span>
+
+</td>
+
+<td>
+
+<button class="btn btn-info btn-sm text-white">
+
+<i class="bi bi-eye"></i>
+
+</button>
+
+<button class="btn btn-warning btn-sm text-white">
+
+<i class="bi bi-pencil"></i>
+
+</button>
+
+<button class="btn btn-danger btn-sm">
+
+<i class="bi bi-trash"></i>
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<img
+src="https://ui-avatars.com/api/?name=Sarah"
+class="rounded-circle"
+width="40"
+>
+
+</td>
+
+<td>Sarah</td>
+
+<td>EMP002</td>
+
+<td>
+
+<span class="badge bg-success">
+
+Manager
+
+</span>
+
+</td>
+
+<td>9876543211</td>
+
+<td>
+
+<span class="badge bg-success">
+
+Active
+
+</span>
+
+</td>
+
+<td>
+
+<button class="btn btn-info btn-sm text-white">
+
+<i class="bi bi-eye"></i>
+
+</button>
+
+<button class="btn btn-warning btn-sm text-white">
+
+<i class="bi bi-pencil"></i>
+
+</button>
+
+<button class="btn btn-danger btn-sm">
+
+<i class="bi bi-trash"></i>
+
+</button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

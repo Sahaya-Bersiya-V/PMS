@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Room{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold mb-1">Add New Room</h2>
+        <p class="text-muted mb-0">
+            Create a new room for your hotel.
+        </p>
+    </div>
+
+    <a href="{% url 'room-list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i>
+        Back
+    </a>
+
+</div>
+
+<div class="card shadow-sm border-0">
+
+    <div class="card-body p-4">
+
+        <form>
+
+    <div class="row">
+
+
+        <!-- Hotel -->
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Hotel
+            </label>
+
+            <select
+                name="hotel"
+                class="form-select"
+                required>
+
+                <option value="">
+                    Select Hotel
+                </option>
+
+                {% for hotel in hotels %}
+
+                    <option value="{{ hotel.id }}">
+                        {{ hotel.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <!-- Room Number -->
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Room Number
+            </label>
+
+            <input
+                type="text"
+                name="room_number"
+                class="form-control"
+                placeholder="Enter Room Number"
+                required
+            >
+
+        </div>
+
+
+        <!-- Room Type -->
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Room Type
+            </label>
+
+            <select
+                name="room_type"
+                class="form-select"
+                required>
+
+                <option value="">
+                    Select Room Type
+                </option>
+
+                <option value="Standard">
+                    Standard
+                </option>
+
+                <option value="Deluxe">
+                    Deluxe
+                </option>
+
+                <option value="Suite">
+                    Suite
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Floor -->
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Floor
+            </label>
+
+            <input
+                type="number"
+                name="floor"
+                class="form-control"
+                placeholder="Enter Floor Number"
+                required
+            >
+
+        </div>
+
+
+        <!-- Capacity -->
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Capacity
+            </label>
+
+            <input
+                type="number"
+                name="capacity"
+                class="form-control"
+                placeholder="Maximum Guests"
+                min="1"
+                required
+            >
+
+        </div>
+
+
+        <!-- Price -->
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Price Per Night
+            </label>
+
+            <input
+                type="number"
+                name="price"
+                class="form-control"
+                placeholder="₹"
+                min="0"
+                required
+            >
+
+        </div>
+
+
+        <!-- Status -->
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label">
+                Status
+            </label>
+
+            <select
+                name="status"
+                class="form-select">
+
+                <option value="Available">
+                    Available
+                </option>
+
+                <option value="Occupied">
+                    Occupied
+                </option>
+
+                <option value="Maintenance">
+                    Maintenance
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Description -->
+
+        <div class="col-12 mb-4">
+
+            <label class="form-label">
+                Description
+            </label>
+
+            <textarea
+                name="description"
+                class="form-control"
+                rows="4"
+                placeholder="Room Description"
+            ></textarea>
+
+        </div>
+
+    </div>
+
+
+    <hr>
+
+    <div class="text-end">
+
+        <a
+            href="{% url 'room-list' %}"
+            class="btn btn-secondary">
+
+            Cancel
+
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+
+            <i class="bi bi-check-lg me-1"></i>
+
+            Save Room
+
+        </button>
+
+    </div>
+
+</form>
+
+    </div>
+
+</div>
+
+{% endblock %}

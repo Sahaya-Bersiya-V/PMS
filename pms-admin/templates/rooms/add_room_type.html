@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Room Type{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold">
+
+            Add Room Type
+
+        </h2>
+
+        <p class="text-muted">
+
+            Create a new room category.
+
+        </p>
+
+    </div>
+
+    <a href="{% url 'room-type-list' %}"
+
+       class="btn btn-outline-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="card shadow-sm border-0">
+
+    <div class="card-body p-4">
+
+        <form>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Room Type Name
+
+                    </label>
+
+                    <input
+
+                        type="text"
+
+                        class="form-control"
+
+                        placeholder="Deluxe"
+
+                    >
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Max Occupancy
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        class="form-control"
+
+                        placeholder="2"
+
+                    >
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Bed Type
+
+                    </label>
+
+                    <select class="form-select">
+
+                        <option>Single</option>
+
+                        <option>Double</option>
+
+                        <option>Queen</option>
+
+                        <option>King</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Base Price
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        class="form-control"
+
+                        placeholder="2500"
+
+                    >
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Room Size (sq.ft)
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        class="form-control"
+
+                        placeholder="350"
+
+                    >
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+
+                        Status
+
+                    </label>
+
+                    <select class="form-select">
+
+                        <option>Active</option>
+
+                        <option>Inactive</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-12">
+
+                    <label class="form-label">
+
+                        Description
+
+                    </label>
+
+                    <textarea
+
+                        class="form-control"
+
+                        rows="4"
+
+                        placeholder="Enter description"
+
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="text-end">
+
+                <a href="{% url 'room-type-list' %}"
+
+                   class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+                <button class="btn btn-primary">
+
+                    Save Room Type
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

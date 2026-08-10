@@ -1,0 +1,709 @@
+/* =========================================
+   SETTINGS PAGE
+========================================= */
+
+.settings-page {
+    padding: 10px 2px 40px;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.settings-header {
+    margin-bottom: 25px;
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.settings-header p {
+    margin: 6px 0 0;
+    color: #6b7280;
+}
+
+
+/* =========================================
+   HOTEL SELECTOR
+========================================= */
+
+.hotel-selector-card {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+}
+
+.hotel-selector-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hotel-selector-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #eaf2ff;
+    color: #1468ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+}
+
+.hotel-selector-info {
+    width: 320px;
+}
+
+.hotel-selector-info label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+
+/* =========================================
+   MAIN SETTINGS LAYOUT
+========================================= */
+
+.settings-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+
+/* =========================================
+   SETTINGS NAVIGATION
+========================================= */
+
+.settings-navigation {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+    position: sticky;
+    top: 20px;
+}
+
+.settings-nav-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    padding: 8px 12px 12px;
+}
+
+.settings-nav-item {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.settings-nav-item:hover {
+    background: #f1f6ff;
+    color: #1468ff;
+}
+
+.settings-nav-item.active {
+    background: #1468ff;
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(20, 104, 255, 0.2);
+}
+
+.settings-nav-icon {
+    width: 24px;
+    text-align: center;
+    font-size: 16px;
+}
+
+
+/* =========================================
+   SETTINGS CONTENT
+========================================= */
+
+.settings-content {
+    min-width: 0;
+}
+
+.settings-section {
+    display: none;
+}
+
+.settings-section.active {
+    display: block;
+}
+
+.section-header {
+    margin-bottom: 18px;
+}
+
+.section-header h4 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    color: #172033;
+}
+
+.section-header p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   SETTINGS CARDS
+========================================= */
+
+.settings-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+.settings-card-header {
+    border-bottom: 1px solid #eef0f3;
+    padding-bottom: 16px;
+    margin-bottom: 22px;
+}
+
+.settings-card-header h5 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 650;
+    color: #172033;
+}
+
+.settings-card-header p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: #7b8494;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.settings-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.settings-label span {
+    color: #dc3545;
+}
+
+.settings-card .form-control,
+.settings-card .form-select {
+    min-height: 44px;
+    border: 1px solid #d9dee7;
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+.settings-card textarea.form-control {
+    min-height: auto;
+}
+
+.settings-card .form-control:focus,
+.settings-card .form-select:focus {
+    border-color: #1468ff;
+    box-shadow: 0 0 0 3px rgba(20, 104, 255, 0.1);
+}
+
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 5px 0 20px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-navigation {
+        position: static;
+    }
+
+    .hotel-selector-info {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .hotel-selector-content {
+        align-items: flex-start;
+    }
+
+    .hotel-selector-card {
+        padding: 15px;
+    }
+
+    .settings-card {
+        padding: 18px;
+    }
+
+    .settings-actions {
+        justify-content: stretch;
+    }
+
+    .settings-actions button {
+        flex: 1;
+    }
+
+}
+
+
+/* =========================================
+   SETTINGS TOGGLE ROW
+========================================= */
+
+.setting-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid #eef0f3;
+}
+
+.setting-toggle-row:last-child {
+    border-bottom: none;
+}
+
+.setting-toggle-row strong {
+    display: block;
+    color: #273142;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.setting-toggle-row small {
+    display: block;
+    margin-top: 4px;
+    color: #7b8494;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   PAYMENT METHODS
+========================================= */
+
+.payment-method-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================
+   ROOM STATUS
+========================================= */
+
+.room-status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.room-status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #e7eaf0;
+    border-radius: 12px;
+    background: #fafbfc;
+}
+
+.room-status-item strong {
+    display: block;
+    color: #273142;
+    font-size: 14px;
+}
+
+.room-status-item small {
+    display: block;
+    margin-top: 4px;
+    color: #7b8494;
+    font-size: 12px;
+}
+
+.status-color {
+    width: 10px;
+    height: 42px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.status-color.available {
+    background: #16a34a;
+}
+
+.status-color.occupied {
+    background: #2563eb;
+}
+
+.status-color.cleaning {
+    background: #f59e0b;
+}
+
+.status-color.maintenance {
+    background: #dc2626;
+}
+
+
+/* =========================================
+   STATUS BADGES
+========================================= */
+
+.status-badge {
+    margin-left: auto;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.available-badge {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.occupied-badge {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.cleaning-badge {
+    color: #b45309;
+    background: #fef3c7;
+}
+
+.maintenance-badge {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+
+/* =========================================
+   SWITCH
+========================================= */
+
+.form-switch .form-check-input {
+    width: 2.5em;
+    height: 1.35em;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #1468ff;
+    border-color: #1468ff;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .room-status-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .setting-toggle-row {
+        align-items: flex-start;
+    }
+
+}
+
+/* =========================================
+   NOTIFICATION / SECURITY INFO
+========================================= */
+
+.notification-info,
+.security-info {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+
+/* =========================================
+   ICON BOXES
+========================================= */
+
+.notification-icon,
+.security-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 17px;
+}
+
+
+/* Blue */
+
+.notification-icon.blue,
+.security-icon.blue {
+    background: #e8f1ff;
+    color: #1468ff;
+}
+
+
+/* Green */
+
+.notification-icon.green,
+.security-icon.green {
+    background: #e8f8ef;
+    color: #16a34a;
+}
+
+
+/* Purple */
+
+.notification-icon.purple {
+    background: #f1eaff;
+    color: #7c3aed;
+}
+
+
+/* Orange */
+
+.notification-icon.orange {
+    background: #fff4df;
+    color: #d97706;
+}
+
+
+/* Red */
+
+.notification-icon.red,
+.security-icon.red {
+    background: #feecec;
+    color: #dc2626;
+}
+
+
+/* =========================================
+   PASSWORD REQUIREMENTS
+========================================= */
+
+.password-requirements {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+
+    background: #fafbfc;
+
+    color: #475569;
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+.requirement-item:hover {
+    background: #f5f8ff;
+}
+
+.requirement-item input {
+    width: 16px;
+    height: 16px;
+
+    accent-color: #1468ff;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .notification-info,
+    .security-info {
+        align-items: flex-start;
+    }
+
+    .password-requirements {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================
+   BRANDING
+========================================= */
+
+.branding-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.current-logo {
+    flex-shrink: 0;
+}
+
+.logo-placeholder {
+    width: 130px;
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: linear-gradient(
+        135deg,
+        #1468ff,
+        #6d8cff
+    );
+
+    color: #ffffff;
+
+    font-size: 35px;
+
+    box-shadow:
+        0 10px 25px
+        rgba(20, 104, 255, 0.2);
+}
+
+.logo-upload-content h6 {
+    margin: 0;
+
+    color: #273142;
+
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.logo-upload-content p {
+    margin: 4px 0;
+
+    color: #7b8494;
+
+    font-size: 12px;
+}
+
+.logo-actions {
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 12px;
+}
+
+
+/* =========================================
+   COLOR INPUT
+========================================= */
+
+.color-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-control-color {
+    width: 48px !important;
+    height: 44px !important;
+
+    padding: 4px !important;
+
+    border-radius: 9px;
+
+    border: 1px solid #d9dee7;
+    cursor: pointer;
+}
+
+.color-input-wrapper .form-control {
+    flex: 1;
+}
+
+
+/* =========================================
+   RESPONSIVE BRANDING
+========================================= */
+
+@media (max-width: 650px) {
+
+    .branding-logo-area {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .logo-actions {
+        flex-wrap: wrap;
+    }
+
+}

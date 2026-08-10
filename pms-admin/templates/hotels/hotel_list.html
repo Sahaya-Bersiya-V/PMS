@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+
+{% block title %}Hotels{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold mb-1">Hotels</h2>
+        <p class="text-muted mb-0">
+            Manage all hotel properties in the Property Management System.
+        </p>
+    </div>
+
+    <div>
+        <a href="{% url 'add-hotel' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>
+            Add Hotel
+        </a>
+    </div>
+
+</div>
+
+    <form method="GET">
+
+<div class="card shadow-sm border-0 mb-4">
+
+<div class="card-body">
+
+<div class="row g-3">
+
+<div class="col-md-3">
+
+<input
+type="text"
+name="search"
+value="{{ search }}"
+class="form-control"
+placeholder="Search Hotel">
+
+</div>
+
+<div class="col-md-2">
+
+<select
+name="status"
+class="form-select">
+
+<option value="">All Status</option>
+
+<option value="Active"
+{% if status == "Active" %}selected{% endif %}>
+Active
+</option>
+
+<option value="Inactive"
+{% if status == "Inactive" %}selected{% endif %}>
+Inactive
+</option>
+
+<option value="Under Maintenance"
+{% if status == "Under Maintenance" %}selected{% endif %}>
+Under Maintenance
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-2">
+
+<select
+name="type"
+class="form-select">
+
+<option value="">All Types</option>
+
+<option value="Hotel"
+{% if hotel_type == "Hotel" %}selected{% endif %}>
+Hotel
+</option>
+
+<option value="Resort"
+{% if hotel_type == "Resort" %}selected{% endif %}>
+Resort
+</option>
+
+<option value="Villa"
+{% if hotel_type == "Villa" %}selected{% endif %}>
+Villa
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-2">
+
+<select
+name="state"
+class="form-select">
+
+<option value="">All States</option>
+
+<option value="Tamil Nadu"
+{% if state == "Tamil Nadu" %}selected{% endif %}>
+Tamil Nadu
+</option>
+
+<option value="Goa"
+{% if state == "Goa" %}selected{% endif %}>
+Goa
+</option>
+
+</select>
+
+</div>
+
+<div class="col-md-3 d-flex gap-2">
+
+<button
+type="submit"
+class="btn btn-primary w-100">
+
+Filter
+
+</button>
+
+<a
+href="{% url 'hotel-list' %}"
+class="btn btn-outline-secondary">
+
+Reset
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</form>
+
+    
+
+
+
+
+
+<!-- Table -->
+
+<div class="card shadow-sm border-0">
+
+<div class="table-responsive">
+
+<table class="table table-hover align-middle mb-0">
+
+<thead class="table-light">
+
+<tr>
+
+    <th>Hotel Code</th>
+
+    <th>Hotel Name</th>
+
+    <th>Hotel Type</th>
+
+    <th>City</th>
+
+    <th>State</th>
+
+    <th>Total Rooms</th>
+
+    <th>Employees</th>
+
+    <th>Status</th>
+
+    <th width="170">Actions</th>
+
+</tr>
+
+</thead>
+<tbody>
+
+{% for hotel in hotels %}
+
+<tr>
+
+    <td>{{ hotel.code }}</td>
+
+    <td>{{ hotel.name }}</td>
+
+    <td>{{ hotel.type }}</td>
+
+    <td>{{ hotel.city }}</td>
+
+    <td>{{ hotel.state }}</td>
+
+    <td>{{ hotel.rooms }}</td>
+
+    <td>{{ hotel.employees }}</td>
+
+    <td>
+
+        {% if hotel.status == "Active" %}
+            <span class="badge bg-success">{{ hotel.status }}</span>
+
+        {% elif hotel.status == "Inactive" %}
+            <span class="badge bg-secondary">{{ hotel.status }}</span>
+
+        {% else %}
+            <span class="badge bg-warning text-dark">{{ hotel.status }}</span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        <a href="#" class="btn btn-info btn-sm text-white">
+            <i class="bi bi-eye"></i>
+        </a>
+
+        <a href="#" class="btn btn-warning btn-sm text-white">
+            <i class="bi bi-pencil"></i>
+        </a>
+
+        <a href="#" class="btn btn-secondary btn-sm">
+            <i class="bi bi-arrow-repeat"></i>
+        </a>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="9" class="text-center py-4">
+        No hotels found.
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

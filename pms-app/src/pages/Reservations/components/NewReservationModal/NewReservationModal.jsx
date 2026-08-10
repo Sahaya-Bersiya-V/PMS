@@ -3,10 +3,9 @@ import { useHotel } from "../../../../context/HotelContext";
 import PersonalDetails from "./PersonalDetails";
 import RoomDetails from "./RoomDetails";
 import BillSummary from "./BillSummary";
-import ReservationDetails from "./ReservationDetails";
 import { FaTimes } from "react-icons/fa";
 import { useState } from "react";
-
+import ReservationDetails from "./ReservationDetails";
 const NewReservationModal = ({ isOpen, onClose }) => {
 
     const { saveReservation } = useHotel();

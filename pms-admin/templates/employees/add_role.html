@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Role{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<div>
+
+<h2 class="fw-bold">
+Add Role
+</h2>
+
+<p class="text-muted">
+Create a new role and assign permissions.
+</p>
+
+</div>
+
+<a href="{% url 'role-list' %}"
+class="btn btn-outline-secondary">
+
+<i class="bi bi-arrow-left"></i>
+
+Back
+
+</a>
+
+</div>
+
+<form>
+
+<div class="card shadow-sm border-0 mb-4">
+
+<div class="card-header bg-white">
+
+<h5 class="mb-0">
+Role Information
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label">
+
+Role Name
+
+</label>
+
+<input
+type="text"
+class="form-control"
+placeholder="Frontdesk">
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label class="form-label">
+
+Status
+
+</label>
+
+<select class="form-select">
+
+<option>Active</option>
+
+<option>Inactive</option>
+
+</select>
+
+</div>
+
+<div class="col-12">
+
+<label class="form-label">
+
+Description
+
+</label>
+
+<textarea
+rows="3"
+class="form-control"
+placeholder="Enter role description"></textarea>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm border-0">
+
+<div class="card-header bg-white">
+
+<h5 class="mb-0">
+
+Permissions
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-4">
+
+<h6>Dashboard</h6>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+View Dashboard
+</label>
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<h6>Rooms</h6>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+View Rooms
+</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+Add Room
+</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+Edit Room
+</label>
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<h6>Employees</h6>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+View Employees
+</label>
+</div>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+Add Employee
+</label>
+</div>
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="row mt-3">
+
+<div class="col-md-4">
+
+<h6>Reservations</h6>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+Manage Reservations
+</label>
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<h6>Billing</h6>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+View Billing
+</label>
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<h6>Reports</h6>
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">
+View Reports
+</label>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="text-end mt-4">
+
+<a href="{% url 'role-list' %}"
+class="btn btn-secondary">
+
+Cancel
+
+</a>
+
+<button class="btn btn-primary">
+
+Save Role
+
+</button>
+
+</div>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,3033 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Settings{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{% static 'css/settings.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="settings-page">
+
+    <!-- ===================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================== -->
+
+    <div class="settings-header">
+
+        <div>
+
+            <h2>
+                Settings
+            </h2>
+
+            <p>
+                Manage your PMS configuration and preferences
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================== -->
+    <!-- HOTEL SELECTOR -->
+    <!-- ===================================== -->
+
+    <div class="hotel-selector-card">
+
+        <div class="hotel-selector-content">
+
+            <div class="hotel-selector-icon">
+
+                <i class="bi bi-building"></i>
+
+            </div>
+
+            <div class="hotel-selector-info">
+
+                <label>
+                    Select Property
+                </label>
+
+                <select
+                    class="form-select"
+                    id="hotelSelector">
+
+                    <option value="">
+                        All Hotels
+                    </option>
+
+                    {% for hotel in hotels %}
+
+                    <option value="{{ hotel.id }}">
+
+                        {{ hotel.name }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================== -->
+    <!-- SETTINGS LAYOUT -->
+    <!-- ===================================== -->
+
+    <div class="settings-layout">
+
+
+        <!-- ================================= -->
+        <!-- SETTINGS SIDEBAR -->
+        <!-- ================================= -->
+
+        <div class="settings-navigation">
+
+            <div class="settings-nav-title">
+
+                SETTINGS
+
+            </div>
+
+
+            <button
+                class="settings-nav-item active"
+                data-section="hotel">
+
+                <span class="settings-nav-icon">
+
+                    <i class="bi bi-building"></i>
+
+                </span>
+
+                <span>
+                    Hotel Configuration
+                </span>
+
+            </button>
+
+
+            <button
+                class="settings-nav-item"
+                data-section="billing">
+
+                <span class="settings-nav-icon">
+
+                    <i class="bi bi-receipt"></i>
+
+                </span>
+
+                <span>
+                    Billing & Tax
+                </span>
+
+            </button>
+
+
+            <button
+                class="settings-nav-item"
+                data-section="rooms">
+
+                <span class="settings-nav-icon">
+
+                    <i class="bi bi-door-open"></i>
+
+                </span>
+
+                <span>
+                    Room Settings
+                </span>
+
+            </button>
+
+
+            <button
+                class="settings-nav-item"
+                data-section="notifications">
+
+                <span class="settings-nav-icon">
+
+                    <i class="bi bi-bell"></i>
+
+                </span>
+
+                <span>
+                    Notifications
+                </span>
+
+            </button>
+
+
+            <button
+                class="settings-nav-item"
+                data-section="security">
+
+                <span class="settings-nav-icon">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                </span>
+
+                <span>
+                    Security
+                </span>
+
+            </button>
+
+
+            <button
+                class="settings-nav-item"
+                data-section="localization">
+
+                <span class="settings-nav-icon">
+
+                    <i class="bi bi-globe2"></i>
+
+                </span>
+
+                <span>
+                    Localization
+                </span>
+
+            </button>
+
+
+            <button
+                class="settings-nav-item"
+                data-section="branding">
+
+                <span class="settings-nav-icon">
+
+                    <i class="bi bi-palette"></i>
+
+                </span>
+
+                <span>
+                    Branding
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- SETTINGS CONTENT -->
+        <!-- ================================= -->
+
+        <div class="settings-content">
+
+
+            <!-- ================================= -->
+            <!-- HOTEL CONFIGURATION -->
+            <!-- ================================= -->
+
+            <section
+                class="settings-section active"
+                id="hotel-section">
+
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h4>
+                            Hotel Configuration
+                        </h4>
+
+                        <p>
+                            Manage basic information about the selected property.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Hotel Information -->
+
+                <div class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div>
+
+                            <h5>
+                                Hotel Information
+                            </h5>
+
+                            <p>
+                                Basic property information
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-4">
+
+
+                        <!-- Hotel Name -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                Hotel Name
+
+                                <span>*</span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Enter hotel name"
+                                value="Hotel Paradise">
+
+                        </div>
+
+
+                        <!-- Hotel Code -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                Hotel Code
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Enter hotel code"
+                                value="HTL001">
+
+                        </div>
+
+
+                        <!-- Hotel Type -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                Hotel Type
+
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>
+                                    Hotel
+                                </option>
+
+                                <option>
+                                    Resort
+                                </option>
+
+                                <option>
+                                    Villa
+                                </option>
+
+                                <option>
+                                    Boutique Hotel
+                                </option>
+
+                                <option>
+                                    Business Hotel
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Star Rating -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                Star Rating
+
+                            </label>
+
+                            <select class="form-select">
+
+                                <option>
+                                    1 Star
+                                </option>
+
+                                <option>
+                                    2 Stars
+                                </option>
+
+                                <option selected>
+                                    3 Stars
+                                </option>
+
+                                <option>
+                                    4 Stars
+                                </option>
+
+                                <option>
+                                    5 Stars
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Phone -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                Phone Number
+
+                            </label>
+
+                            <input
+                                type="tel"
+                                class="form-control"
+                                placeholder="Enter phone number"
+                                value="+91 98765 43210">
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                Email Address
+
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                placeholder="Enter email"
+                                value="info@hotelparadise.com">
+
+                        </div>
+
+
+                        <!-- Website -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                Website
+
+                            </label>
+
+                            <input
+                                type="url"
+                                class="form-control"
+                                placeholder="https://example.com"
+                                value="https://hotelparadise.com">
+
+                        </div>
+
+
+                        <!-- GST -->
+
+                        <div class="col-md-6">
+
+                            <label class="settings-label">
+
+                                GST Number
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Enter GST number"
+                                value="33ABCDE1234F1Z5">
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- Address -->
+
+                <div class="settings-card">
+
+                    <div class="settings-card-header">
+
+                        <div>
+
+                            <h5>
+                                Property Address
+                            </h5>
+
+                            <p>
+                                Address and location details
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-4">
+
+
+                        <div class="col-12">
+
+                            <label class="settings-label">
+
+                                Address
+
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                rows="3"
+                                placeholder="Enter complete address">123 Beach Road, Near City Centre</textarea>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="settings-label">
+
+                                City
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="Chennai">
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="settings-label">
+
+                                State
+
+                            </label>
+
+                            <select class="form-select">
+
+                                <option selected>
+                                    Tamil Nadu
+                                </option>
+
+                                <option>
+                                    Kerala
+                                </option>
+
+                                <option>
+                                    Karnataka
+                                </option>
+
+                                <option>
+                                    Goa
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="settings-label">
+
+                                PIN Code
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                value="600001">
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- Save -->
+
+                <div class="settings-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-check-lg me-2"></i>
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </section>
+
+            <!-- ========================================= -->
+<!-- BILLING & TAX -->
+<!-- ========================================= -->
+
+<section
+    class="settings-section"
+    id="billing-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h4>
+                Billing & Tax
+            </h4>
+
+            <p>
+                Configure invoice, tax and payment settings for the selected property.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Currency & Invoice -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Invoice Configuration
+                </h5>
+
+                <p>
+                    Configure how invoices are generated.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- Currency -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Currency
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        INR - Indian Rupee (₹)
+                    </option>
+
+                    <option>
+                        USD - US Dollar ($)
+                    </option>
+
+                    <option>
+                        EUR - Euro (€)
+                    </option>
+
+                    <option>
+                        GBP - British Pound (£)
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Invoice Prefix -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Invoice Prefix
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    value="INV">
+
+            </div>
+
+
+            <!-- Invoice Start Number -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Next Invoice Number
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    value="1001">
+
+            </div>
+
+
+            <!-- Invoice Due Days -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Payment Due Days
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    value="7">
+
+            </div>
+
+
+            <!-- Invoice Notes -->
+
+            <div class="col-12">
+
+                <label class="settings-label">
+                    Invoice Footer / Notes
+                </label>
+
+                <textarea
+                    class="form-control"
+                    rows="3"
+                    placeholder="Enter invoice footer message">Thank you for staying with us.</textarea>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Tax Configuration -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Tax Configuration
+                </h5>
+
+                <p>
+                    Configure taxes applied to hotel services.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Enable Tax -->
+
+            <div class="col-12">
+
+                <div class="setting-toggle-row">
+
+                    <div>
+
+                        <strong>
+                            Enable Tax
+                        </strong>
+
+                        <small>
+                            Apply taxes automatically to invoices.
+                        </small>
+
+                    </div>
+
+                    <div class="form-check form-switch">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            checked>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Tax Type -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Tax Type
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        GST
+                    </option>
+
+                    <option>
+                        VAT
+                    </option>
+
+                    <option>
+                        Sales Tax
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Tax Percentage -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Default Tax Rate
+                </label>
+
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        value="12"
+                        min="0"
+                        max="100"
+                        step="0.01">
+
+                    <span class="input-group-text">
+                        %
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Service Charge -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Service Charge
+                </label>
+
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        value="5"
+                        min="0"
+                        max="100"
+                        step="0.01">
+
+                    <span class="input-group-text">
+                        %
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Tax Inclusive -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Pricing Mode
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        Tax Exclusive
+                    </option>
+
+                    <option>
+                        Tax Inclusive
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Payment Methods -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Payment Methods
+                </h5>
+
+                <p>
+                    Select the payment methods available at this property.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-method-list">
+
+
+            <div class="setting-toggle-row">
+
+                <div>
+
+                    <strong>
+                        Cash
+                    </strong>
+
+                    <small>
+                        Accept cash payments.
+                    </small>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-toggle-row">
+
+                <div>
+
+                    <strong>
+                        UPI
+                    </strong>
+
+                    <small>
+                        Accept UPI payments.
+                    </small>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-toggle-row">
+
+                <div>
+
+                    <strong>
+                        Credit / Debit Card
+                    </strong>
+
+                    <small>
+                        Accept card payments.
+                    </small>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-toggle-row">
+
+                <div>
+
+                    <strong>
+                        Bank Transfer
+                    </strong>
+
+                    <small>
+                        Accept direct bank transfers.
+                    </small>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox">
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="settings-actions">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary">
+
+            Cancel
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-primary">
+
+            <i class="bi bi-check-lg me-2"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ========================================= -->
+<!-- ROOM SETTINGS -->
+<!-- ========================================= -->
+
+<section
+    class="settings-section"
+    id="rooms-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h4>
+                Room Settings
+            </h4>
+
+            <p>
+                Configure room availability, booking and stay preferences.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Stay Configuration -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Stay Configuration
+                </h5>
+
+                <p>
+                    Configure standard check-in and check-out settings.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Check In -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Default Check-in Time
+                </label>
+
+                <input
+                    type="time"
+                    class="form-control"
+                    value="14:00">
+
+            </div>
+
+
+            <!-- Check Out -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Default Check-out Time
+                </label>
+
+                <input
+                    type="time"
+                    class="form-control"
+                    value="11:00">
+
+            </div>
+
+
+            <!-- Early Check-in -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Early Check-in
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        Allow with approval
+                    </option>
+
+                    <option>
+                        Always allow
+                    </option>
+
+                    <option>
+                        Not allowed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Late Check-out -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Late Check-out
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        Allow with approval
+                    </option>
+
+                    <option>
+                        Always allow
+                    </option>
+
+                    <option>
+                        Not allowed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Room Status -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Room Status
+                </h5>
+
+                <p>
+                    Configure the default room status options.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="room-status-grid">
+
+
+            <div class="room-status-item">
+
+                <div class="status-color available"></div>
+
+                <div>
+
+                    <strong>
+                        Available
+                    </strong>
+
+                    <small>
+                        Room is ready for booking.
+                    </small>
+
+                </div>
+
+                <span class="status-badge available-badge">
+                    Active
+                </span>
+
+            </div>
+
+
+            <div class="room-status-item">
+
+                <div class="status-color occupied"></div>
+
+                <div>
+
+                    <strong>
+                        Occupied
+                    </strong>
+
+                    <small>
+                        Guest is currently staying.
+                    </small>
+
+                </div>
+
+                <span class="status-badge occupied-badge">
+                    Active
+                </span>
+
+            </div>
+
+
+            <div class="room-status-item">
+
+                <div class="status-color cleaning"></div>
+
+                <div>
+
+                    <strong>
+                        Cleaning
+                    </strong>
+
+                    <small>
+                        Room is being cleaned.
+                    </small>
+
+                </div>
+
+                <span class="status-badge cleaning-badge">
+                    Active
+                </span>
+
+            </div>
+
+
+            <div class="room-status-item">
+
+                <div class="status-color maintenance"></div>
+
+                <div>
+
+                    <strong>
+                        Maintenance
+                    </strong>
+
+                    <small>
+                        Room is temporarily unavailable.
+                    </small>
+
+                </div>
+
+                <span class="status-badge maintenance-badge">
+                    Active
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Booking Rules -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Booking Rules
+                </h5>
+
+                <p>
+                    Configure basic room booking behaviour.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Maximum Advance Booking
+                </label>
+
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        value="365"
+                        min="1">
+
+                    <span class="input-group-text">
+                        Days
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Minimum Stay
+                </label>
+
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        value="1"
+                        min="1">
+
+                    <span class="input-group-text">
+                        Night(s)
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-12">
+
+                <div class="setting-toggle-row">
+
+                    <div>
+
+                        <strong>
+                            Allow Overbooking
+                        </strong>
+
+                        <small>
+                            Allow reservations beyond available room inventory.
+                        </small>
+
+                    </div>
+
+                    <div class="form-check form-switch">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-12">
+
+                <div class="setting-toggle-row">
+
+                    <div>
+
+                        <strong>
+                            Automatically Block Maintenance Rooms
+                        </strong>
+
+                        <small>
+                            Prevent reservations for rooms under maintenance.
+                        </small>
+
+                    </div>
+
+                    <div class="form-check form-switch">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            checked>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="settings-actions">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary">
+
+            Cancel
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-primary">
+
+            <i class="bi bi-check-lg me-2"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ========================================= -->
+<!-- NOTIFICATIONS -->
+<!-- ========================================= -->
+
+<section
+    class="settings-section"
+    id="notifications-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h4>
+                Notifications
+            </h4>
+
+            <p>
+                Control booking, payment and system notifications.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Email Notifications -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Email Notifications
+                </h5>
+
+                <p>
+                    Configure automated email notifications.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="notification-list">
+
+            <!-- Booking Confirmation -->
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon blue">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Booking Confirmation
+                        </strong>
+
+                        <small>
+                            Send confirmation when a reservation is created.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <!-- Check-in -->
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon green">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Check-in Notification
+                        </strong>
+
+                        <small>
+                            Notify guests when their check-in is completed.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <!-- Check-out -->
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon purple">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Check-out Notification
+                        </strong>
+
+                        <small>
+                            Send a notification after guest check-out.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <!-- Payment -->
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon orange">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Payment Confirmation
+                        </strong>
+
+                        <small>
+                            Send confirmation after a successful payment.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <!-- Cancellation -->
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon red">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Cancellation Notification
+                        </strong>
+
+                        <small>
+                            Notify guests when a reservation is cancelled.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Staff Notifications -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Staff Notifications
+                </h5>
+
+                <p>
+                    Configure notifications for hotel employees.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="notification-list">
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon blue">
+                        <i class="bi bi-bell"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            New Reservation
+                        </strong>
+
+                        <small>
+                            Notify front desk staff about new reservations.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon orange">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Pending Payment
+                        </strong>
+
+                        <small>
+                            Notify staff about pending payments.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <div class="setting-toggle-row">
+
+                <div class="notification-info">
+
+                    <div class="notification-icon red">
+                        <i class="bi bi-door-closed"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Room Maintenance
+                        </strong>
+
+                        <small>
+                            Notify maintenance staff when a room requires attention.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Notification Email -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Notification Email
+                </h5>
+
+                <p>
+                    Email address used for system notifications.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-8">
+
+                <label class="settings-label">
+                    Notification Email
+                </label>
+
+                <input
+                    type="email"
+                    class="form-control"
+                    value="notifications@hotelparadise.com"
+                    placeholder="Enter notification email">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="settings-actions">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary">
+
+            Cancel
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-primary">
+
+            <i class="bi bi-check-lg me-2"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ========================================= -->
+<!-- SECURITY -->
+<!-- ========================================= -->
+
+<section
+    class="settings-section"
+    id="security-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h4>
+                Security
+            </h4>
+
+            <p>
+                Manage authentication, password and session security.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Login Security -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Login Security
+                </h5>
+
+                <p>
+                    Configure how employees access the PMS.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="security-list">
+
+            <!-- 2FA -->
+
+            <div class="setting-toggle-row">
+
+                <div class="security-info">
+
+                    <div class="security-icon blue">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Two-Factor Authentication
+                        </strong>
+
+                        <small>
+                            Require an additional verification step during login.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox">
+
+                </div>
+
+            </div>
+
+
+            <!-- Login Attempts -->
+
+            <div class="setting-toggle-row">
+
+                <div class="security-info">
+
+                    <div class="security-icon red">
+
+                        <i class="bi bi-lock"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Login Attempt Protection
+                        </strong>
+
+                        <small>
+                            Temporarily block accounts after repeated failed logins.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+
+            <!-- Session -->
+
+            <div class="setting-toggle-row">
+
+                <div class="security-info">
+
+                    <div class="security-icon green">
+
+                        <i class="bi bi-person-lock"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Automatic Session Logout
+                        </strong>
+
+                        <small>
+                            Automatically sign out inactive users.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        checked>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Password Policy -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Password Policy
+                </h5>
+
+                <p>
+                    Define minimum password requirements for employees.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Minimum Length -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Minimum Password Length
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    value="8"
+                    min="6"
+                    max="32">
+
+            </div>
+
+
+            <!-- Session Timeout -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Session Timeout
+                </label>
+
+                <select class="form-select">
+
+                    <option>
+                        15 Minutes
+                    </option>
+
+                    <option selected>
+                        30 Minutes
+                    </option>
+
+                    <option>
+                        1 Hour
+                    </option>
+
+                    <option>
+                        2 Hours
+                    </option>
+
+                    <option>
+                        4 Hours
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Password Requirements -->
+
+            <div class="col-12">
+
+                <label class="settings-label">
+                    Password Requirements
+                </label>
+
+                <div class="password-requirements">
+
+
+                    <label class="requirement-item">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span>
+
+                            Require uppercase letter
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="requirement-item">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span>
+
+                            Require lowercase letter
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="requirement-item">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span>
+
+                            Require number
+
+                        </span>
+
+                    </label>
+
+
+                    <label class="requirement-item">
+
+                        <input
+                            type="checkbox"
+                            checked>
+
+                        <span>
+
+                            Require special character
+
+                        </span>
+
+                    </label>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Login Attempts -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Login Attempt Limits
+                </h5>
+
+                <p>
+                    Protect employee accounts against repeated failed login attempts.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Maximum Failed Attempts
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    value="5"
+                    min="1"
+                    max="20">
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Lockout Duration
+                </label>
+
+                <select class="form-select">
+
+                    <option>
+                        5 Minutes
+                    </option>
+
+                    <option selected>
+                        15 Minutes
+                    </option>
+
+                    <option>
+                        30 Minutes
+                    </option>
+
+                    <option>
+                        1 Hour
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="settings-actions">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary">
+
+            Cancel
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-primary">
+
+            <i class="bi bi-check-lg me-2"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ========================================= -->
+<!-- LOCALIZATION -->
+<!-- ========================================= -->
+
+<section
+    class="settings-section"
+    id="localization-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h4>
+                Localization
+            </h4>
+
+            <p>
+                Configure language, timezone, currency and date preferences.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Regional Settings -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Regional Settings
+                </h5>
+
+                <p>
+                    Configure the regional preferences for this property.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- Language -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Language
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        English
+                    </option>
+
+                    <option>
+                        Tamil
+                    </option>
+
+                    <option>
+                        Malayalam
+                    </option>
+
+                    <option>
+                        Hindi
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Timezone -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Time Zone
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        (GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi
+                    </option>
+
+                    <option>
+                        (GMT+00:00) London
+                    </option>
+
+                    <option>
+                        (GMT-05:00) New York
+                    </option>
+
+                    <option>
+                        (GMT+08:00) Singapore
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Currency -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Currency
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        INR - Indian Rupee (₹)
+                    </option>
+
+                    <option>
+                        USD - US Dollar ($)
+                    </option>
+
+                    <option>
+                        EUR - Euro (€)
+                    </option>
+
+                    <option>
+                        GBP - British Pound (£)
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Date Format -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Date Format
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        DD/MM/YYYY
+                    </option>
+
+                    <option>
+                        MM/DD/YYYY
+                    </option>
+
+                    <option>
+                        YYYY-MM-DD
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Time Format -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Time Format
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        12 Hour (AM/PM)
+                    </option>
+
+                    <option>
+                        24 Hour
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- First Day -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    First Day of Week
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        Sunday
+                    </option>
+
+                    <option>
+                        Monday
+                    </option>
+
+                    <option>
+                        Saturday
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Number Format -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Number & Display Format
+                </h5>
+
+                <p>
+                    Configure how numbers and amounts are displayed.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Decimal Places
+                </label>
+
+                <select class="form-select">
+
+                    <option>
+                        0
+                    </option>
+
+                    <option selected>
+                        2
+                    </option>
+
+                    <option>
+                        3
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Currency Position
+                </label>
+
+                <select class="form-select">
+
+                    <option selected>
+                        Before Amount — ₹1,000
+                    </option>
+
+                    <option>
+                        After Amount — 1,000₹
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="col-12">
+
+                <div class="setting-toggle-row">
+
+                    <div>
+
+                        <strong>
+                            Use Thousands Separator
+                        </strong>
+
+                        <small>
+                            Display numbers using comma separators.
+                        </small>
+
+                    </div>
+
+                    <div class="form-check form-switch">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            checked>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="settings-actions">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary">
+
+            Cancel
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-primary">
+
+            <i class="bi bi-check-lg me-2"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</section>
+
+<!-- ========================================= -->
+<!-- BRANDING -->
+<!-- ========================================= -->
+
+<section
+    class="settings-section"
+    id="branding-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <h4>
+                Branding
+            </h4>
+
+            <p>
+                Customize the visual identity of your property.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Logo -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Hotel Logo
+                </h5>
+
+                <p>
+                    Upload the logo displayed across the PMS.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="branding-logo-area">
+
+            <div class="current-logo">
+
+                <div class="logo-placeholder">
+
+                    <i class="bi bi-building"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="logo-upload-content">
+
+                <h6>
+                    Hotel Paradise
+                </h6>
+
+                <p>
+                    Recommended size: 300 × 100 px
+                </p>
+
+                <p>
+                    Supported formats: PNG, JPG, SVG
+                </p>
+
+
+                <div class="logo-actions">
+
+                    <label
+                        for="hotelLogo"
+                        class="btn btn-outline-primary">
+
+                        <i class="bi bi-upload me-2"></i>
+
+                        Upload Logo
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="hotelLogo"
+                        class="d-none"
+                        accept=".png,.jpg,.jpeg,.svg">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-danger">
+
+                        <i class="bi bi-trash me-2"></i>
+
+                        Remove
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Colors -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Theme Colors
+                </h5>
+
+                <p>
+                    Customize the primary colors used throughout the PMS.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Primary -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Primary Color
+                </label>
+
+                <div class="color-input-wrapper">
+
+                    <input
+                        type="color"
+                        class="form-control-color"
+                        value="#1468FF"
+                        id="primaryColor">
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="#1468FF">
+
+                </div>
+
+            </div>
+
+
+            <!-- Secondary -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Secondary Color
+                </label>
+
+                <div class="color-input-wrapper">
+
+                    <input
+                        type="color"
+                        class="form-control-color"
+                        value="#172033"
+                        id="secondaryColor">
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="#172033">
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- Login Branding -->
+
+    <div class="settings-card">
+
+        <div class="settings-card-header">
+
+            <div>
+
+                <h5>
+                    Login Page Branding
+                </h5>
+
+                <p>
+                    Configure how the login screen appears to employees.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- Login Title -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Login Page Title
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    value="Welcome to Hotel Paradise">
+
+            </div>
+
+
+            <!-- Login Subtitle -->
+
+            <div class="col-md-6">
+
+                <label class="settings-label">
+                    Login Subtitle
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    value="Sign in to manage your property">
+
+            </div>
+
+
+            <!-- Welcome Message -->
+
+            <div class="col-12">
+
+                <label class="settings-label">
+                    Welcome Message
+                </label>
+
+                <textarea
+                    class="form-control"
+                    rows="3">Welcome back! Please sign in to continue.</textarea>
+
+            </div>
+
+
+            <!-- Show Logo -->
+
+            <div class="col-12">
+
+                <div class="setting-toggle-row">
+
+                    <div>
+
+                        <strong>
+                            Show Hotel Logo on Login
+                        </strong>
+
+                        <small>
+                            Display the property logo on the employee login page.
+                        </small>
+
+                    </div>
+
+                    <div class="form-check form-switch">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            checked>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Actions -->
+
+    <div class="settings-actions">
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary">
+
+            Cancel
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-primary">
+
+            <i class="bi bi-check-lg me-2"></i>
+
+            Save Changes
+
+        </button>
+
+    </div>
+
+</section>
+
+
+{% endblock %}
