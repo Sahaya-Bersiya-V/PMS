@@ -4,6 +4,11 @@ from django.core.exceptions import ValidationError
 
 class Guest(models.Model):
 
+    STATUS_CHOICES = [
+        ("active", "Active"),
+        ("inactive", "Inactive"),
+    ]
+
     IDENTITY_CHOICES = [
         ("aadhaar", "Aadhaar"),
         ("passport", "Passport"),
@@ -80,6 +85,12 @@ class Guest(models.Model):
         max_length=100,
         blank=True,
         null=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="active"
     )
 
     created_at = models.DateTimeField(

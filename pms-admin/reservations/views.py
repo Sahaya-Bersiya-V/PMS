@@ -6,7 +6,7 @@ from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+import time
 from hotels.models import Hotel
 from rooms.models import Room, RoomType
 
@@ -54,6 +54,81 @@ from .serializers import (
 #         "amount": "₹6,500",
 #     },
 # ]
+
+
+# =========================================================
+# GUEST SEARCH
+# =========================================================
+
+class GuestListView(APIView):
+
+    def get(self, request):
+
+        search = request.GET.get(
+            "search",
+            ""
+        ).strip()
+
+        guests = Guest.objects.all()
+
+        if search:
+
+            guests = guests.filter(
+
+                Q(
+                    first_name__icontains=search
+                )
+
+                |
+
+                Q(
+                    last_name__icontains=search
+                )
+
+                |
+
+                Q(
+                    phone__icontains=search
+                )
+
+                |
+
+                Q(
+                    email__icontains=search
+                )
+
+                |
+
+                Q(
+                    guest_id__icontains=search
+                )
+
+                |
+
+                Q(
+                    identity_number__icontains=search
+                )
+
+                |
+
+                Q(
+                    city__icontains=search
+                )
+
+            )
+
+        guests = guests.order_by(
+            "first_name"
+        )
+
+        serializer = GuestSerializer(
+            guests,
+            many=True
+        )
+
+        return Response(
+            serializer.data
+        )
 # =========================================================
 # RESERVATION LIST + CREATE
 # =========================================================
@@ -181,35 +256,147 @@ class ReservationListCreateView(APIView):
         # Guest
         # --------------------------------
 
-        guest_data = data.pop(
-            "guest",
-            None
-        )
+        guest_data = data.pop("guest", None)
 
         if not guest_data:
-
             return Response(
                 {
-                    "error":
-                    "Guest information is required."
+                    "error": "Guest information is required."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        guest_serializer = GuestSerializer(
-            data=guest_data
-        )
+        # --------------------------------
+        # FIND EXISTING GUEST
+        # --------------------------------
 
-        guest_serializer.is_valid(
-            raise_exception=True
-        )
+        guest_id = guest_data.get("id")
 
-        guest = guest_serializer.save()
+        phone = str(
+            guest_data.get("phone") or ""
+        ).strip()
+
+        identity_type = str(
+            guest_data.get("identity_type") or ""
+        ).strip()
+
+        identity_number = str(
+            guest_data.get("identity_number") or ""
+        ).strip()
+
+
+        guest = None
+
+
+        # 1. Existing guest ID
+        if guest_id:
+            try:
+                guest = Guest.objects.get(
+                    pk=guest_id
+                )
+            except Guest.DoesNotExist:
+                guest = None
+
+
+        # 2. Search by phone
+        if not guest and phone:
+            guest = Guest.objects.filter(
+                phone=phone
+            ).first()
+
+
+        # 3. Search by identity
+        if (
+            not guest
+            and identity_type
+            and identity_number
+        ):
+            guest = Guest.objects.filter(
+                identity_type=identity_type,
+                identity_number=identity_number,
+            ).first()
+
+
+        # --------------------------------
+        # CREATE OR UPDATE GUEST
+        # --------------------------------
+
+        if guest:
+
+            guest.first_name = (
+                guest_data.get(
+                    "first_name"
+                ) or guest.first_name
+            )
+
+            guest.last_name = (
+                guest_data.get(
+                    "last_name"
+                ) or guest.last_name
+            )
+
+            guest.phone = (
+                guest_data.get(
+                    "phone"
+                ) or guest.phone
+            )
+
+            guest.email = (
+                guest_data.get(
+                    "email"
+                ) or guest.email
+            )
+
+            guest.identity_type = (
+                guest_data.get(
+                    "identity_type"
+                ) or guest.identity_type
+            )
+
+            guest.identity_number = (
+                guest_data.get(
+                    "identity_number"
+                ) or guest.identity_number
+            )
+
+            guest.address = (
+                guest_data.get(
+                    "address"
+                ) or guest.address
+            )
+
+            guest.save()
+
+        else:
+
+            guest_data.pop(
+                "id",
+                None
+            )
+
+            if not guest_data.get(
+                "guest_id"
+            ):
+                guest_data["guest_id"] = (
+                    guest_data.get("guest_id")
+                    or
+                    f"G{int(time.time())}"
+                )
+
+            guest_serializer = GuestSerializer(
+                data=guest_data
+            )
+
+            guest_serializer.is_valid(
+                raise_exception=True
+            )
+
+            guest = guest_serializer.save()
 
         # --------------------------------
         # Generate reservation number
         # --------------------------------
-        guest = guest_serializer.save()
+    
         
         data["guest"] = guest.id
 
@@ -513,6 +700,33 @@ class ReservationDetailView(APIView):
         )
 
             guest_changed = True
+        if "identity_type" in data:
+
+            guest.identity_type = (
+                data.get("identity_type") or ""
+            )
+
+            guest_changed = True
+
+
+        if "identity_number" in data:
+
+            guest.identity_number = (
+                data.get("identity_number") or ""
+            )
+
+            guest_changed = True
+
+
+        if "address" in data:
+
+            guest.address = (
+                data.get("address") or ""
+            )
+
+            guest_changed = True
+
+        
 
         if guest_changed:
             guest.save()
@@ -1102,3 +1316,31 @@ class MarkPaymentPaidView(APIView):
 #         "reservations/reservation_list.html",
 #         context,
 #     )
+
+class GuestDetailView(APIView):
+
+    def get(self, request, pk):
+
+        try:
+
+            guest = Guest.objects.get(
+                pk=pk
+            )
+
+        except Guest.DoesNotExist:
+
+            return Response(
+                {
+                    "error":
+                        "Guest not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = GuestSerializer(
+            guest
+        )
+
+        return Response(
+            serializer.data
+        )

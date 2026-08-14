@@ -8,10 +8,24 @@ from .views import (
     CheckOutView,
     CancelReservationView,
     MarkPaymentPaidView,
+    GuestListView,
+    GuestDetailView
 )
 
 
 urlpatterns = [
+
+    path(
+        "guests/",
+        GuestListView.as_view(),
+        name="guest-list"
+    ),
+
+    path(
+    "guests/<int:pk>/",
+    GuestDetailView.as_view(),
+    name="guest-detail"
+),
 
     path(
         "",

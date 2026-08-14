@@ -1,8 +1,11 @@
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 
 import "./GuestToolbar.css";
 
-const GuestToolbar = ({ onAddGuest }) => {
+const GuestToolbar = ({
+    search,
+    onSearch
+}) => {
 
     return (
 
@@ -17,41 +20,17 @@ const GuestToolbar = ({ onAddGuest }) => {
                     <input
                         type="text"
                         placeholder="Search Guest..."
+                        value={search}
+                        onChange={(e) =>
+                            onSearch(
+                                e.target.value
+                            )
+                        }
                     />
 
                 </div>
 
-                <select>
-
-                    <option>All Memberships</option>
-
-                    <option>Gold</option>
-
-                    <option>Silver</option>
-
-                    <option>Regular</option>
-
-                </select>
-
-                <select>
-
-                    <option>All Status</option>
-
-                    <option>Active</option>
-
-                    <option>Inactive</option>
-
-                </select>
-
             </div>
-
-            <button
-    className="add-guest-btn"
-    onClick={onAddGuest}
->
-    <FaPlus />
-    Add Guest
-</button>
 
         </div>
 

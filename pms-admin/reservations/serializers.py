@@ -9,34 +9,92 @@ from rooms.models import Room
 
 class GuestSerializer(serializers.ModelSerializer):
 
+    guest_name = serializers.SerializerMethodField()
+    visits = serializers.SerializerMethodField()
+
     class Meta:
+
         model = Guest
 
         fields = [
             "id",
             "guest_id",
+
+            "guest_name",
+
             "first_name",
             "last_name",
+
             "phone",
             "email",
+
             "date_of_birth",
+
             "identity_type",
             "identity_number",
+
             "company_name",
             "gst_number",
+
             "address",
             "pincode",
             "city",
+            "status",
+
+            "visits",
+
+            "created_at",
+            "updated_at",
         ]
+
+        read_only_fields = [
+            "id",
+            "guest_id",
+            "guest_name",
+            "visits",
+            "created_at",
+            "updated_at",
+        ]
+
+
+    def get_guest_name(self, obj):
+
+        return " ".join(
+            filter(
+                None,
+                [
+                    obj.first_name,
+                    obj.last_name
+                ]
+            )
+        )
+
+
+    def get_visits(self, obj):
+
+        return obj.reservations.count()
 
 
 class ReservationSerializer(serializers.ModelSerializer):
 
     guest_name = serializers.SerializerMethodField()
-
     phone = serializers.SerializerMethodField()
-
     email = serializers.SerializerMethodField()
+
+    identity_type = serializers.CharField(
+        source="guest.identity_type",
+        read_only=True
+    )
+
+    identity_number = serializers.CharField(
+        source="guest.identity_number",
+        read_only=True
+    )
+
+    address = serializers.CharField(
+        source="guest.address",
+        read_only=True
+    )
 
     room_number = serializers.CharField(
         source="room.room_number",
@@ -45,6 +103,11 @@ class ReservationSerializer(serializers.ModelSerializer):
 
     room_type = serializers.CharField(
         source="room.room_type.name",
+        read_only=True
+    )
+
+    room_type_id = serializers.IntegerField(
+        source="room.room_type.id",
         read_only=True
     )
 
@@ -70,9 +133,14 @@ class ReservationSerializer(serializers.ModelSerializer):
             "phone",
             "email",
 
+            "identity_type",
+            "identity_number",
+            "address",
+
             "room",
             "room_number",
             "room_type",
+            "room_type_id",
 
             "check_in",
             "check_out",
@@ -103,21 +171,43 @@ class ReservationSerializer(serializers.ModelSerializer):
             "guest_name",
             "phone",
             "email",
+            "identity_type",
+            "identity_number",
+            "address",
             "room_number",
             "room_type",
+            "room_type_id",
         ]
 
     def get_guest_name(self, obj):
-        return str(obj.guest)
+
+        if not obj.guest:
+            return ""
+
+        name = " ".join(
+            filter(
+                None,
+                [
+                    obj.guest.first_name,
+                    obj.guest.last_name,
+                ]
+            )
+        )
+
+        return name
 
     def get_phone(self, obj):
+
         if obj.guest:
             return obj.guest.phone or ""
+
         return ""
 
     def get_email(self, obj):
+
         if obj.guest:
             return obj.guest.email or ""
+
         return ""
 
     def validate(self, attrs):
@@ -194,11 +284,11 @@ class ReservationSerializer(serializers.ModelSerializer):
                 })
 
         return attrs
+
     def create(self, validated_data):
 
         year = timezone.now().year
 
-        # Find the latest reservation number for this year
         last_reservation = (
             Reservation.objects
             .filter(
@@ -209,12 +299,15 @@ class ReservationSerializer(serializers.ModelSerializer):
         )
 
         if last_reservation:
+
             try:
                 last_number = int(
                     last_reservation.reservation_number[-4:]
                 )
+
             except (ValueError, TypeError):
                 last_number = 0
+
         else:
             last_number = 0
 

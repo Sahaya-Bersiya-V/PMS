@@ -1,10 +1,14 @@
-import { MdVisibility , MdDelete } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
+import {
+    MdVisibility
+} from "react-icons/md";
+
 import "./GuestTable.css";
 
-import GuestStatusBadge from "./GuestStatusBadge";
-
-const GuestTable = ({ guests,onEditGuest }) => {
+const GuestTable = ({
+    guests,
+    loading,
+    onViewGuest
+}) => {
 
     return (
 
@@ -24,11 +28,9 @@ const GuestTable = ({ guests,onEditGuest }) => {
 
                         <th>City</th>
 
-                        <th>Membership</th>
+                        <th>Identity Type</th>
 
                         <th>Visits</th>
-
-                        <th>Status</th>
 
                         <th>Actions</th>
 
@@ -36,60 +38,97 @@ const GuestTable = ({ guests,onEditGuest }) => {
 
                 </thead>
 
+
                 <tbody>
 
-                    {guests.map((guest) => (
+                    {loading ? (
 
-                        <tr key={guest.id}>
+                        <tr>
 
-                            <td>{guest.guestName}</td>
-
-                            <td>{guest.phone}</td>
-
-                            <td>{guest.email}</td>
-
-                            <td>{guest.city}</td>
-
-                            <td>{guest.membership}</td>
-
-                            <td>{guest.visits}</td>
-
-                            <td>
-
-                                <GuestStatusBadge
-                                    status={guest.status}
-                                />
-
-                            </td>
-
-                            <td>
-
-                                <div className="guest-actions">
-
-                                    <button className="view-btn">
-                                        <MdVisibility />
-                                    </button>
-
-                                    <button
-    className="edit-btn"
-    onClick={() => onEditGuest(guest)}
->
-
-    ✏️
-
-</button>
-
-                                    <button className="delete-btn">
-                                        <MdDelete />
-                                    </button>
-
-                                </div>
-
+                            <td
+                                colSpan="7"
+                                className="table-message"
+                            >
+                                Loading guests...
                             </td>
 
                         </tr>
 
-                    ))}
+                    ) : guests.length === 0 ? (
+
+                        <tr>
+
+                            <td
+                                colSpan="7"
+                                className="table-message"
+                            >
+                                No guests found.
+                            </td>
+
+                        </tr>
+
+                    ) : (
+
+                        guests.map((guest) => (
+
+                            <tr key={guest.id}>
+
+                                <td>
+                                    {guest.guest_name}
+                                </td>
+
+                                <td>
+                                    {guest.phone || "-"}
+                                </td>
+
+                                <td>
+                                    {guest.email || "-"}
+                                </td>
+
+                                <td>
+                                    {guest.city || "-"}
+                                </td>
+
+                                <td>
+                                    {guest.identity_type
+                                        ? formatIdentityType(
+                                            guest.identity_type
+                                        )
+                                        : "-"
+                                    }
+                                </td>
+
+                                <td>
+                                    {guest.visits ?? 0}
+                                </td>
+
+                                <td>
+
+                                    <div className="guest-actions">
+
+                                        <button
+                                            className="view-btn"
+                                            onClick={() =>
+                                                onViewGuest(
+                                                    guest
+                                                )
+                                            }
+                                            title="View Guest"
+                                        >
+
+                                            <MdVisibility />
+
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        ))
+
+                    )}
 
                 </tbody>
 
@@ -100,5 +139,30 @@ const GuestTable = ({ guests,onEditGuest }) => {
     );
 
 };
+
+
+const formatIdentityType = (type) => {
+
+    const labels = {
+
+        aadhaar: "Aadhaar",
+
+        passport: "Passport",
+
+        driving_license:
+            "Driving License",
+
+        voter_id:
+            "Voter ID",
+
+        other:
+            "Other"
+
+    };
+
+    return labels[type] || type;
+
+};
+
 
 export default GuestTable;

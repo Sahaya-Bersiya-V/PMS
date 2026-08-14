@@ -34,28 +34,35 @@ EMPTY FORM
 */
 
 const emptyReservation = {
-  hotel: "",
 
-  guestName: "",
-  phone: "",
-  email: "",
+    hotel: "",
 
-  room: "",
-  roomNumber: "",
+    // Guest
+    guest:"",
+    guestName: "",
+    phone: "",
+    email: "",
 
-  roomType: "",
+    identityType: "",
+    identityNumber: "",
+    address:"",
 
-  checkIn: "",
-  checkOut: "",
+    room: "",
+    roomNumber: "",
 
-  adults: 1,
-  children: 0,
+    roomType: "",
 
-  price: 0,
-  discount: 0,
+    checkIn: "",
+    checkOut: "",
 
-  payment: "Pending",
-  status:"pending",
+    adults: 1,
+    children: 0,
+
+    price: 0,
+    discount: 0,
+
+    payment: "Pending",
+    status: "pending",
 };
 
 
@@ -164,6 +171,15 @@ const formatReservation = (item) => {
     roomNumber:
       item.room_number || "",
 
+    identityType:
+    item.identity_type || "",
+
+    identityNumber:
+    item.identity_number || "",
+
+    address:
+    item.address || "",
+
     roomType:
       item.room_type || "",
 
@@ -210,7 +226,38 @@ const formatReservation = (item) => {
       item.special_requests || "",
   };
 };
-
+const identityOptions = [
+    {
+        value: "aadhaar",
+        label: "Aadhaar",
+        numberLabel: "Aadhaar Number",
+        placeholder: "Enter Aadhaar Number",
+    },
+    {
+        value: "passport",
+        label: "Passport",
+        numberLabel: "Passport Number",
+        placeholder: "Enter Passport Number",
+    },
+    {
+        value: "driving_license",
+        label: "Driving License",
+        numberLabel: "Driving License Number",
+        placeholder: "Enter Driving License Number",
+    },
+    {
+        value: "voter_id",
+        label: "Voter ID",
+        numberLabel: "Voter ID Number",
+        placeholder: "Enter Voter ID Number",
+    },
+    {
+        value: "other",
+        label: "Other",
+        numberLabel: "Identity Number",
+        placeholder: "Enter Identity Number",
+    },
+];
 
 /*
 =========================================================
@@ -225,6 +272,18 @@ const Reservations = () => {
   STATE
   =======================================================
   */
+
+  const [guestSearch, setGuestSearch] =
+    useState("");
+
+const [guestResults, setGuestResults] =
+    useState([]);
+
+const [searchingGuest, setSearchingGuest] =
+    useState(false);
+
+const [selectedGuestId, setSelectedGuestId] =
+    useState(null);
 
   const [reservations, setReservations] =
     useState([]);
@@ -332,6 +391,93 @@ const Reservations = () => {
   } finally {
     setLoading(false);
   }
+};
+
+const searchGuests = async () => {
+
+    const value =
+        guestSearch.trim();
+
+    if (!value) {
+        setGuestResults([]);
+        return;
+    }
+
+    try {
+
+        setSearchingGuest(true);
+
+        const response =
+    await fetch(
+        `${RESERVATION_API}/guests/?search=${encodeURIComponent(value)}`
+    );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                "Unable to search guests."
+            );
+        }
+
+        setGuestResults(
+            Array.isArray(data)
+                ? data
+                : []
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Guest search error:",
+            error
+        );
+
+        alert(error.message);
+
+    } finally {
+
+        setSearchingGuest(false);
+
+    }
+};
+
+const useExistingGuest = (guest) => {
+
+    setSelectedGuestId(
+        guest.id
+    );
+
+    setFormData((previous) => ({
+        ...previous,
+
+        guest:
+            guest.id,
+
+        guestName:
+            `${guest.first_name || ""} ${
+                guest.last_name || ""
+            }`.trim(),
+
+        phone:
+            guest.phone || "",
+
+        email:
+            guest.email || "",
+
+        identityType:
+            guest.identity_type || "",
+
+        identityNumber:
+            guest.identity_number || "",
+
+        address:
+            guest.address || "",
+    }));
+
+    setGuestResults([]);
 };
 
 
@@ -683,78 +829,122 @@ const fetchHotels = async () => {
   =======================================================
   */
 
-  const createReservation = async () => {
-  const payload = {
-    hotel: Number(formData.hotel),
+const createReservation = async () => {
 
-    room: Number(formData.room),
+    const paymentStatus =
+        formData.payment === "Paid"
+            ? "paid"
+            : "pending";
 
-    check_in: `${formData.checkIn}T14:00:00`,
+    const payload = {
+        hotel: Number(formData.hotel),
 
-    check_out: `${formData.checkOut}T12:00:00`,
+        room: Number(formData.room),
 
-    adults: Number(formData.adults),
+        check_in:
+            `${formData.checkIn}T14:00:00`,
 
-    children: Number(formData.children),
+        check_out:
+            `${formData.checkOut}T12:00:00`,
 
-    number_of_rooms: 1,
+        adults:
+            Number(formData.adults),
 
-    room_rate: Number(formData.price),
+        children:
+            Number(formData.children),
 
-    total_amount: Number(grandTotal),
+        number_of_rooms: 1,
 
-    advance_amount:
-      formData.payment === "Paid"
-        ? Number(grandTotal)
-        : 0,
+        room_rate:
+            Number(formData.price),
 
-    booking_source: "walk_in",
+        total_amount:
+            Number(grandTotal),
 
-    special_requests: "",
+        advance_amount:
+            formData.payment === "Paid"
+                ? Number(grandTotal)
+                : 0,
 
-    guest: {
-      guest_id: `G${Date.now()}`,
+        booking_source: "walk_in",
 
-      first_name: formData.guestName,
+        special_requests: "",
 
-      last_name: "",
+        payment_status:
+            paymentStatus,
 
-      phone: formData.phone,
+        status:
+            formData.status,
 
-      email: formData.email,
-    },
-  };
+        guest: formData.guest
+    ? {
+        id: Number(formData.guest),
+      }
+    : {
+        guest_id:
+            `G${Date.now()}`,
 
-  console.log("Sending reservation:", payload);
+        first_name:
+            formData.guestName,
 
-  const response = await fetch(
-    `${RESERVATION_API}/`,
-    {
-      method: "POST",
+        last_name:
+            "",
 
-      headers: {
-        "Content-Type": "application/json",
+        phone:
+            formData.phone,
+
+        email:
+            formData.email || null,
+
+        identity_type:
+            formData.identityType,
+
+        identity_number:
+            formData.identityNumber,
+
+        address:
+            formData.address,
       },
+    };
 
-      body: JSON.stringify(payload),
-    }
-  );
-
-  const data = await response.json();
-
-  console.log("Backend response:", data);
-
-  if (!response.ok) {
-    throw new Error(
-      data.error ||
-      data.detail ||
-      "Unable to create reservation."
+    console.log(
+        "Sending reservation:",
+        payload
     );
-  }
 
-  return data;
+    const response = await fetch(
+        `${RESERVATION_API}/`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json",
+            },
+
+            body:
+                JSON.stringify(payload),
+        }
+    );
+
+    const data =
+        await response.json();
+
+    console.log(
+        "Backend response:",
+        data
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            data.error ||
+            data.detail ||
+            "Unable to create reservation."
+        );
+    }
+
+    return data;
 };
-
 
   /*
   =======================================================
@@ -817,6 +1007,14 @@ const updateReservation = async () => {
 
       email:
         formData.email,
+      identity_type:
+        formData.identityType,
+
+      identity_number:
+        formData.identityNumber,
+
+      address:
+        formData.address,
     };
 
     console.log(
@@ -902,7 +1100,11 @@ const updateReservation = async () => {
   =======================================================
   */
 
-  const handleSubmit = async (
+  
+
+  const handleSubmit =
+  
+  async (
     e
   ) => {
 
@@ -912,6 +1114,10 @@ const updateReservation = async () => {
     if (
       !formData.hotel ||
       !formData.guestName ||
+      !formData.phone ||
+      !formData.identityType ||
+      !formData.identityNumber ||
+      !formData.address ||
       !formData.room ||
       !formData.roomType ||
       !formData.checkIn ||
@@ -924,6 +1130,16 @@ const updateReservation = async () => {
 
       return;
     }
+    const identityError =
+    validateIdentityNumber();
+
+    if (identityError) {
+
+      alert(identityError);
+
+      return;
+
+} 
 
 
     if (nights <= 0) {
@@ -1046,6 +1262,14 @@ const handleEdit = async (reservation) => {
 
         email:
             reservation.email || "",
+        identityType:
+            reservation.identityType || "",
+
+        identityNumber:
+            reservation.identityNumber || "",
+
+        address:
+            reservation.address || "",
 
         room:
             String(
@@ -1426,6 +1650,8 @@ const updateReservationStatus = async (
           reservation.checkIn ===
             appliedFilters.date;
 
+        
+
 
         return (
           matchesSearch &&
@@ -1459,13 +1685,94 @@ const updateReservationStatus = async (
 
     setIsFormOpen(true);
   };
+  /*
+  =======================================================
+  Validate Identity number
+  =======================================================
+
+  */
+const validateIdentityNumber = () => {
+
+    const value =
+        formData.identityNumber
+            .trim();
+
+    if (!value) {
+
+        return "Identity number is required.";
+
+    }
 
 
+    switch (formData.identityType) {
+
+        case "aadhaar":
+
+            if (!/^\d{12}$/.test(value)) {
+
+                return "Aadhaar number must contain exactly 12 digits.";
+
+            }
+
+            break;
+
+
+        case "passport":
+
+            if (
+                !/^[A-Za-z0-9]{6,9}$/.test(value)
+            ) {
+
+                return "Please enter a valid passport number.";
+
+            }
+
+            break;
+
+
+        case "driving_license":
+
+            if (
+                !/^[A-Za-z0-9-]{8,20}$/.test(value)
+            ) {
+
+                return "Please enter a valid driving license number.";
+
+            }
+
+            break;
+
+
+        case "voter_id":
+
+            if (
+                !/^[A-Za-z0-9]{8,15}$/.test(value)
+            ) {
+
+                return "Please enter a valid Voter ID.";
+
+            }
+
+            break;
+
+
+        default:
+            break;
+
+    }
+
+    return null;
+
+};
   /*
   =======================================================
   RENDER
   =======================================================
   */
+ const selectedIdentity = identityOptions.find(
+    (option) =>
+        option.value === formData.identityType
+);
 
   return (
 
@@ -1944,6 +2251,29 @@ const updateReservationStatus = async (
                         selectedReservation.email
                       }
                     />
+                    <Detail
+    label="Identity Type"
+    value={
+        selectedReservation.identityType ||
+        "-"
+    }
+/>
+
+<Detail
+    label="Identity Number"
+    value={
+        selectedReservation.identityNumber ||
+        "-"
+    }
+/>
+
+<Detail
+    label="Address"
+    value={
+        selectedReservation.address ||
+        "-"
+    }
+/>
 
                   </div>
 
@@ -2276,56 +2606,341 @@ const updateReservationStatus = async (
               }
               className="reservation-form"
             >
+{/* =================================
+    GUEST INFORMATION
+================================= */}
 
-              {/* =================================
-                  GUEST INFORMATION
-              ================================= */}
+<div className="guest-information-section">
 
-              <h3>
+    <div className="section-heading">
+
+        <div className="section-heading-icon">
+
+            <i className="bi bi-person-badge"></i>
+
+        </div>
+
+        <div>
+
+            <h3>
                 Guest Information
-              </h3>
+            </h3>
 
+            <p>
+                Enter guest contact and identity details
+            </p>
 
-              <div className="form-grid">
+        </div>
+
+    </div>
+{/* EXISTING GUEST SEARCH */}
+
+<div className="guest-search-section">
+
+    <label>
+        Search Existing Guest
+    </label>
+
+    <div className="guest-search-row">
+
+        <input
+            type="text"
+            placeholder="Search by name, phone, email or guest ID"
+            value={guestSearch}
+            onChange={(e) =>
+                setGuestSearch(e.target.value)
+            }
+        />
+
+        <button
+            type="button"
+            onClick={searchGuests}
+            disabled={searchingGuest}
+        >
+            {searchingGuest
+                ? "Searching..."
+                : "Search"}
+        </button>
+
+    </div>
+
+</div>
+
+{guestResults.length > 0 && (
+
+    <div className="guest-search-results">
+
+        {guestResults.map((guest) => (
+
+            <div
+                key={guest.id}
+                className="guest-result-card"
+            >
+
+                <div>
+
+                    <strong>
+                        {guest.first_name}{" "}
+                        {guest.last_name}
+                    </strong>
+
+                    <p>
+                        {guest.phone}
+                    </p>
+
+                    <p>
+                        {guest.email || "No email"}
+                    </p>
+
+                    <p>
+                        {guest.identity_type || "-"}
+                        {" • "}
+                        {guest.identity_number || "-"}
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        useExistingGuest(guest)
+                    }
+                >
+                    Use This Guest
+                </button>
+
+            </div>
+
+        ))}
+
+    </div>
+)}
+
+    <div className="form-grid">
+
+        {/* Guest Name */}
+
+        <div className="field-group">
+
+            <label>
+                Guest Name
+                <span>*</span>
+            </label>
+
+            <div className="input-icon-wrapper">
+
+                <i className="bi bi-person"></i>
 
                 <input
-                  name="guestName"
-                  placeholder="Guest Name *"
-                  value={
-                    formData.guestName
-                  }
-                  onChange={
-                    handleChange
-                  }
-                  required
+                    name="guestName"
+                    type="text"
+                    placeholder="Enter guest name"
+                    value={
+                        formData.guestName
+                    }
+                    onChange={
+                        handleChange
+                    }
+                    required
                 />
 
+            </div>
+
+        </div>
+
+
+        {/* Phone */}
+
+        <div className="field-group">
+
+            <label>
+                Phone Number
+                <span>*</span>
+            </label>
+
+            <div className="input-icon-wrapper">
+
+                <i className="bi bi-telephone"></i>
 
                 <input
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={
-                    formData.phone
-                  }
-                  onChange={
-                    handleChange
-                  }
+                    name="phone"
+                    type="tel"
+                    placeholder="Enter phone number"
+                    value={
+                        formData.phone
+                    }
+                    onChange={
+                        handleChange
+                    }
+                    required
                 />
 
+            </div>
+
+        </div>
+
+
+        {/* Email */}
+
+        <div className="field-group">
+
+            <label>
+                Email
+            </label>
+
+            <div className="input-icon-wrapper">
+
+                <i className="bi bi-envelope"></i>
 
                 <input
-                  name="email"
-                  type="email"
-                  placeholder="Email"
-                  value={
-                    formData.email
-                  }
-                  onChange={
-                    handleChange
-                  }
+                    name="email"
+                    type="email"
+                    placeholder="Enter email address"
+                    value={
+                        formData.email
+                    }
+                    onChange={
+                        handleChange
+                    }
                 />
 
-              </div>
+            </div>
+
+        </div>
+
+
+        {/* Identity Type */}
+
+        <div className="field-group">
+
+            <label>
+                Identity Type
+                <span>*</span>
+            </label>
+
+            <div className="input-icon-wrapper">
+
+                <i className="bi bi-card-text"></i>
+
+                <select
+                    name="identityType"
+                    value={
+                        formData.identityType
+                    }
+                    onChange={(e) => {
+
+                        setFormData(
+                            (previous) => ({
+                                ...previous,
+
+                                identityType:
+                                    e.target.value,
+
+                                // Clear old number
+                                identityNumber:
+                                    "",
+                            })
+                        );
+
+                    }}
+                    required
+                >
+
+                    <option value="">
+                        Select Identity Type
+                    </option>
+
+                    {identityOptions.map(
+                        (option) => (
+
+                            <option
+                                key={
+                                    option.value
+                                }
+                                value={
+                                    option.value
+                                }
+                            >
+                                {option.label}
+                            </option>
+
+                        )
+                    )}
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        {/* Identity Number */}
+
+        <div className="field-group">
+
+            <label>
+
+                {selectedIdentity
+                    ?.numberLabel ||
+                    "Identity Number"}
+
+                <span>*</span>
+
+            </label>
+
+            <div className="input-icon-wrapper">
+
+                <i className="bi bi-person-vcard"></i>
+
+                <input
+                    name="identityNumber"
+                    type="text"
+                    placeholder={
+                        selectedIdentity
+                            ?.placeholder ||
+                        "Select identity type first"
+                    }
+                    value={
+                        formData.identityNumber
+                    }
+                    onChange={
+                        handleChange
+                    }
+                    disabled={
+                        !formData.identityType
+                    }
+                    required
+                />
+                
+
+            </div>
+
+        </div>
+
+        {/* Address */}
+<div className="field-group full-width">
+    <label>
+        Address
+        <span>*</span>
+    </label>
+
+    <div className="input-icon-wrapper textarea-wrapper">
+        <i className="bi bi-geo-alt"></i>
+
+        <textarea
+            name="address"
+            rows="3"
+            placeholder="Enter guest address"
+            value={formData.address}
+            onChange={handleChange}
+            required
+        />
+    </div>
+</div>
+
+    </div>
+
+</div>
 
 
               {/* =================================

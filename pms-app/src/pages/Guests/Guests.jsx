@@ -1,54 +1,170 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./Guests.css";
-import { useHotel } from "../../context/HotelContext";
+
 import GuestToolbar from "./components/GuestToolbar";
 import GuestTable from "./components/GuestTable";
-import GuestFormModal from "./components/GuestFormModal";
+import GuestViewModal from "./components/GuestViewModal";
+
+
+const API_URL =
+    "http://127.0.0.1:8000/api/reservations/guests";
 
 const Guests = () => {
-    const { guests } = useHotel();
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [guests, setGuests] = useState([]);
 
-const [mode, setMode] = useState("add");
+    const [search, setSearch] = useState("");
 
-const [selectedGuest, setSelectedGuest] = useState(null);
-const handleAddGuest = () => {
+    const [loading, setLoading] =
+        useState(false);
 
-    setMode("add");
+    const [selectedGuest, setSelectedGuest] =
+        useState(null);
 
-    setSelectedGuest(null);
+    const [isViewOpen, setIsViewOpen] =
+        useState(false);
 
-    setIsModalOpen(true);
 
-};
-const handleEditGuest = (guest) => {
+    // =========================================
+    // GET GUESTS FROM BACKEND
+    // =========================================
 
-    setMode("edit");
+    const fetchGuests = async () => {
 
-    setSelectedGuest(guest);
+        try {
 
-    setIsModalOpen(true);
+            setLoading(true);
 
-};
+            const params =
+                new URLSearchParams();
+
+            if (search.trim()) {
+
+                params.append(
+                    "search",
+                    search.trim()
+                );
+
+            }
+
+            const response = await fetch(
+                `${API_URL}/?${params.toString()}`
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to fetch guests"
+                );
+
+            }
+
+            const data =
+                await response.json();
+
+            setGuests(
+                Array.isArray(data)
+                    ? data
+                    : []
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Guest fetch error:",
+                error
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+
+    // =========================================
+    // LOAD / SEARCH GUESTS
+    // =========================================
+
+    useEffect(() => {
+
+        const timer = setTimeout(() => {
+
+            fetchGuests();
+
+        }, 300);
+
+        return () => clearTimeout(timer);
+
+    }, [search]);
+
+
+    // =========================================
+    // VIEW GUEST
+    // =========================================
+
+    const handleViewGuest = async (guest) => {
+
+        try {
+
+            const response = await fetch(
+                `${API_URL}/${guest.id}/`
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load guest details"
+                );
+
+            }
+
+            const data =
+                await response.json();
+
+            setSelectedGuest(data);
+
+            setIsViewOpen(true);
+
+        } catch (error) {
+
+            console.error(
+                "Guest details error:",
+                error
+            );
+
+        }
+
+    };
+
 
     return (
 
         <div className="guests-page">
 
             <GuestToolbar
-    onAddGuest={handleAddGuest}
-/>
+                search={search}
+                onSearch={setSearch}
+            />
 
-            <GuestTable guests={guests} 
-            onEditGuest={handleEditGuest} />
-            <GuestFormModal
-    isOpen={isModalOpen}
-    onClose={() => setIsModalOpen(false)}
-    mode={mode}
-    guest={selectedGuest}
-/>
+
+            <GuestTable
+                guests={guests}
+                loading={loading}
+                onViewGuest={handleViewGuest}
+            />
+
+
+            <GuestViewModal
+                isOpen={isViewOpen}
+                guest={selectedGuest}
+                onClose={() =>
+                    setIsViewOpen(false)
+                }
+            />
 
         </div>
 
