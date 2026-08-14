@@ -1,96 +1,198 @@
-.room-table-container{
+.room-table-container {
+    width: 100%;
 
-    background:#fff;
+    overflow-x: auto;
 
-    border-radius:14px;
+    border: 1px solid #dfe7f2;
 
-    border:1px solid #e2e8f0;
+    border-radius: 20px;
 
-    overflow:hidden;
+    background: white;
+
+    box-shadow:
+        0 8px 25px rgba(40, 70, 120, 0.05);
 }
 
-.room-table{
+.room-table {
+    width: 100%;
 
-    width:100%;
+    border-collapse: separate;
 
-    border-collapse:collapse;
+    border-spacing: 0;
+
+    min-width: 850px;
+
+    color: #455b78;
 }
 
-.room-table thead{
 
-    background:#f8fafc;
+/* Header */
+
+.room-table thead th {
+    height: 58px;
+
+    padding: 0 20px;
+
+    background: #f7faff;
+
+    border-bottom: 1px solid #e0e7f0;
+
+    color: #3f5878;
+
+    font-size: 12px;
+
+    font-weight: 750;
+
+    text-align: left;
+
+    white-space: nowrap;
 }
 
-.room-table th{
 
-    padding:18px;
+/* Rounded header corners */
 
-    text-align:left;
-
-    color:#475569;
-
-    font-size:14px;
-
-    border-bottom:1px solid #e2e8f0;
+.room-table thead th:first-child {
+    border-top-left-radius: 19px;
 }
 
-.room-table td{
-
-    padding:18px;
-
-    border-bottom:1px solid #f1f5f9;
-
-    color:#334155;
+.room-table thead th:last-child {
+    border-top-right-radius: 19px;
 }
 
-.room-table tbody tr:hover{
 
-    background:#f8fafc;
+/* Rows */
+
+.room-table tbody tr {
+    transition: background .15s ease;
 }
+
+.room-table tbody tr:hover {
+    background: #f9fbff;
+}
+
+
+/* Cells */
+
+.room-table tbody td {
+    height: 72px;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid #edf1f6;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+.room-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Room number */
+
+.room-number {
+    color: #253d5e;
+
+    font-weight: 750;
+}
+
+
+/* Price */
+
+.room-price {
+    color: #344d6d;
+
+    font-weight: 650;
+}
+
+
+/* Actions */
 
 .room-actions {
     display: flex;
-    gap: 10px;
+
     align-items: center;
+
+    gap: 9px;
 }
 
-.room-actions button {
-    width: 38px;
-    height: 38px;
-    border: none;
-    border-radius: 50%;
+.room-action-btn {
+    width: 40px;
+    height: 40px;
+
     display: flex;
-    justify-content: center;
+
     align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
     cursor: pointer;
-    transition: all 0.25s ease;
+
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease;
 }
 
-.room-actions button svg {
-    font-size: 18px;
+.room-action-btn:hover {
+    transform: translateY(-2px);
 }
 
-.room-actions button:hover {
-    transform: translateY(-2px) scale(1.05);
-}
-.view-btn{
+.room-action-btn.view {
+    background: #e8f1ff;
 
-    background:#dbeafe;
-
-    color:#2563eb;
+    color: #2563eb;
 }
 
-.edit-btn{
+.room-action-btn.edit {
+    background: #e5f9ed;
 
-    background:#dcfce7;
-
-    color:#16a34a;
+    color: #16a34a;
 }
 
-.delete-btn{
+.room-action-btn.delete {
+    background: #fee8e8;
 
-    background:#fee2e2;
-
-    color:#dc2626;
+    color: #dc2626;
 }
 
+.room-action-btn:hover {
+    box-shadow:
+        0 5px 12px rgba(30, 60, 100, .10);
+}
+
+
+/* Empty */
+
+.empty-room-row {
+    height: 230px !important;
+
+    text-align: center;
+}
+
+.empty-room {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    color: #94a3b8;
+}
+
+.empty-room strong {
+    color: #52647d;
+
+    font-size: 14px;
+}
+
+.empty-room span {
+    font-size: 11px;
+}

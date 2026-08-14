@@ -1,40 +1,62 @@
-# from django.contrib import admin
-# from .models import Room, RoomType
+from django.contrib import admin
+from .models import RoomType, Room
 
 
-# @admin.register(Room)
-# class RoomAdmin(admin.ModelAdmin):
+@admin.register(RoomType)
+class RoomTypeAdmin(admin.ModelAdmin):
 
-#     list_display = (
-#         "hotel",
-#         "room_number",
-#         "room_type",
-#         "floor",
-#         "capacity",
-#         "price_per_night",
-#         "status",
-#     )
+    list_display = (
+        "name",
+        "capacity",
+        "base_price",
+        "created_at",
+    )
 
-#     list_filter = (
-#         "hotel",
-#         "room_type",
-#         "status",
-#     )
+    search_fields = (
+        "name",
+        "description",
+        "amenities",
+    )
 
-#     search_fields = (
-#         "room_number",
-#         "hotel__name",
-#     )
+    list_filter = (
+        "capacity",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
 
 
-# @admin.register(RoomType)
-# class RoomTypeAdmin(admin.ModelAdmin):
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
 
-#     list_display = (
-#         "hotel",
-#         "name",
-#     )
+    list_display = (
+        "room_number",
+        "hotel",
+        "room_type",
+        "floor",
+        "price",
+        "status",
+        "created_at",
+    )
 
-#     list_filter = (
-#         "hotel",
-#     )
+    list_filter = (
+        "hotel",
+        "room_type",
+        "status",
+        "floor",
+    )
+
+    search_fields = (
+        "room_number",
+        "hotel__name",
+        "room_type__name",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    list_per_page = 25

@@ -1,9 +1,16 @@
-import { MdVisibility, MdEdit, MdDelete } from "react-icons/md";
+import {
+    MdVisibility
+} from "react-icons/md";
 
 import "./RoomTypeTable.css";
+
 import RoomTypeStatusBadge from "./RoomTypeStatusBadge";
 
-const RoomTypeTable = ({ roomTypes }) => {
+
+const RoomTypeTable = ({
+    roomTypes,
+    onView
+}) => {
 
     return (
 
@@ -21,10 +28,6 @@ const RoomTypeTable = ({ roomTypes }) => {
 
                         <th>Capacity</th>
 
-                        <th>Bed Type</th>
-
-                        {/* <th>Room Size</th> */}
-
                         <th>Total Rooms</th>
 
                         <th>Status</th>
@@ -35,54 +38,99 @@ const RoomTypeTable = ({ roomTypes }) => {
 
                 </thead>
 
+
                 <tbody>
 
-                    {roomTypes.map((type) => (
+                    {roomTypes.length > 0 ? (
 
-                        <tr key={type.id}>
+                        roomTypes.map((type) => (
 
-                            <td>{type.name}</td>
+                            <tr key={type.id}>
 
-                            <td>₹{type.basePrice}</td>
+                                <td>
 
-                            <td>{type.capacity} Guests</td>
+                                    <strong className="roomtype-name">
+                                        {type.name}
+                                    </strong>
 
-                            <td>{type.bedType}</td>
+                                </td>
 
-                            {/* <td>{type.roomSize}</td> */}
 
-                            <td>{type.totalRooms}</td>
+                                <td>
 
-                            <td>
-                                <RoomTypeStatusBadge
-                                    status={type.status}
-                                />
-                            </td>
+                                    <strong className="roomtype-price">
+                                        ₹{Number(type.basePrice).toFixed(2)}
+                                    </strong>
 
-                            <td>
+                                </td>
 
-                                <div className="type-actions">
 
-                                    <button className="view-btn">
-                                        <MdVisibility />
-                                    </button>
+                                <td>
 
-                                    <button className="edit-btn">
-                                        {/* <MdEdit /> */}
-                                        ✏️
-                                    </button>
+                                    {type.capacity} Guests
 
-                                    <button className="delete-btn">
-                                        <MdDelete />
-                                    </button>
+                                </td>
 
-                                </div>
+
+                                <td>
+
+                                    {type.totalRooms}
+
+                                </td>
+
+
+                                <td>
+
+                                    <RoomTypeStatusBadge
+                                        status={type.status}
+                                    />
+
+                                </td>
+
+
+                                <td>
+
+                                    <div className="type-actions">
+
+                                        <button
+                                            type="button"
+                                            className="type-view-btn"
+                                            title="View Room Type"
+                                            onClick={() =>
+                                                onView(type)
+                                            }
+                                        >
+
+                                            <MdVisibility
+                                                size={19}
+                                            />
+
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        ))
+
+                    ) : (
+
+                        <tr>
+
+                            <td
+                                colSpan="6"
+                                className="empty-roomtype-row"
+                            >
+
+                                No room types found.
 
                             </td>
 
                         </tr>
 
-                    ))}
+                    )}
 
                 </tbody>
 

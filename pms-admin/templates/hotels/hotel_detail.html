@@ -1,0 +1,477 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Hotel Details{% endblock %}
+
+{% block content %}
+
+<div class="hotel-details-page">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="hotel-page-header">
+
+        <div class="hotel-header-left">
+
+            <div class="hotel-header-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
+
+            <div>
+                <h2>
+                    {{ hotel.name }}
+                </h2>
+
+                <p>
+                    Hotel profile and information
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="hotel-header-actions">
+
+            {% if hotel.status == "active" %}
+
+                <span class="hotel-status active">
+                    <span class="status-dot"></span>
+                    Active
+                </span>
+
+            {% else %}
+
+                <span class="hotel-status inactive">
+                    <span class="status-dot"></span>
+                    Inactive
+                </span>
+
+            {% endif %}
+
+
+            <a
+                href="{% url 'hotel-list' %}"
+                class="hotel-back-btn"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= QUICK INFO ================= -->
+
+    <div class="hotel-summary-grid">
+
+        <!-- Hotel Code -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon blue">
+                <i class="bi bi-building"></i>
+            </div>
+
+            <div>
+                <span>Hotel Code</span>
+
+                <strong>
+                    {{ hotel.code }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <!-- Phone -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon green">
+                <i class="bi bi-telephone"></i>
+            </div>
+
+            <div>
+                <span>Phone</span>
+
+                <strong>
+                    {{ hotel.phone }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <!-- Email -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon purple">
+                <i class="bi bi-envelope"></i>
+            </div>
+
+            <div>
+                <span>Email</span>
+
+                <strong>
+                    {{ hotel.email }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <!-- Location -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon orange">
+                <i class="bi bi-geo-alt"></i>
+            </div>
+
+            <div>
+                <span>Location</span>
+
+                <strong>
+                    {{ hotel.city }}, {{ hotel.state }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <div class="hotel-content-grid">
+
+
+        <!-- ================= HOTEL INFORMATION ================= -->
+
+        <div class="hotel-info-card">
+
+            <div class="card-section-header">
+
+                <div class="section-title-icon blue">
+                    <i class="bi bi-building"></i>
+                </div>
+
+                <div>
+                    <h3>Hotel Information</h3>
+
+                    <p>
+                        Basic information about this property
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="hotel-info-grid">
+
+
+                <div class="info-item">
+
+                    <span>
+                        <i class="bi bi-hash"></i>
+                        Hotel Code
+                    </span>
+
+                    <strong>
+                        {{ hotel.code }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        <i class="bi bi-building"></i>
+                        Hotel Name
+                    </span>
+
+                    <strong>
+                        {{ hotel.name }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        <i class="bi bi-telephone"></i>
+                        Phone
+                    </span>
+
+                    <strong>
+                        {{ hotel.phone|default:"Not available" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        <i class="bi bi-envelope"></i>
+                        Email
+                    </span>
+
+                    <strong>
+                        {{ hotel.email|default:"Not available" }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= STATUS CARD ================= -->
+
+        <div class="hotel-side-card">
+
+            <div class="card-section-header">
+
+                <div class="section-title-icon green">
+                    <i class="bi bi-activity"></i>
+                </div>
+
+                <div>
+                    <h3>Status</h3>
+
+                    <p>
+                        Current hotel status
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="status-display">
+
+                {% if hotel.status == "active" %}
+
+                    <div class="large-status active">
+
+                        <div class="large-status-icon">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+
+                        <div>
+                            <strong>Active</strong>
+
+                            <span>
+                                Hotel is currently active
+                            </span>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="large-status inactive">
+
+                        <div class="large-status-icon">
+                            <i class="bi bi-x-lg"></i>
+                        </div>
+
+                        <div>
+                            <strong>Inactive</strong>
+
+                            <span>
+                                Hotel is currently inactive
+                            </span>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= LOCATION ================= -->
+
+        <div class="hotel-info-card">
+
+            <div class="card-section-header">
+
+                <div class="section-title-icon orange">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+
+                <div>
+                    <h3>Location</h3>
+
+                    <p>
+                        Hotel address and location details
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="location-address">
+
+                <i class="bi bi-geo-alt-fill"></i>
+
+                <div>
+
+                    <strong>
+                        {{ hotel.address }}
+                    </strong>
+
+                    <span>
+                        {{ hotel.city }},
+                        {{ hotel.state }},
+                        {{ hotel.country }}
+                        - {{ hotel.pincode }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="location-grid">
+
+                <div class="info-item">
+
+                    <span>City</span>
+
+                    <strong>
+                        {{ hotel.city }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>State</span>
+
+                    <strong>
+                        {{ hotel.state }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>Country</span>
+
+                    <strong>
+                        {{ hotel.country }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>PIN Code</span>
+
+                    <strong>
+                        {{ hotel.pincode }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= DESCRIPTION ================= -->
+
+        <div class="hotel-description-card">
+
+            <div class="card-section-header">
+
+                <div class="section-title-icon purple">
+                    <i class="bi bi-card-text"></i>
+                </div>
+
+                <div>
+                    <h3>Description</h3>
+
+                    <p>
+                        About this hotel
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="description-content">
+
+                <i class="bi bi-quote"></i>
+
+                <p>
+                    {{ hotel.description|default:"No description available." }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= METADATA ================= -->
+
+        <div class="hotel-meta-grid">
+
+            <div class="meta-card">
+
+                <div class="meta-icon">
+                    <i class="bi bi-calendar-plus"></i>
+                </div>
+
+                <div>
+
+                    <span>Created At</span>
+
+                    <strong>
+                        {{ hotel.created_at }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="meta-card">
+
+                <div class="meta-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+
+                <div>
+
+                    <span>Last Updated</span>
+
+                    <strong>
+                        {{ hotel.updated_at }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

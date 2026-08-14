@@ -1,64 +1,106 @@
-import { FaPlus, FaSearch } from "react-icons/fa";
-
+import { FaSearch } from "react-icons/fa";
 import "./RoomToolbar.css";
 
-const RoomToolbar = () => {
+const RoomToolbar = ({
+    search,
+    status,
+    roomType,
+    roomTypes,
+    onSearchChange,
+    onStatusChange,
+    onRoomTypeChange,
+}) => {
 
     return (
 
         <div className="room-toolbar">
 
-            <div className="toolbar-left">
+            <div className="room-toolbar-left">
 
-                <div className="search-box">
+                {/* Search */}
+
+                <div className="room-search-box">
 
                     <FaSearch />
 
                     <input
                         type="text"
-                        placeholder="Search Room..."
+                        value={search}
+                        onChange={(e) =>
+                            onSearchChange(e.target.value)
+                        }
+                        placeholder="Search room, type or floor..."
                     />
 
                 </div>
 
-                <select>
 
-                    <option>All Status</option>
+                {/* Status */}
 
-                    <option>Available</option>
+                <select
+                    value={status}
+                    onChange={(e) =>
+                        onStatusChange(e.target.value)
+                    }
+                >
 
-                    <option>Occupied</option>
+                    <option value="all">
+                        All Status
+                    </option>
 
-                    <option>Needs Cleaning</option>
+                    <option value="available">
+                        Available
+                    </option>
+
+                    <option value="occupied">
+                        Occupied
+                    </option>
+
+                    <option value="reserved">
+                        Reserved
+                    </option>
+
+                    <option value="cleaning">
+                        Needs Cleaning
+                    </option>
+
+                    <option value="maintenance">
+                        Maintenance
+                    </option>
 
                 </select>
 
-                <select>
 
-                    <option>All Types</option>
+                {/* Room Type */}
 
-                    <option>Standard</option>
+                <select
+                    value={roomType}
+                    onChange={(e) =>
+                        onRoomTypeChange(e.target.value)
+                    }
+                >
 
-                    <option>Deluxe</option>
+                    <option value="all">
+                        All Room Types
+                    </option>
 
-                    <option>Family</option>
+                    {roomTypes.map((type) => (
+
+                        <option
+                            key={type}
+                            value={type}
+                        >
+                            {type}
+                        </option>
+
+                    ))}
 
                 </select>
 
             </div>
 
-            {/* <button className="add-room-btn">
-
-                <FaPlus />
-
-                Add Room
-
-            </button> */}
-
         </div>
-
     );
-
 };
 
 export default RoomToolbar;

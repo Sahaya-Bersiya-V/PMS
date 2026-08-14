@@ -1,13 +1,16 @@
 import {
-    MdVisibility,
-    MdEdit,
-    MdDelete
+    MdVisibility
 } from "react-icons/md";
+
 import "./RoomTable.css";
 
 import RoomStatusBadge from "./RoomStatusBadge";
 
-const RoomTable = ({ rooms }) => {
+
+const RoomTable = ({
+    rooms,
+    onView
+}) => {
 
     return (
 
@@ -27,7 +30,7 @@ const RoomTable = ({ rooms }) => {
 
                         <th>Capacity</th>
 
-                        <th>Price</th>
+                        <th>Price / Night</th>
 
                         <th>Status</th>
 
@@ -37,63 +40,113 @@ const RoomTable = ({ rooms }) => {
 
                 </thead>
 
+
                 <tbody>
 
-                    {rooms.map((room) => (
+                    {rooms.length > 0 ? (
 
-                        <tr key={room.id}>
+                        rooms.map((room) => (
 
-                            <td>{room.roomNumber}</td>
+                            <tr key={room.id}>
 
-                            <td>{room.roomType}</td>
+                                <td>
+                                    <strong className="room-number">
+                                        {room.roomNumber}
+                                    </strong>
+                                </td>
 
-                            <td>{room.floor}</td>
 
-                            <td>{room.capacity} Guests</td>
+                                <td>
+                                    {room.roomType}
+                                </td>
 
-                            <td>₹{room.price}</td>
 
-                            <td>
+                                <td>
+                                    {room.floor}
+                                </td>
 
-                                <RoomStatusBadge
-                                    status={room.status}
-                                />
 
-                            </td>
+                                <td>
+                                    {room.capacity} Guests
+                                </td>
 
-                            <td>
 
-                                <div className="room-actions">
+                                <td>
+                                    <strong className="room-price">
+                                        ₹{Number(room.price).toFixed(2)}
+                                    </strong>
+                                </td>
 
-    <button className="view-btn">
-        <MdVisibility size={18} />
-    </button>
 
-    <button className="edit-btn">
-        {/* <MdEdit size={18} /> */}
-        ✏️
-    </button>
+                                <td>
 
-    <button className="delete-btn">
-        <MdDelete size={18} />
-    </button>
+                                    <RoomStatusBadge
+                                        status={room.status}
+                                    />
 
-</div>
+                                </td>
+
+
+                                <td>
+
+                                    <div className="room-actions">
+
+                                        <button
+                                            type="button"
+                                            className="room-action-btn view"
+                                            title="View Room"
+                                            onClick={() =>
+                                                onView(room)
+                                            }
+                                        >
+
+                                            <MdVisibility size={19} />
+
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        ))
+
+                    ) : (
+
+                        <tr>
+
+                            <td
+                                colSpan="7"
+                                className="empty-room-row"
+                            >
+
+                                <div className="empty-room">
+
+                                    <MdVisibility size={28} />
+
+                                    <strong>
+                                        No rooms found
+                                    </strong>
+
+                                    <span>
+                                        Try changing your search or filters.
+                                    </span>
+
+                                </div>
 
                             </td>
 
                         </tr>
 
-                    ))}
+                    )}
 
                 </tbody>
 
             </table>
 
         </div>
-
     );
-
 };
 
 export default RoomTable;

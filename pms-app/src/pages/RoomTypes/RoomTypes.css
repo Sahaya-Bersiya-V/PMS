@@ -3,3 +3,155 @@
     flex-direction:column;
     gap:24px;
 }
+
+.roomtypes-page-header {
+    position: relative;
+
+    min-height: 125px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 26px 40px;
+
+    margin-bottom: 30px;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, .75);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, .78),
+            rgba(238, 245, 255, .68)
+        );
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 15px 40px rgba(49, 87, 140, .08),
+        inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+
+.roomtypes-page-header::before {
+    content: "";
+
+    position: absolute;
+
+    width: 230px;
+    height: 230px;
+
+    right: 120px;
+    top: -150px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(103, 153, 255, .12);
+
+    filter: blur(10px);
+
+    pointer-events: none;
+}
+
+
+.roomtypes-page-header h1 {
+    margin: 0;
+
+    color: #172b4d;
+
+    font-size: 38px;
+
+    font-weight: 800;
+}
+
+
+.roomtypes-page-header p {
+    margin: 7px 0 0;
+
+    color: #7185a4;
+
+    font-size: 15px;
+}
+
+
+.roomtypes-header-summary {
+    min-width: 130px;
+
+    padding-left: 28px;
+
+    border-left: 1px solid #dce5f1;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.roomtypes-header-summary strong {
+    color: #2563eb;
+
+    font-size: 28px;
+
+    line-height: 1;
+}
+
+
+.roomtypes-header-summary span {
+    margin-top: 5px;
+
+    color: #71839e;
+
+    font-size: 11px;
+}
+
+.type-view-btn {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #e8f1ff;
+
+    color: #2563eb;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+}
+
+
+.type-view-btn:hover {
+    background: #2563eb;
+
+    color: white;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 18px rgba(37, 99, 235, .22);
+}
+
+
+.type-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-start;
+}

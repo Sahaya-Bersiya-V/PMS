@@ -24,8 +24,20 @@ urlpatterns = [
     path("rooms/", include("rooms.urls")),
     path("employees/", include("employees.urls")),
     path("hotels/", include("hotels.urls")),
-    path("reservations/",include("reservations.urls")),
+    path("api/reservations/",include("reservations.urls")),
     path("billing/",include("billing.urls")),
     path("reports/", include("reports.urls")),
     path("settings/",include("settingsapp.urls")),
+    path(
+    "api/hotels/",
+    include("hotels.api_urls")
+),
+path(
+    "api/room-types/",
+    include("rooms.api_room_type_urls")
+),
+path(
+    "api/rooms/",
+    include("rooms.api_room_urls")
+),
 ]

@@ -1,0 +1,561 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Hotel{% endblock %}
+
+{% block content %}
+
+<div class="add-hotel-page">
+
+    <!-- ================= PAGE HEADER ================= -->
+
+    <div class="add-hotel-header">
+
+        <div class="add-hotel-title">
+
+            <div class="page-icon">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+
+            <div>
+                <h2>Edit Hotel</h2>
+
+                <p>
+                    Update the hotel information and property details.
+                </p>
+            </div>
+
+        </div>
+
+
+        <a
+            href="{% url 'hotel-list' %}"
+            class="back-button"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Back to Hotels
+        </a>
+
+    </div>
+
+
+    <!-- ================= FORM ================= -->
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <!-- ================= BASIC INFORMATION ================= -->
+
+        <section class="hotel-form-card">
+
+            <div class="form-section-header">
+
+                <div class="form-section-icon blue">
+                    <i class="bi bi-building"></i>
+                </div>
+
+                <div>
+
+                    <h3>Basic Information</h3>
+
+                    <p>
+                        Update the primary details of the hotel.
+                    </p>
+
+                </div>
+
+                <span class="section-number">
+                    01
+                </span>
+
+            </div>
+
+
+            <div class="form-section-body">
+
+                <div class="form-grid-2">
+
+
+                    <!-- Hotel Code -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            Hotel Code
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-hash"></i>
+
+                            <input
+                                type="text"
+                                name="code"
+                                value="{{ hotel.code }}"
+                                placeholder="e.g. HTL001"
+                                required
+                            >
+
+                        </div>
+
+                        <small>
+                            Unique identification code for the hotel.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Hotel Name -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            Hotel Name
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-buildings"></i>
+
+                            <input
+                                type="text"
+                                name="name"
+                                value="{{ hotel.name }}"
+                                placeholder="Enter hotel name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= CONTACT INFORMATION ================= -->
+
+        <section class="hotel-form-card">
+
+            <div class="form-section-header">
+
+                <div class="form-section-icon green">
+                    <i class="bi bi-telephone"></i>
+                </div>
+
+                <div>
+
+                    <h3>Contact Information</h3>
+
+                    <p>
+                        Update contact details for communication.
+                    </p>
+
+                </div>
+
+                <span class="section-number">
+                    02
+                </span>
+
+            </div>
+
+
+            <div class="form-section-body">
+
+                <div class="form-grid-2">
+
+
+                    <!-- Phone -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            Phone Number
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-telephone"></i>
+
+                            <input
+                                type="text"
+                                name="phone"
+                                value="{{ hotel.phone }}"
+                                placeholder="Enter phone number"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            Email Address
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-envelope"></i>
+
+                            <input
+                                type="email"
+                                name="email"
+                                value="{{ hotel.email }}"
+                                placeholder="hotel@example.com"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= LOCATION DETAILS ================= -->
+
+        <section class="hotel-form-card">
+
+            <div class="form-section-header">
+
+                <div class="form-section-icon orange">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+
+                <div>
+
+                    <h3>Location Details</h3>
+
+                    <p>
+                        Update the hotel's address and location.
+                    </p>
+
+                </div>
+
+                <span class="section-number">
+                    03
+                </span>
+
+            </div>
+
+
+            <div class="form-section-body">
+
+
+                <!-- Address -->
+
+                <div class="modern-field full-field">
+
+                    <label>
+                        Hotel Address
+                        <span>*</span>
+                    </label>
+
+                    <div class="input-wrapper textarea-wrapper">
+
+                        <i class="bi bi-geo-alt"></i>
+
+                        <textarea
+                            name="address"
+                            rows="3"
+                            placeholder="Enter complete hotel address"
+                            required
+                        >{{ hotel.address }}</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid-4">
+
+
+                    <!-- City -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            City
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-buildings"></i>
+
+                            <input
+                                type="text"
+                                name="city"
+                                value="{{ hotel.city }}"
+                                placeholder="City"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- State -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            State
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-map"></i>
+
+                            <input
+                                type="text"
+                                name="state"
+                                value="{{ hotel.state }}"
+                                placeholder="State"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Country -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            Country
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-globe2"></i>
+
+                            <select name="country">
+
+                                <option
+                                    value="India"
+                                    {% if hotel.country == "India" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    India
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PIN Code -->
+
+                    <div class="modern-field">
+
+                        <label>
+                            PIN Code
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-mailbox"></i>
+
+                            <input
+                                type="text"
+                                name="pincode"
+                                value="{{ hotel.pincode }}"
+                                placeholder="PIN Code"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= ADDITIONAL INFORMATION ================= -->
+
+        <section class="hotel-form-card">
+
+            <div class="form-section-header">
+
+                <div class="form-section-icon purple">
+                    <i class="bi bi-sliders"></i>
+                </div>
+
+                <div>
+
+                    <h3>Additional Information</h3>
+
+                    <p>
+                        Update the description and hotel status.
+                    </p>
+
+                </div>
+
+                <span class="section-number">
+                    04
+                </span>
+
+            </div>
+
+
+            <div class="form-section-body">
+
+
+                <!-- Description -->
+
+                <div class="modern-field full-field">
+
+                    <label>
+                        Hotel Description
+                    </label>
+
+                    <div class="input-wrapper textarea-wrapper">
+
+                        <i class="bi bi-card-text"></i>
+
+                        <textarea
+                            name="description"
+                            rows="4"
+                            placeholder="Write a short description about the hotel..."
+                        >{{ hotel.description }}</textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="modern-field status-field">
+
+                    <label>
+                        Hotel Status
+                    </label>
+
+                    <div class="status-select-wrapper">
+
+                        <div class="status-select-icon">
+
+                            <i class="bi bi-activity"></i>
+
+                        </div>
+
+
+                        <select name="status">
+
+                            <option
+                                value="active"
+                                {% if hotel.status == "active" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Active
+                            </option>
+
+
+                            <option
+                                value="inactive"
+                                {% if hotel.status == "inactive" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <small>
+                        Active hotels are available for PMS operations.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= ACTIONS ================= -->
+
+        <div class="hotel-form-actions">
+
+            <div class="action-info">
+
+                <i class="bi bi-shield-check"></i>
+
+                <span>
+                    Changes will be saved to the hotel profile.
+                </span>
+
+            </div>
+
+
+            <div class="action-buttons">
+
+
+                <a
+                    href="{% url 'hotel-list' %}"
+                    class="cancel-hotel-btn"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="save-hotel-btn"
+                >
+
+                    <i class="bi bi-check2-circle"></i>
+
+                    Update Hotel
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </form>
+
+</div>
+
+{% endblock %}

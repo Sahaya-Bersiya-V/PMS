@@ -1,8 +1,14 @@
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 
 import "./RoomTypeToolbar.css";
 
-const RoomTypeToolbar = () => {
+
+const RoomTypeToolbar = ({
+    search,
+    status,
+    onSearchChange,
+    onStatusChange
+}) => {
 
     return (
 
@@ -10,36 +16,48 @@ const RoomTypeToolbar = () => {
 
             <div className="toolbar-left">
 
+                {/* Search */}
+
                 <div className="search-box">
 
                     <FaSearch />
 
                     <input
                         type="text"
+                        value={search}
+                        onChange={(e) =>
+                            onSearchChange(e.target.value)
+                        }
                         placeholder="Search Room Type..."
                     />
 
                 </div>
 
-                <select>
 
-                    <option>All Status</option>
+                {/* Status */}
 
-                    <option>Active</option>
+                <select
+                    value={status}
+                    onChange={(e) =>
+                        onStatusChange(e.target.value)
+                    }
+                >
 
-                    <option>Inactive</option>
+                    <option value="all">
+                        All Status
+                    </option>
+
+                    <option value="active">
+                        Active
+                    </option>
+
+                    <option value="inactive">
+                        Inactive
+                    </option>
 
                 </select>
 
             </div>
-
-            {/* <button className="add-roomtype-btn">
-
-                <FaPlus />
-
-                Add Room Type
-
-            </button> */}
 
         </div>
 

@@ -1,239 +1,325 @@
-# from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 
-# def room_list(request):
-#     return render(request, "rooms/room_list.html")
-from django.shortcuts import render
+from .models import Room, RoomType
+from .forms import RoomForm, RoomTypeForm
 
+
+# =========================================================
+# ROOM LIST
+# =========================================================
 
 def room_list(request):
 
-    # -----------------------------------------
-    # SAMPLE HOTELS
-    # -----------------------------------------
-
-    hotels = [
-        {
-            "id": 1,
-            "name": "Hotel Paradise",
-        },
-        {
-            "id": 2,
-            "name": "Sea View Resort",
-        },
-        {
-            "id": 3,
-            "name": "Mountain Stay",
-        },
-    ]
-
-
-    # -----------------------------------------
-    # SAMPLE ROOMS
-    # -----------------------------------------
-
-    rooms = [
-
-        {
-            "id": 1,
-            "hotel_id": 1,
-            "hotel_name": "Hotel Paradise",
-            "room_number": "101",
-            "room_type": "Standard",
-            "floor": 1,
-            "capacity": 2,
-            "price": 2500,
-            "status": "Available",
-        },
-
-        {
-            "id": 2,
-            "hotel_id": 1,
-            "hotel_name": "Hotel Paradise",
-            "room_number": "102",
-            "room_type": "Deluxe",
-            "floor": 1,
-            "capacity": 2,
-            "price": 3500,
-            "status": "Occupied",
-        },
-
-        {
-            "id": 3,
-            "hotel_id": 2,
-            "hotel_name": "Sea View Resort",
-            "room_number": "201",
-            "room_type": "Suite",
-            "floor": 2,
-            "capacity": 4,
-            "price": 7000,
-            "status": "Maintenance",
-        },
-
-        {
-            "id": 4,
-            "hotel_id": 2,
-            "hotel_name": "Sea View Resort",
-            "room_number": "202",
-            "room_type": "Deluxe",
-            "floor": 2,
-            "capacity": 2,
-            "price": 4500,
-            "status": "Available",
-        },
-
-        {
-            "id": 5,
-            "hotel_id": 3,
-            "hotel_name": "Mountain Stay",
-            "room_number": "301",
-            "room_type": "Standard",
-            "floor": 3,
-            "capacity": 2,
-            "price": 2800,
-            "status": "Available",
-        },
-
-    ]
-
-
-    # -----------------------------------------
-    # GET FILTERS
-    # -----------------------------------------
-
-    selected_hotel = request.GET.get(
+    rooms = Room.objects.select_related(
         "hotel",
-        ""
-    )
+        "room_type"
+    ).all()
 
-    search = request.GET.get(
-        "search",
-        ""
-    )
+    hotels = request.user.hotel_set.all() if hasattr(
+        request.user,
+        "hotel_set"
+    ) else []
 
-    selected_room_type = request.GET.get(
-        "room_type",
-        ""
-    )
+    # Better: get all hotels
+    from hotels.models import Hotel
 
-    selected_status = request.GET.get(
-        "status",
-        ""
-    )
+    hotels = Hotel.objects.all()
 
+    room_types = RoomType.objects.select_related(
+        "hotel"
+    ).all()
 
-    # -----------------------------------------
-    # HOTEL FILTER
-    # -----------------------------------------
+    selected_hotel = request.GET.get("hotel", "")
+    selected_room_type = request.GET.get("room_type", "")
+    selected_status = request.GET.get("status", "")
+    search = request.GET.get("search", "").strip()
 
     if selected_hotel:
-
-        rooms = [
-            room
-            for room in rooms
-            if str(room["hotel_id"]) == selected_hotel
-        ]
-
-
-    # -----------------------------------------
-    # SEARCH FILTER
-    # -----------------------------------------
-
-    if search:
-
-        search_lower = search.lower()
-
-        rooms = [
-            room
-            for room in rooms
-            if search_lower in room["room_number"].lower()
-            or search_lower in room["hotel_name"].lower()
-            or search_lower in room["room_type"].lower()
-        ]
-
-
-    # -----------------------------------------
-    # ROOM TYPE FILTER
-    # -----------------------------------------
+        rooms = rooms.filter(
+            hotel_id=selected_hotel
+        )
 
     if selected_room_type:
-
-        rooms = [
-            room
-            for room in rooms
-            if room["room_type"] == selected_room_type
-        ]
-
-
-    # -----------------------------------------
-    # STATUS FILTER
-    # -----------------------------------------
+        rooms = rooms.filter(
+            room_type_id=selected_room_type
+        )
 
     if selected_status:
+        rooms = rooms.filter(
+            status=selected_status
+        )
 
-        rooms = [
-            room
-            for room in rooms
-            if room["status"] == selected_status
-        ]
-
-
-    # -----------------------------------------
-    # CONTEXT
-    # -----------------------------------------
+    if search:
+        rooms = rooms.filter(
+            room_number__icontains=search
+        )
 
     context = {
-
         "rooms": rooms,
-
         "hotels": hotels,
+        "room_types": room_types,
 
         "selected_hotel": selected_hotel,
-
+        "selected_room_type": selected_room_type,
+        "selected_status": selected_status,
         "search": search,
-
-        "selected_room_type":
-            selected_room_type,
-
-        "selected_status":
-            selected_status,
-
     }
-
 
     return render(
         request,
         "rooms/room_list.html",
         context
     )
+
+
+# =========================================================
+# ADD ROOM
+# =========================================================
+
 def add_room(request):
 
-    hotels = [
-        {
-            "id": 1,
-            "name": "Hotel Paradise",
-        },
-        {
-            "id": 2,
-            "name": "Sea View Resort",
-        },
-        {
-            "id": 3,
-            "name": "Mountain Stay",
-        },
-    ]
+    if request.method == "POST":
 
-    context = {
-        "hotels": hotels,
-    }
+        form = RoomForm(request.POST)
+
+        if form.is_valid():
+
+            room = form.save()
+
+            messages.success(
+                request,
+                f"Room {room.room_number} added successfully."
+            )
+
+            return redirect("room-list")
+
+    else:
+
+        form = RoomForm()
 
     return render(
         request,
         "rooms/add_room.html",
-        context
+        {
+            "form": form
+        }
     )
+
+
+# =========================================================
+# VIEW ROOM
+# =========================================================
+
+def room_detail(request, pk):
+
+    room = get_object_or_404(
+        Room.objects.select_related(
+            "hotel",
+            "room_type"
+        ),
+        pk=pk
+    )
+
+    return render(
+        request,
+        "rooms/room_detail.html",
+        {
+            "room": room
+        }
+    )
+
+
+# =========================================================
+# EDIT ROOM
+# =========================================================
+
+def edit_room(request, pk):
+
+    room = get_object_or_404(
+        Room,
+        pk=pk
+    )
+
+    if request.method == "POST":
+
+        form = RoomForm(
+            request.POST,
+            instance=room
+        )
+
+        if form.is_valid():
+
+            room = form.save()
+
+            messages.success(
+                request,
+                f"Room {room.room_number} updated successfully."
+            )
+
+            return redirect("room-list")
+
+    else:
+
+        form = RoomForm(
+            instance=room
+        )
+
+    return render(
+        request,
+        "rooms/edit_room.html",
+        {
+            "form": form,
+            "room": room
+        }
+    )
+
+
+# =========================================================
+# DELETE ROOM
+# =========================================================
+
+def delete_room(request, pk):
+
+    room = get_object_or_404(
+        Room,
+        pk=pk
+    )
+
+    if request.method == "POST":
+
+        room_number = room.room_number
+
+        room.delete()
+
+        messages.success(
+            request,
+            f"Room {room_number} deleted successfully."
+        )
+
+    return redirect("room-list")
+
+
+# =========================================================
+# ROOM TYPE LIST
+# =========================================================
+
 def room_type_list(request):
-    return render(request, "rooms/room_type_list.html")
+
+    room_types = RoomType.objects.select_related("hotel").all()
+
+    return render(
+        request,
+        "rooms/room_type_list.html",
+        {
+            "room_types": room_types
+        }
+    )
 
 
 def add_room_type(request):
-    return render(request, "rooms/add_room_type.html")
+
+    if request.method == "POST":
+
+        form = RoomTypeForm(request.POST)
+
+        if form.is_valid():
+
+            room_type = form.save()
+
+            messages.success(
+                request,
+                f"{room_type.name} room type added successfully."
+            )
+
+            return redirect("room-type-list")
+
+    else:
+
+        form = RoomTypeForm()
+
+    return render(
+        request,
+        "rooms/add_room_type.html",
+        {
+            "form": form
+        }
+    )
+
+
+def room_type_detail(request, pk):
+
+    room_type = get_object_or_404(
+        RoomType.objects.select_related("hotel"),
+        pk=pk
+    )
+
+    return render(
+        request,
+        "rooms/room_type_detail.html",
+        {
+            "room_type": room_type
+        }
+    )
+
+
+def edit_room_type(request, pk):
+
+    room_type = get_object_or_404(
+        RoomType,
+        pk=pk
+    )
+
+    if request.method == "POST":
+
+        form = RoomTypeForm(
+            request.POST,
+            instance=room_type
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                f"{room_type.name} updated successfully."
+            )
+
+            return redirect("room-type-list")
+
+    else:
+
+        form = RoomTypeForm(
+            instance=room_type
+        )
+
+    return render(
+        request,
+        "rooms/edit_room_type.html",
+        {
+            "form": form,
+            "room_type": room_type
+        }
+    )
+
+
+def delete_room_type(request, pk):
+
+    room_type = get_object_or_404(
+        RoomType,
+        pk=pk
+    )
+
+    if request.method == "POST":
+
+        name = room_type.name
+
+        room_type.delete()
+
+        messages.success(
+            request,
+            f"{name} deleted successfully."
+        )
+
+    return redirect("room-type-list")

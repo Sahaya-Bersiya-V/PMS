@@ -7,247 +7,256 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
 
     <div>
-        <h2 class="fw-bold mb-1">Add New Room</h2>
+        <h2 class="fw-bold mb-1">
+            Add New Room
+        </h2>
+
         <p class="text-muted mb-0">
             Create a new room for your hotel.
         </p>
     </div>
 
-    <a href="{% url 'room-list' %}" class="btn btn-outline-secondary">
+    <a href="{% url 'room-list' %}"
+       class="btn btn-outline-secondary">
+
         <i class="bi bi-arrow-left"></i>
         Back
+
     </a>
 
 </div>
+
 
 <div class="card shadow-sm border-0">
 
     <div class="card-body p-4">
 
-        <form>
+        <form method="POST">
 
-    <div class="row">
+            {% csrf_token %}
 
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Please correct the errors below.
+                </div>
+            {% endif %}
 
-        <!-- Hotel -->
 
-        <div class="col-md-6 mb-4">
+            <div class="row">
 
-            <label class="form-label">
-                Hotel
-            </label>
 
-            <select
-                name="hotel"
-                class="form-select"
-                required>
+                <!-- Hotel -->
 
-                <option value="">
-                    Select Hotel
-                </option>
+                <div class="col-md-6 mb-4">
 
-                {% for hotel in hotels %}
+                    <label class="form-label">
+                        Hotel
+                    </label>
 
-                    <option value="{{ hotel.id }}">
-                        {{ hotel.name }}
-                    </option>
+                    {{ form.hotel }}
 
-                {% endfor %}
+                </div>
 
-            </select>
 
-        </div>
+                <!-- Room Number -->
 
+                <div class="col-md-6 mb-4">
 
-        <!-- Room Number -->
+                    <label class="form-label">
+                        Room Number
+                    </label>
 
-        <div class="col-md-6 mb-4">
+                    {{ form.room_number }}
 
-            <label class="form-label">
-                Room Number
-            </label>
+                </div>
 
-            <input
-                type="text"
-                name="room_number"
-                class="form-control"
-                placeholder="Enter Room Number"
-                required
-            >
 
-        </div>
+                <!-- Room Type -->
 
+                <div class="col-md-6 mb-4">
 
-        <!-- Room Type -->
+                    <label class="form-label">
+                        Room Type
+                    </label>
 
-        <div class="col-md-6 mb-4">
+                    <select
+                        name="room_type"
+                        id="id_room_type"
+                        class="form-select"
+                        required
+                    >
 
-            <label class="form-label">
-                Room Type
-            </label>
+                        <option value="">
+                            Select Room Type
+                        </option>
 
-            <select
-                name="room_type"
-                class="form-select"
-                required>
+                        {% for room_type in form.fields.room_type.queryset %}
 
-                <option value="">
-                    Select Room Type
-                </option>
+                            <option
+                                value="{{ room_type.id }}"
+                                data-capacity="{{ room_type.capacity }}"
+                                data-price="{{ room_type.base_price }}"
+                            >
 
-                <option value="Standard">
-                    Standard
-                </option>
+                                {{ room_type.name }}
 
-                <option value="Deluxe">
-                    Deluxe
-                </option>
+                            </option>
 
-                <option value="Suite">
-                    Suite
-                </option>
+                        {% endfor %}
 
-            </select>
+                    </select>
 
-        </div>
+                </div>
 
 
-        <!-- Floor -->
+                <!-- Floor -->
 
-        <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4">
 
-            <label class="form-label">
-                Floor
-            </label>
+                    <label class="form-label">
+                        Floor
+                    </label>
 
-            <input
-                type="number"
-                name="floor"
-                class="form-control"
-                placeholder="Enter Floor Number"
-                required
-            >
+                    {{ form.floor }}
 
-        </div>
+                </div>
 
 
-        <!-- Capacity -->
+                <!-- Capacity -->
 
-        <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4">
 
-            <label class="form-label">
-                Capacity
-            </label>
+                    <label class="form-label">
+                        Capacity
+                    </label>
 
-            <input
-                type="number"
-                name="capacity"
-                class="form-control"
-                placeholder="Maximum Guests"
-                min="1"
-                required
-            >
+                    <input
+                        type="text"
+                        id="capacity_display"
+                        class="form-control"
+                        placeholder="Automatically selected"
+                        readonly
+                    >
 
-        </div>
+                </div>
 
 
-        <!-- Price -->
+                <!-- Price -->
 
-        <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4">
 
-            <label class="form-label">
-                Price Per Night
-            </label>
+                    <label class="form-label">
+                        Price Per Night
+                    </label>
 
-            <input
-                type="number"
-                name="price"
-                class="form-control"
-                placeholder="₹"
-                min="0"
-                required
-            >
+                    {{ form.price }}
 
-        </div>
+                </div>
 
 
-        <!-- Status -->
+                <!-- Status -->
 
-        <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4">
 
-            <label class="form-label">
-                Status
-            </label>
+                    <label class="form-label">
+                        Status
+                    </label>
 
-            <select
-                name="status"
-                class="form-select">
+                    {{ form.status }}
 
-                <option value="Available">
-                    Available
-                </option>
+                </div>
 
-                <option value="Occupied">
-                    Occupied
-                </option>
 
-                <option value="Maintenance">
-                    Maintenance
-                </option>
+                <!-- Notes -->
 
-            </select>
+                <div class="col-12 mb-4">
 
-        </div>
+                    <label class="form-label">
+                        Description / Notes
+                    </label>
 
+                    {{ form.notes }}
 
-        <!-- Description -->
+                </div>
 
-        <div class="col-12 mb-4">
 
-            <label class="form-label">
-                Description
-            </label>
+            </div>
 
-            <textarea
-                name="description"
-                class="form-control"
-                rows="4"
-                placeholder="Room Description"
-            ></textarea>
 
-        </div>
+            <hr>
 
-    </div>
 
+            <div class="text-end">
 
-    <hr>
+                <a
+                    href="{% url 'room-list' %}"
+                    class="btn btn-secondary"
+                >
+                    Cancel
+                </a>
 
-    <div class="text-end">
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
 
-        <a
-            href="{% url 'room-list' %}"
-            class="btn btn-secondary">
+                    <i class="bi bi-check-lg me-1"></i>
 
-            Cancel
+                    Save Room
 
-        </a>
+                </button>
 
-        <button
-            type="submit"
-            class="btn btn-primary">
+            </div>
 
-            <i class="bi bi-check-lg me-1"></i>
-
-            Save Room
-
-        </button>
-
-    </div>
-
-</form>
+        </form>
 
     </div>
 
 </div>
+
+
+<script>
+
+const roomTypeSelect =
+    document.getElementById("id_room_type");
+
+const capacityDisplay =
+    document.getElementById("capacity_display");
+
+const priceInput =
+    document.getElementById("id_price");
+
+
+roomTypeSelect.addEventListener("change", function () {
+
+    const selectedOption =
+        this.options[this.selectedIndex];
+
+
+    if (!selectedOption.value) {
+
+        capacityDisplay.value = "";
+        priceInput.value = "";
+
+        return;
+    }
+
+
+    const capacity =
+        selectedOption.dataset.capacity;
+
+    const price =
+        selectedOption.dataset.price;
+
+
+    capacityDisplay.value =
+        capacity + " Guests";
+
+    priceInput.value =
+        price;
+
+});
+
+</script>
 
 {% endblock %}

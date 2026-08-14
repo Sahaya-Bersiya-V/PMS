@@ -1,31 +1,82 @@
-.room-status{
+.room-status {
+    display: inline-flex;
 
-    padding:6px 14px;
+    align-items: center;
 
-    border-radius:20px;
+    gap: 7px;
 
-    font-size:13px;
+    min-width: 88px;
 
-    font-weight:600;
+    justify-content: center;
+
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 750;
 }
 
-.available{
+.status-dot {
+    width: 6px;
+    height: 6px;
 
-    background:#dcfce7;
+    border-radius: 50%;
 
-    color:#15803d;
+    background: currentColor;
 }
 
-.occupied{
 
-    background:#fee2e2;
+/* Available */
 
-    color:#dc2626;
+.room-status.available {
+    background: #dff8e9;
+
+    color: #138a4a;
 }
 
-.cleaning{
 
-    background:#fef3c7;
+/* Occupied */
 
-    color:#b45309;
+.room-status.occupied {
+    background: #ffe1e1;
+
+    color: #d52b2b;
+}
+
+
+/* Reserved */
+
+.room-status.reserved {
+    background: #e2ecff;
+
+    color: #2563eb;
+}
+
+
+/* Cleaning */
+
+.room-status.cleaning {
+    background: #fff0c7;
+
+    color: #c77a00;
+}
+
+
+/* Maintenance */
+
+.room-status.maintenance {
+    background: #eee7ff;
+
+    color: #7040c9;
+}
+
+
+/* Unknown */
+
+.room-status.unknown {
+    background: #edf1f5;
+
+    color: #64748b;
 }

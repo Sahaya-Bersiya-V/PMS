@@ -1,99 +1,1104 @@
 from django.shortcuts import render
+from django.db import transaction
+from django.db.models import Q
+from django.utils.dateparse import parse_datetime
 
-RESERVATIONS = [
-    {
-        "id": "RSV001",
-        "guest": "John Smith",
-        "phone": "9876543210",
-        "hotel": "Hotel Paradise",
-        "room": "201",
-        "status": "Checked In",
-        "payment": "Paid",
-        "check_in": "2026-08-10",
-        "check_out": "2026-08-12",
-        "amount": "₹8,500",
-    },
-    {
-        "id": "RSV002",
-        "guest": "Emma Davis",
-        "phone": "9876543211",
-        "hotel": "Hotel Paradise",
-        "room": "305",
-        "status": "Confirmed",
-        "payment": "Pending",
-        "check_in": "2026-08-15",
-        "check_out": "2026-08-18",
-        "amount": "₹12,000",
-    },
-    {
-        "id": "RSV003",
-        "guest": "Michael Lee",
-        "phone": "9988776655",
-        "hotel": "Ocean View Resort",
-        "room": "102",
-        "status": "Checked Out",
-        "payment": "Paid",
-        "check_in": "2026-08-05",
-        "check_out": "2026-08-07",
-        "amount": "₹6,500",
-    },
-]
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from hotels.models import Hotel
+from rooms.models import Room, RoomType
 
-def reservation_list(request):
+from .models import Guest, Reservation
+from .serializers import (
+    GuestSerializer,
+    ReservationSerializer
+)
 
-    reservations = RESERVATIONS.copy()
+# RESERVATIONS = [
+#     {
+#         "id": "RSV001",
+#         "guest": "John Smith",
+#         "phone": "9876543210",
+#         "hotel": "Hotel Paradise",
+#         "room": "201",
+#         "status": "Checked In",
+#         "payment": "Paid",
+#         "check_in": "2026-08-10",
+#         "check_out": "2026-08-12",
+#         "amount": "₹8,500",
+#     },
+#     {
+#         "id": "RSV002",
+#         "guest": "Emma Davis",
+#         "phone": "9876543211",
+#         "hotel": "Hotel Paradise",
+#         "room": "305",
+#         "status": "Confirmed",
+#         "payment": "Pending",
+#         "check_in": "2026-08-15",
+#         "check_out": "2026-08-18",
+#         "amount": "₹12,000",
+#     },
+#     {
+#         "id": "RSV003",
+#         "guest": "Michael Lee",
+#         "phone": "9988776655",
+#         "hotel": "Ocean View Resort",
+#         "room": "102",
+#         "status": "Checked Out",
+#         "payment": "Paid",
+#         "check_in": "2026-08-05",
+#         "check_out": "2026-08-07",
+#         "amount": "₹6,500",
+#     },
+# ]
+# =========================================================
+# RESERVATION LIST + CREATE
+# =========================================================
 
-    search = request.GET.get("search", "").strip()
-    status = request.GET.get("status", "")
-    payment = request.GET.get("payment", "")
-    check_in = request.GET.get("check_in", "")
-    check_out = request.GET.get("check_out", "")
+class ReservationListCreateView(APIView):
 
-    if search:
-        reservations = [
-            r for r in reservations
-            if search.lower() in r["guest"].lower()
-            or search.lower() in r["id"].lower()
-            or search.lower() in r["phone"]
-            or search.lower() in r["room"]
-        ]
+    def get(self, request):
 
-    if status:
-        reservations = [
-            r for r in reservations
-            if r["status"] == status
-        ]
+        reservations = Reservation.objects.select_related(
+            "hotel",
+            "guest",
+            "room",
+            "room__room_type",
+        ).all()
 
-    if payment:
-        reservations = [
-            r for r in reservations
-            if r["payment"] == payment
-        ]
+        # -----------------------------
+        # Search
+        # -----------------------------
 
-    if check_in:
-        reservations = [
-            r for r in reservations
-            if r["check_in"] >= check_in
-        ]
+        search = request.GET.get(
+            "search",
+            ""
+        ).strip()
 
-    if check_out:
-        reservations = [
-            r for r in reservations
-            if r["check_out"] <= check_out
-        ]
+        if search:
 
-    context = {
-        "reservations": reservations,
-        "search": search,
-        "status": status,
-        "payment": payment,
-        "check_in": check_in,
-        "check_out": check_out,
-    }
+            reservations = reservations.filter(
+                Q(reservation_number__icontains=search)
+                |
+                Q(guest__first_name__icontains=search)
+                |
+                Q(guest__last_name__icontains=search)
+                |
+                Q(guest__phone__icontains=search)
+                |
+                Q(room__room_number__icontains=search)
+            )
 
-    return render(
-        request,
-        "reservations/reservation_list.html",
-        context,
+        # -----------------------------
+        # Hotel
+        # -----------------------------
+
+        hotel = request.GET.get("hotel")
+
+        if hotel:
+            reservations = reservations.filter(
+                hotel_id=hotel
+            )
+
+        # -----------------------------
+        # Status
+        # -----------------------------
+
+        reservation_status = request.GET.get(
+            "status"
+        )
+
+        if reservation_status:
+
+            reservations = reservations.filter(
+                status=reservation_status
+            )
+
+        # -----------------------------
+        # Payment
+        # -----------------------------
+
+        payment = request.GET.get(
+            "payment"
+        )
+
+        if payment:
+
+            reservations = reservations.filter(
+                payment_status=payment
+            )
+
+        # -----------------------------
+        # Check-in date
+        # -----------------------------
+
+        check_in = request.GET.get(
+            "check_in"
+        )
+
+        if check_in:
+
+            reservations = reservations.filter(
+                check_in__date__gte=check_in
+            )
+
+        # -----------------------------
+        # Check-out date
+        # -----------------------------
+
+        check_out = request.GET.get(
+            "check_out"
+        )
+
+        if check_out:
+
+            reservations = reservations.filter(
+                check_out__date__lte=check_out
+            )
+
+        serializer = ReservationSerializer(
+            reservations,
+            many=True
+        )
+
+        return Response(
+            serializer.data
+        )
+
+    # =================================
+    # CREATE RESERVATION
+    # =================================
+
+    @transaction.atomic
+    def post(self, request):
+
+        data = request.data.copy()
+
+        # --------------------------------
+        # Guest
+        # --------------------------------
+
+        guest_data = data.pop(
+            "guest",
+            None
+        )
+
+        if not guest_data:
+
+            return Response(
+                {
+                    "error":
+                    "Guest information is required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        guest_serializer = GuestSerializer(
+            data=guest_data
+        )
+
+        guest_serializer.is_valid(
+            raise_exception=True
+        )
+
+        guest = guest_serializer.save()
+
+        # --------------------------------
+        # Generate reservation number
+        # --------------------------------
+        guest = guest_serializer.save()
+        
+        data["guest"] = guest.id
+
+        # --------------------------------
+        # Payment logic
+        # --------------------------------
+
+        total_amount = float(
+            data.get(
+                "total_amount",
+                0
+            )
+        )
+
+        advance_amount = float(
+            data.get(
+                "advance_amount",
+                0
+            )
+        )
+
+        if advance_amount >= total_amount and total_amount > 0:
+
+            data["payment_status"] = "paid"
+            data["status"] = "confirmed"
+
+        else:
+
+            data["payment_status"] = "pending"
+            data["status"] = "pending"
+
+        # --------------------------------
+        # Create reservation
+        # --------------------------------
+
+        serializer = ReservationSerializer(
+            data=data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        reservation = serializer.save()
+
+        # --------------------------------
+        # Update room status
+        # --------------------------------
+
+        room = reservation.room
+
+        if reservation.status == "confirmed":
+
+            room.status = "reserved"
+
+            room.save(
+                update_fields=[
+                    "status",
+                    "updated_at"
+                ]
+            )
+
+        return Response(
+            ReservationSerializer(
+                reservation
+            ).data,
+            status=status.HTTP_201_CREATED
+        )
+# =========================================================
+# AVAILABLE ROOMS
+# =========================================================
+
+class AvailableRoomsView(APIView):
+
+    def get(self, request):
+
+        hotel_id = request.GET.get(
+            "hotel"
+        )
+
+        room_type_id = request.GET.get(
+            "room_type"
+        )
+
+        check_in = request.GET.get(
+            "check_in"
+        )
+
+        check_out = request.GET.get(
+            "check_out"
+        )
+
+        # --------------------------------
+        # Required fields
+        # --------------------------------
+
+        if not hotel_id:
+
+            return Response(
+                {
+                    "error":
+                    "Hotel is required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not room_type_id:
+
+            return Response(
+                {
+                    "error":
+                    "Room type is required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not check_in or not check_out:
+
+            return Response(
+                {
+                    "error":
+                    "Check-in and check-out dates are required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # --------------------------------
+        # Find rooms
+        # --------------------------------
+
+        rooms = Room.objects.select_related(
+            "hotel",
+            "room_type"
+        ).filter(
+            hotel_id=hotel_id,
+            room_type_id=room_type_id,
+            status__in=[
+                "available",
+        
+            ]
+        )
+
+        # --------------------------------
+        # Remove rooms with overlapping
+        # reservations
+        # --------------------------------
+
+        reserved_room_ids = Reservation.objects.filter(
+
+            check_in__lt=check_out,
+
+            check_out__gt=check_in,
+
+            status__in=[
+                "pending",
+                "confirmed",
+                "checked_in",
+            ]
+
+        ).values_list(
+            "room_id",
+            flat=True
+        )
+
+        rooms = rooms.exclude(
+            id__in=reserved_room_ids
+        )
+
+        data = []
+
+        for room in rooms:
+
+            data.append({
+
+                "id": room.id,
+
+                "room_number":
+                    room.room_number,
+
+                "floor":
+                    room.floor,
+
+                "status":
+                    room.status,
+
+                "price":
+                    room.price,
+
+                "room_type":
+                    room.room_type.name,
+
+                "capacity":
+                    room.room_type.capacity,
+
+                "hotel":
+                    room.hotel.name,
+            })
+
+        return Response(data)
+    # =========================================================
+# RESERVATION DETAIL
+# =========================================================
+
+class ReservationDetailView(APIView):
+
+    def get_object(self, pk):
+
+        return Reservation.objects.select_related(
+            "hotel",
+            "guest",
+            "room",
+            "room__room_type"
+        ).get(pk=pk)
+
+    # =================================
+    # GET RESERVATION
+    # =================================
+
+    def get(self, request, pk):
+
+        try:
+
+            reservation = self.get_object(pk)
+
+        except Reservation.DoesNotExist:
+
+            return Response(
+                {
+                    "error":
+                        "Reservation not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = ReservationSerializer(
+            reservation
+        )
+
+        return Response(
+            serializer.data
+        )
+
+    # =================================
+    # UPDATE RESERVATION
+    # =================================
+
+    @transaction.atomic
+    def patch(self, request, pk):
+
+        try:
+            reservation = self.get_object(pk)
+
+        except Reservation.DoesNotExist:
+
+            return Response(
+            {
+                "error": "Reservation not found."
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+        data = request.data.copy()
+
+    # =========================================
+    # UPDATE GUEST
+    # =========================================
+
+        guest = reservation.guest
+        guest_changed = False
+
+        if "guest_name" in data:
+
+            guest_name = str(
+                data.get("guest_name") or ""
+        ).strip()
+
+            parts = guest_name.split(" ", 1)
+
+            guest.first_name = (
+            parts[0] if parts else ""
+        )
+
+            guest.last_name = (
+            parts[1] if len(parts) > 1 else ""
+        )
+
+            guest_changed = True
+
+        if "phone" in data:
+
+            guest.phone = (
+            data.get("phone") or ""
+        )
+
+            guest_changed = True
+
+        if "email" in data:
+
+            guest.email = (
+            data.get("email") or ""
+        )
+
+            guest_changed = True
+
+        if guest_changed:
+            guest.save()
+
+    # =========================================
+    # BUILD UPDATE DATA
+    # =========================================
+
+        update_data = {}
+
+        allowed_fields = [
+        "hotel",
+        "room",
+        "check_in",
+        "check_out",
+        "adults",
+        "children",
+        "number_of_rooms",
+        "room_rate",
+        "total_amount",
+        "advance_amount",
+        "payment_status",
+        "status",
+        "booking_source",
+        "special_requests",
+    ]
+
+        for field in allowed_fields:
+
+            if field in data:
+                update_data[field] = data[field]
+
+    # =========================================
+    # KEEP CURRENT VALUES FOR VALIDATION
+    # =========================================
+
+        hotel_id = update_data.get(
+        "hotel",
+        reservation.hotel_id
     )
+
+        room_id = update_data.get(
+        "room",
+        reservation.room_id
+    )
+
+        check_in = update_data.get(
+        "check_in",
+        reservation.check_in
+    )
+
+        check_out = update_data.get(
+        "check_out",
+        reservation.check_out
+    )
+
+    # =========================================
+    # VALIDATE HOTEL
+    # =========================================
+
+        try:
+
+            hotel = Hotel.objects.get(
+            pk=hotel_id
+        )
+
+        except Hotel.DoesNotExist:
+
+            return Response(
+            {
+                "hotel": "Selected hotel does not exist."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # =========================================
+    # VALIDATE ROOM
+    # =========================================
+
+        try:
+
+            room = Room.objects.select_related(
+            "hotel",
+            "room_type"
+        ).get(
+            pk=room_id
+        )
+
+        except Room.DoesNotExist:
+
+            return Response(
+            {
+                "room": "Selected room does not exist."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # =========================================
+    # ROOM MUST BELONG TO HOTEL
+    # =========================================
+
+        if room.hotel_id != hotel.id:
+
+            return Response(
+            {
+                "room":
+                    "Selected room does not belong to the selected hotel."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # =========================================
+    # CHECK DATES
+    # =========================================
+
+        if check_in and check_out:
+
+            if check_out <= check_in:
+
+                return Response(
+                {
+                    "check_out":
+                        "Check-out must be after check-in."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    # =========================================
+    # CHECK ROOM AVAILABILITY
+    # =========================================
+
+        overlapping = Reservation.objects.filter(
+        room=room,
+        check_in__lt=check_out,
+        check_out__gt=check_in,
+    ).exclude(
+        pk=reservation.pk
+    ).exclude(
+        status__in=[
+            "cancelled",
+            "checked_out",
+            "no_show",
+        ]
+    )
+
+        if overlapping.exists():
+
+            return Response(
+            {
+                "room":
+                    "This room is already reserved for the selected dates."
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # =========================================
+    # UPDATE FOREIGN KEYS CORRECTLY
+    # =========================================
+
+        reservation.hotel = hotel
+        reservation.room = room
+
+    # =========================================
+    # UPDATE OTHER FIELDS
+    # =========================================
+
+        normal_fields = [
+        "check_in",
+        "check_out",
+        "adults",
+        "children",
+        "number_of_rooms",
+        "room_rate",
+        "total_amount",
+        "advance_amount",
+        "booking_source",
+        "special_requests",
+    ]
+
+        for field in normal_fields:
+
+            if field in update_data:
+
+                setattr(
+                reservation,
+                field,
+                update_data[field]
+            )
+
+    # =========================================
+    # PAYMENT STATUS
+    # =========================================
+
+        if "payment_status" in update_data:
+
+            reservation.payment_status = (
+            update_data["payment_status"]
+        )
+
+    # =========================================
+    # RESERVATION STATUS
+    # =========================================
+
+        if "status" in update_data:
+
+            reservation.status = (
+            update_data["status"]
+        )
+
+    # =========================================
+    # PAYMENT LOGIC
+    # =========================================
+
+        # =========================================
+# PAYMENT LOGIC
+# =========================================
+
+        if reservation.payment_status == "paid":
+
+            reservation.advance_amount = (
+            reservation.total_amount
+    )
+
+        elif reservation.payment_status == "pending":
+
+            reservation.advance_amount = 0
+
+
+# =========================================
+# STATUS LOGIC
+# =========================================
+
+# Only automatically change the status
+# when the frontend did NOT explicitly
+# provide a reservation status.
+
+        if "status" not in update_data:
+
+            if reservation.payment_status == "paid":
+
+                if reservation.status == "pending":
+                    reservation.status = "confirmed"
+
+            elif reservation.payment_status == "pending":
+
+                if reservation.status == "confirmed":
+                    reservation.status = "pending"
+
+    # =========================================
+    # SAVE
+    # =========================================
+
+        reservation.save()
+
+    # =========================================
+    # UPDATE ROOM STATUS
+    # =========================================
+
+        room = reservation.room
+
+        if reservation.status == "confirmed":
+
+            if room.status in [
+            "available",
+            "reserved",
+        ]:
+
+                room.status = "reserved"
+
+                room.save(
+                update_fields=[
+                    "status",
+                    "updated_at"
+                ]
+            )
+
+        elif reservation.status == "cancelled":
+
+            room.status = "available"
+
+            room.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
+        )
+
+    # =========================================
+    # RETURN UPDATED DATA
+    # =========================================
+
+        return Response(
+        ReservationSerializer(
+            reservation
+        ).data,
+        status=status.HTTP_200_OK
+    )
+    # =========================================================
+# CHECK IN
+# =========================================================
+
+class CheckInView(APIView):
+
+    @transaction.atomic
+    def post(self, request, pk):
+
+        try:
+
+            reservation = Reservation.objects.select_related(
+                "room"
+            ).get(pk=pk)
+
+        except Reservation.DoesNotExist:
+
+            return Response(
+                {
+                    "error":
+                    "Reservation not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if reservation.payment_status != "paid":
+
+            return Response(
+                {
+                    "error":
+                    "Payment must be completed before check-in."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if reservation.status != "confirmed":
+
+            return Response(
+                {
+                    "error":
+                    "Only confirmed reservations can be checked in."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        reservation.status = "checked_in"
+
+        reservation.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
+        )
+
+        reservation.room.status = "occupied"
+
+        reservation.room.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
+        )
+
+        return Response(
+            ReservationSerializer(
+                reservation
+            ).data
+        )
+
+    # =========================================================
+# CHECK OUT
+# =========================================================
+
+class CheckOutView(APIView):
+
+    @transaction.atomic
+    def post(self, request, pk):
+
+        try:
+            reservation = Reservation.objects.select_related(
+                "room"
+            ).get(pk=pk)
+
+        except Reservation.DoesNotExist:
+
+            return Response(
+                {
+                    "error":
+                        "Reservation not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+        if reservation.status != "checked_in":
+
+            return Response(
+                {
+                    "error":
+                        "Only checked-in guests can check out."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+        reservation.status = "checked_out"
+
+        reservation.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
+        )
+
+
+        # Room becomes available after checkout
+        reservation.room.status = "available"
+
+        reservation.room.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
+        )
+
+
+        return Response(
+            ReservationSerializer(
+                reservation
+            ).data
+        )
+
+        # =========================================================
+# CANCEL RESERVATION
+# =========================================================
+
+class CancelReservationView(APIView):
+
+    @transaction.atomic
+    def post(self, request, pk):
+
+        try:
+
+            reservation = Reservation.objects.select_related(
+                "room"
+            ).get(pk=pk)
+
+        except Reservation.DoesNotExist:
+
+            return Response(
+                {
+                    "error":
+                    "Reservation not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if reservation.status in [
+            "checked_out",
+            "cancelled"
+        ]:
+
+            return Response(
+                {
+                    "error":
+                    "Reservation cannot be cancelled."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        reservation.status = "cancelled"
+
+        reservation.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
+        )
+
+        reservation.room.status = "available"
+
+        reservation.room.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
+        )
+
+        return Response(
+            ReservationSerializer(
+                reservation
+            ).data
+        )
+
+        # =========================================================
+# MARK PAYMENT AS PAID
+# =========================================================
+
+class MarkPaymentPaidView(APIView):
+
+    def post(self, request, pk):
+
+        try:
+
+            reservation = Reservation.objects.get(
+                pk=pk
+            )
+
+        except Reservation.DoesNotExist:
+
+            return Response(
+                {
+                    "error":
+                    "Reservation not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        reservation.payment_status = "paid"
+
+        reservation.advance_amount = (
+            reservation.total_amount
+        )
+
+        if reservation.status == "pending":
+
+            reservation.status = "confirmed"
+
+        reservation.save()
+
+        return Response(
+            ReservationSerializer(
+                reservation
+            ).data
+        )
+# def reservation_list(request):
+
+#     reservations = RESERVATIONS.copy()
+
+#     search = request.GET.get("search", "").strip()
+#     status = request.GET.get("status", "")
+#     payment = request.GET.get("payment", "")
+#     check_in = request.GET.get("check_in", "")
+#     check_out = request.GET.get("check_out", "")
+
+#     if search:
+#         reservations = [
+#             r for r in reservations
+#             if search.lower() in r["guest"].lower()
+#             or search.lower() in r["id"].lower()
+#             or search.lower() in r["phone"]
+#             or search.lower() in r["room"]
+#         ]
+
+#     if status:
+#         reservations = [
+#             r for r in reservations
+#             if r["status"] == status
+#         ]
+
+#     if payment:
+#         reservations = [
+#             r for r in reservations
+#             if r["payment"] == payment
+#         ]
+
+#     if check_in:
+#         reservations = [
+#             r for r in reservations
+#             if r["check_in"] >= check_in
+#         ]
+
+#     if check_out:
+#         reservations = [
+#             r for r in reservations
+#             if r["check_out"] <= check_out
+#         ]
+
+#     context = {
+#         "reservations": reservations,
+#         "search": search,
+#         "status": status,
+#         "payment": payment,
+#         "check_in": check_in,
+#         "check_out": check_out,
+#     }
+
+#     return render(
+#         request,
+#         "reservations/reservation_list.html",
+#         context,
+#     )

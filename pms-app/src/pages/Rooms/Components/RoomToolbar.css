@@ -1,62 +1,135 @@
-.room-toolbar{
+.room-toolbar {
+    width: 100%;
 
-    display:flex;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    justify-content:space-between;
+    padding: 20px;
 
-    align-items:center;
+    margin-bottom: 20px;
 
-    gap:20px;
+    border: 1px solid #dfe7f2;
 
-    background:#fff;
+    border-radius: 20px;
 
-    padding:18px 20px;
+    background: white;
 
-    border-radius:14px;
-
-    border:1px solid #e2e8f0;
+    box-shadow:
+        0 8px 25px rgba(40, 70, 120, 0.05);
 }
 
-.toolbar-left{
+.room-toolbar-left {
+    width: 100%;
 
-    display:flex;
+    display: flex;
+    align-items: center;
 
-    gap:15px;
-
-    align-items:center;
+    gap: 12px;
 }
 
-.search-box{
 
-    display:flex;
+/* Search */
 
-    align-items:center;
+.room-search-box {
+    position: relative;
 
-    gap:10px;
+    flex: 1;
 
-    border:1px solid #d1d5db;
-
-    border-radius:10px;
-
-    padding:10px 14px;
-
-    min-width:260px;
+    max-width: 380px;
 }
 
-.search-box input{
+.room-search-box svg {
+    position: absolute;
 
-    border:none;
+    left: 17px;
+    top: 50%;
 
-    outline:none;
+    transform: translateY(-50%);
 
-    width:100%;
+    color: #7c8da5;
+
+    font-size: 14px;
 }
 
-.room-toolbar select{
+.room-search-box input {
+    width: 100%;
+    height: 48px;
 
-    padding:10px 14px;
+    padding: 0 16px 0 42px;
 
-    border-radius:10px;
+    border: 1px solid #d7e1ee;
 
-    border:1px solid #d1d5db;
+    border-radius: 11px;
+
+    outline: none;
+
+    color: #243b5a;
+
+    font-size: 13px;
+
+    transition: .2s ease;
+}
+
+.room-search-box input::placeholder {
+    color: #93a4bb;
+}
+
+.room-search-box input:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, .08);
+}
+
+
+/* Select */
+
+.room-toolbar select {
+    width: 195px;
+    height: 48px;
+
+    padding: 0 14px;
+
+    border: 1px solid #d7e1ee;
+
+    border-radius: 11px;
+
+    background: white;
+
+    color: #263b59;
+
+    font-size: 13px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+.room-toolbar select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, .08);
+}
+
+
+/* Responsive */
+
+@media (max-width: 800px) {
+
+    .room-toolbar-left {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .room-search-box {
+        max-width: none;
+    }
+
+    .room-toolbar select {
+        width: 100%;
+    }
+
 }

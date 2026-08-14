@@ -43,26 +43,25 @@ placeholder="Search Hotel">
 
 <div class="col-md-2">
 
-<select
-name="status"
-class="form-select">
+<select name="status" class="form-select">
 
-<option value="">All Status</option>
+    <option value="">
+        All Status
+    </option>
 
-<option value="Active"
-{% if status == "Active" %}selected{% endif %}>
-Active
-</option>
+    <option
+        value="active"
+        {% if status == "active" %}selected{% endif %}
+    >
+        Active
+    </option>
 
-<option value="Inactive"
-{% if status == "Inactive" %}selected{% endif %}>
-Inactive
-</option>
-
-<option value="Under Maintenance"
-{% if status == "Under Maintenance" %}selected{% endif %}>
-Under Maintenance
-</option>
+    <option
+        value="inactive"
+        {% if status == "inactive" %}selected{% endif %}
+    >
+        Inactive
+    </option>
 
 </select>
 
@@ -167,8 +166,6 @@ Reset
 
     <th>Hotel Name</th>
 
-    <th>Hotel Type</th>
-
     <th>City</th>
 
     <th>State</th>
@@ -194,26 +191,29 @@ Reset
 
     <td>{{ hotel.name }}</td>
 
-    <td>{{ hotel.type }}</td>
-
     <td>{{ hotel.city }}</td>
 
     <td>{{ hotel.state }}</td>
+    
 
-    <td>{{ hotel.rooms }}</td>
-
-    <td>{{ hotel.employees }}</td>
+    <td>
+        {{ hotel.rooms.count }}
+    </td>
+    <td>{{ hotel.employees.count }}</td>
 
     <td>
 
-        {% if hotel.status == "Active" %}
-            <span class="badge bg-success">{{ hotel.status }}</span>
+        {% if hotel.status == "active" %}
 
-        {% elif hotel.status == "Inactive" %}
-            <span class="badge bg-secondary">{{ hotel.status }}</span>
+            <span class="badge bg-success">
+                Active
+            </span>
 
-        {% else %}
-            <span class="badge bg-warning text-dark">{{ hotel.status }}</span>
+        {% elif hotel.status == "inactive" %}
+
+            <span class="badge bg-secondary">
+                Inactive
+            </span>
 
         {% endif %}
 
@@ -221,17 +221,31 @@ Reset
 
     <td>
 
-        <a href="#" class="btn btn-info btn-sm text-white">
-            <i class="bi bi-eye"></i>
-        </a>
+        <a href="{% url 'hotel-detail' hotel.id %}"
+   class="btn btn-info btn-sm text-white"
+   title="View">
 
-        <a href="#" class="btn btn-warning btn-sm text-white">
-            <i class="bi bi-pencil"></i>
-        </a>
+    <i class="bi bi-eye"></i>
 
-        <a href="#" class="btn btn-secondary btn-sm">
-            <i class="bi bi-arrow-repeat"></i>
-        </a>
+</a>
+
+
+<a href="{% url 'edit-hotel' hotel.id %}"
+   class="btn btn-warning btn-sm text-white"
+   title="Edit">
+
+    <i class="bi bi-pencil"></i>
+
+</a>
+
+
+<a href="{% url 'toggle-hotel-status' hotel.id %}"
+   class="btn btn-secondary btn-sm"
+   title="Change Status">
+
+    <i class="bi bi-arrow-repeat"></i>
+
+</a>
 
     </td>
 
@@ -240,11 +254,9 @@ Reset
 {% empty %}
 
 <tr>
-
-    <td colspan="9" class="text-center py-4">
+    <td colspan="7" class="text-center py-4">
         No hotels found.
     </td>
-
 </tr>
 
 {% endfor %}
