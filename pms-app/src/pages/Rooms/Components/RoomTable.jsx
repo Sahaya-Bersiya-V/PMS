@@ -80,11 +80,32 @@ const RoomTable = ({
 
                                 <td>
 
-                                    <RoomStatusBadge
-                                        status={room.status}
-                                    />
+    <RoomStatusBadge
+        status={room.status}
+    />
 
-                                </td>
+    {room.status === "cleaning" &&
+        room.cleaningUntil && (
+
+            <div className="cleaning-until">
+
+                Until{" "}
+
+                {new Date(
+                    room.cleaningUntil
+                ).toLocaleTimeString(
+                    "en-IN",
+                    {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    }
+                )}
+
+            </div>
+
+        )}
+
+</td>
 
 
                                 <td>

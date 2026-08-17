@@ -1,12 +1,9 @@
 .room-status {
     display: inline-flex;
-
     align-items: center;
-
     gap: 7px;
 
     min-width: 88px;
-
     justify-content: center;
 
     padding: 8px 13px;
@@ -14,7 +11,6 @@
     border-radius: 999px;
 
     font-size: 11px;
-
     font-weight: 750;
 }
 
@@ -28,55 +24,74 @@
 }
 
 
-/* Available */
+/* =========================================
+   AVAILABLE
+========================================= */
 
 .room-status.available {
     background: #dff8e9;
-
     color: #138a4a;
 }
 
 
-/* Occupied */
+/* =========================================
+   OCCUPIED
+========================================= */
 
 .room-status.occupied {
     background: #ffe1e1;
-
     color: #d52b2b;
 }
 
 
-/* Reserved */
+/* =========================================
+   RESERVED
+========================================= */
 
 .room-status.reserved {
-    background: #e2ecff;
-
-    color: #2563eb;
+    background: #fff3cd;
+    color: #b45309;
+    border: 1px solid #f59e0b;
 }
 
 
-/* Cleaning */
+/* =========================================
+   CLEANING
+========================================= */
 
 .room-status.cleaning {
-    background: #fff0c7;
-
-    color: #c77a00;
+    background: #ffedd5;
+    color: #c2410c;
+    border: 1px solid #fb923c;
 }
 
 
-/* Maintenance */
+/* =========================================
+   MAINTENANCE
+========================================= */
 
 .room-status.maintenance {
     background: #eee7ff;
-
     color: #7040c9;
 }
 
 
-/* Unknown */
+/* =========================================
+   OUT OF ORDER
+========================================= */
+
+.room-status.out-of-order {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+
+/* =========================================
+   UNKNOWN
+========================================= */
 
 .room-status.unknown {
     background: #edf1f5;
-
     color: #64748b;
 }

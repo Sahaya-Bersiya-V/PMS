@@ -1345,3 +1345,29 @@
 
   font-size: 11px;
 }
+
+/* ================================
+   RESERVED ROOM
+================================ */
+
+.room-card.reserved {
+    background: #fff8e1;
+    border: 1px solid #f5c542;
+}
+
+.room-card.reserved .room-icon {
+    color: #f59e0b;
+}
+
+.room-card.reserved h4 {
+    color: #111827;
+}
+
+.room-card.reserved span,
+.room-card.reserved small {
+    color: #8a6d1d;
+}
+
+.room-card.reserved strong {
+    color: #f59e0b;
+}

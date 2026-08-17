@@ -471,32 +471,51 @@
 
             <td>
 
-                {% if room.status == "available" %}
+    {% if room.status == "available" %}
 
-                    <span class="badge bg-success">
-                        Available
-                    </span>
+        <span class="badge room-status available">
+            Available
+        </span>
 
-                {% elif room.status == "occupied" %}
+    {% elif room.status == "occupied" %}
 
-                    <span class="badge bg-danger">
-                        Occupied
-                    </span>
+        <span class="badge room-status occupied">
+            Occupied
+        </span>
 
-                {% elif room.status == "maintenance" %}
-            <span class="badge bg-secondary">
-                Maintenance
-            </span>
+    {% elif room.status == "reserved" %}
 
-        {% else %}
-            <span class="badge bg-warning text-dark">
-                {{ room.get_status_display }}
-            </span>
-        {% endif %}
+        <span class="badge room-status reserved">
+            Reserved
+        </span>
 
+    {% elif room.status == "cleaning" %}
 
-            </td>
+        <span class="badge room-status cleaning">
+            Cleaning
+        </span>
 
+    {% elif room.status == "maintenance" %}
+
+        <span class="badge room-status maintenance">
+            Maintenance
+        </span>
+
+    {% elif room.status == "out_of_order" %}
+
+        <span class="badge room-status out-of-order">
+            Out of Order
+        </span>
+
+    {% else %}
+
+        <span class="badge room-status unknown">
+            {{ room.get_status_display }}
+        </span>
+
+    {% endif %}
+
+</td>
             <td>
 
                 <div class="btn-group">

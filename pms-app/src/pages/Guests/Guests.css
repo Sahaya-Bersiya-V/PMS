@@ -3,3 +3,391 @@
     flex-direction:column;
     gap:24px;
 }
+
+/* =========================================
+   GUESTS PAGE
+========================================= */
+
+.guests-page {
+    min-height: 100%;
+    padding: 28px;
+    background: #f5f8fc;
+}
+
+
+/* =========================================
+   GLASSY PAGE HEADER
+========================================= */
+
+.guests-page-header {
+
+    position: relative;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    min-height: 145px;
+
+    padding: 28px 44px;
+
+    margin-bottom: 36px;
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 75% 20%,
+            rgba(76, 130, 255, 0.14),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 95% 90%,
+            rgba(157, 122, 255, 0.10),
+            transparent 35%
+        ),
+        rgba(255, 255, 255, 0.72);
+
+    border: 1px solid rgba(190, 207, 235, 0.75);
+
+    box-shadow:
+        0 18px 45px rgba(40, 73, 120, 0.08);
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
+
+}
+
+
+/* subtle glass highlight */
+
+.guests-page-header::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.55),
+        transparent 45%,
+        rgba(255,255,255,0.18)
+    );
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================
+   HEADER TEXT
+========================================= */
+
+.guests-header-content {
+
+    position: relative;
+
+    z-index: 1;
+
+}
+
+
+.guests-header-content h1 {
+
+    margin: 0 0 6px;
+
+    font-size: 40px;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+
+    color: #15294d;
+
+}
+
+
+.guests-header-content p {
+
+    margin: 0;
+
+    font-size: 16px;
+
+    color: #7185a5;
+
+}
+
+
+/* =========================================
+   HEADER SUMMARY
+========================================= */
+
+.guests-header-summary {
+
+    position: relative;
+
+    z-index: 1;
+
+    padding-left: 38px;
+
+    border-left: 1px solid #dbe3ef;
+
+}
+
+
+.guests-count {
+
+    min-width: 125px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+}
+
+
+.guests-count strong {
+
+    font-size: 32px;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    color: #2563eb;
+
+}
+
+
+.guests-count span {
+
+    margin-top: 7px;
+
+    font-size: 13px;
+
+    color: #7185a5;
+
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .guests-page {
+        padding: 18px;
+    }
+
+    .guests-page-header {
+
+        padding: 24px;
+
+        min-height: auto;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 25px;
+
+    }
+
+    .guests-header-summary {
+
+        padding-left: 0;
+
+        padding-top: 18px;
+
+        border-left: none;
+
+        border-top: 1px solid #dbe3ef;
+
+        width: 100%;
+
+    }
+
+}
+
+
+/* =========================================
+   GUEST PAGINATION
+========================================= */
+
+.guests-pagination {
+
+    margin-top: 0;
+
+    padding: 14px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border: 1px solid #dce6f3;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 18px rgba(35, 75, 130, 0.05);
+
+}
+
+
+/* =========================================
+   PAGINATION INFO
+========================================= */
+
+.guests-pagination-info {
+
+    color: #7c8da5;
+
+    font-size: 12px;
+
+}
+
+
+.guests-pagination-info strong {
+
+    color: #172b4d;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================
+   PAGINATION CONTROLS
+========================================= */
+
+.guests-pagination-controls {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+/* =========================================
+   PREVIOUS / NEXT BUTTON
+========================================= */
+
+.guests-pagination-arrow {
+
+    width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #dce6f3;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+.guests-pagination-arrow:hover:not(:disabled) {
+
+    background: #eef4ff;
+
+    border-color: #2563eb;
+
+}
+
+
+/* =========================================
+   DISABLED BUTTON
+========================================= */
+
+.guests-pagination-arrow:disabled {
+
+    opacity: 0.4;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================
+   CURRENT PAGE
+========================================= */
+
+.guests-pagination-page {
+
+    min-width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .guests-pagination {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+    }
+
+}

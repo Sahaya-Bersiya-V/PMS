@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from .services import update_cleaning_rooms
 from .models import RoomType, Room
 from .serializers import (
     RoomTypeSerializer,
@@ -36,17 +36,37 @@ class RoomListAPIView(APIView):
 
     def get(self, request):
 
-        hotel_id = request.GET.get("hotel")
+        # Automatically release rooms whose
+        # cleaning period has finished.
+        update_cleaning_rooms()
 
         rooms = Room.objects.select_related(
             "hotel",
             "room_type"
         ).all()
 
-        if hotel_id:
+        hotel_id = request.GET.get("hotel")
 
+        if hotel_id:
             rooms = rooms.filter(
                 hotel_id=hotel_id
+            )
+
+        status_filter = request.GET.get("status")
+
+        if status_filter:
+            rooms = rooms.filter(
+                status=status_filter
+            )
+
+        search = request.GET.get(
+            "search",
+            ""
+        ).strip()
+
+        if search:
+            rooms = rooms.filter(
+                room_number__icontains=search
             )
 
         serializer = RoomSerializer(

@@ -1,10 +1,13 @@
 import "./RoomStatusBadge.css";
 
+
 const RoomStatusBadge = ({ status }) => {
 
-    const normalizedStatus = String(status || "")
-        .toLowerCase()
-        .replace(/\s+/g, "_");
+    const normalizedStatus =
+        String(status || "")
+            .toLowerCase()
+            .replace(/\s+/g, "_");
+
 
     const statusConfig = {
 
@@ -24,12 +27,7 @@ const RoomStatusBadge = ({ status }) => {
         },
 
         cleaning: {
-            label: "Needs Cleaning",
-            className: "cleaning",
-        },
-
-        needs_cleaning: {
-            label: "Needs Cleaning",
+            label: "Cleaning",
             className: "cleaning",
         },
 
@@ -38,20 +36,43 @@ const RoomStatusBadge = ({ status }) => {
             className: "maintenance",
         },
 
+        out_of_order: {
+            label: "Out of Order",
+            className: "out-of-order",
+        },
+
     };
+
 
     const current =
         statusConfig[normalizedStatus] || {
-            label: status || "Unknown",
-            className: "unknown",
+
+            label:
+                status || "Unknown",
+
+            className:
+                "unknown",
+
         };
 
+
     return (
-        <span className={`room-status ${current.className}`}>
+
+        <span
+            className={
+                `room-status ${current.className}`
+            }
+        >
+
             <span className="status-dot"></span>
+
             {current.label}
+
         </span>
+
     );
+
 };
+
 
 export default RoomStatusBadge;

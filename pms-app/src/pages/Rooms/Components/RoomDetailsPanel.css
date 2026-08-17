@@ -497,3 +497,94 @@
     }
 
 }
+
+/* =========================================================
+   CLEANING INFORMATION
+========================================================= */
+
+.room-cleaning-card {
+    margin-top: 22px;
+    padding: 20px;
+
+    border: 1px solid #dbe7f5;
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 249, 235, 0.95),
+            rgba(255, 255, 255, 0.98)
+        );
+
+    box-shadow:
+        0 8px 24px rgba(30, 64, 175, 0.06);
+}
+
+
+.room-cleaning-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 18px;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #1b3155;
+}
+
+
+.room-cleaning-title svg {
+    font-size: 21px;
+    color: #f59e0b;
+}
+
+
+.room-cleaning-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+
+.room-cleaning-content > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.8);
+
+    border: 1px solid #e5eaf2;
+}
+
+
+.room-cleaning-content span {
+    font-size: 12px;
+
+    color: #7183a0;
+
+    font-weight: 600;
+}
+
+
+.room-cleaning-content strong {
+    font-size: 14px;
+
+    color: #1a2f50;
+}
+
+
+.room-cleaning-message {
+    margin: 16px 0 0;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    color: #7183a0;
+}

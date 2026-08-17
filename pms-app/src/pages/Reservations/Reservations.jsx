@@ -336,7 +336,13 @@ const [selectedGuestId, setSelectedGuestId] =
 
   const [showRoomBrowser, setShowRoomBrowser] =
     useState(false);
+  // =======================================================
+// PAGINATION
+// =======================================================
 
+  const RECORDS_PER_PAGE = 5;
+
+  const [currentPage, setCurrentPage] = useState(1);  
 
   /*
   =======================================================
@@ -1554,6 +1560,7 @@ const updateReservationStatus = async (
     setAppliedFilters({
       ...filters,
     });
+    setCurrentPage(1);
   };
 
 
@@ -1581,6 +1588,7 @@ const updateReservationStatus = async (
     setAppliedFilters(
       cleared
     );
+    setCurrentPage(1);
   };
 
 
@@ -1593,6 +1601,8 @@ const updateReservationStatus = async (
   const filteredReservations =
     reservations.filter(
       (reservation) => {
+
+
 
         const search =
           appliedFilters.search
@@ -1661,6 +1671,23 @@ const updateReservationStatus = async (
         );
       }
     );
+
+            // =======================================================
+// PAGINATION DATA
+// =======================================================
+
+const totalPages = Math.ceil(
+  filteredReservations.length / RECORDS_PER_PAGE
+);
+
+const startIndex =
+  (currentPage - 1) * RECORDS_PER_PAGE;
+
+const paginatedReservations =
+  filteredReservations.slice(
+    startIndex,
+    startIndex + RECORDS_PER_PAGE
+  );
 
 
   /*
@@ -2050,7 +2077,7 @@ const validateIdentityNumber = () => {
 
               ) : (
 
-                filteredReservations.map(
+                paginatedReservations.map(
                   (reservation) => (
 
                     <tr
@@ -2173,10 +2200,72 @@ const validateIdentityNumber = () => {
             </tbody>
 
           </table>
+)}
+</div>
+{/* =================================
+    PAGINATION
+================================= */}
 
+{!loading && filteredReservations.length > 0 && (
+  <div className="reservation-pagination">
+
+    <div className="pagination-info">
+      Showing{" "}
+      <strong>
+        {startIndex + 1}
+      </strong>
+      {" - "}
+      <strong>
+        {Math.min(
+          startIndex + RECORDS_PER_PAGE,
+          filteredReservations.length
         )}
+      </strong>
+      {" of "}
+      <strong>
+        {filteredReservations.length}
+      </strong>
+      {" reservations"}
+    </div>
 
-      </div>
+    <div className="pagination-controls">
+
+      <button
+        className="pagination-btn"
+        onClick={() =>
+          setCurrentPage((page) =>
+            Math.max(page - 1, 1)
+          )
+        }
+        disabled={currentPage === 1}
+      >
+        &lt;
+      </button>
+
+      <span className="pagination-page">
+        {currentPage} / {totalPages}
+      </span>
+
+      <button
+        className="pagination-btn"
+        onClick={() =>
+          setCurrentPage((page) =>
+            Math.min(page + 1, totalPages)
+          )
+        }
+        disabled={
+          currentPage === totalPages
+        }
+      >
+        &gt;
+      </button>
+
+    </div>
+
+  </div>
+)}
+
+     
 
 
       {/* =================================

@@ -6,7 +6,8 @@ import {
     MdMeetingRoom,
     MdCurrencyRupee,
     MdInfoOutline,
-    MdDescription
+    MdDescription,
+    MdCleaningServices
 } from "react-icons/md";
 
 import RoomStatusBadge from "./RoomStatusBadge";
@@ -104,6 +105,70 @@ const RoomDetailsPanel = ({
                     />
 
                 </div>
+
+                {/* ================= CLEANING INFORMATION ================= */}
+
+{room.status === "cleaning" &&
+    room.cleaningUntil && (
+
+        <div className="room-cleaning-card">
+
+            <div className="room-cleaning-title">
+
+                <MdCleaningServices />
+
+                <span>
+                    Cleaning Information
+                </span>
+
+            </div>
+
+            <div className="room-cleaning-content">
+
+                <div>
+
+                    <span>
+                        Cleaning Until
+                    </span>
+
+                    <strong>
+                        {new Date(
+                            room.cleaningUntil
+                        ).toLocaleString(
+                            "en-IN",
+                            {
+                                dateStyle: "medium",
+                                timeStyle: "short"
+                            }
+                        )}
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Room Status
+                    </span>
+
+                    <RoomStatusBadge
+                        status="cleaning"
+                    />
+
+                </div>
+
+            </div>
+
+            <p className="room-cleaning-message">
+
+                This room will automatically become
+                available after the cleaning period.
+
+            </p>
+
+        </div>
+
+    )}
 
 
                 {/* ================= ROOM INFORMATION ================= */}

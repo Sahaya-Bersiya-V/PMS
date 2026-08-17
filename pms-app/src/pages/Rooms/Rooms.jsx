@@ -6,6 +6,12 @@ import RoomTable from "./Components/RoomTable";
 import RoomDetailsPanel from "./Components/RoomDetailsPanel";
 
 
+const API_URL =
+    "http://127.0.0.1:8000/api/rooms/";
+
+const RECORDS_PER_PAGE = 5;
+
+
 const Rooms = () => {
 
     const [rooms, setRooms] = useState([]);
@@ -14,137 +20,184 @@ const Rooms = () => {
 
     const [error, setError] = useState("");
 
-    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [selectedRoom, setSelectedRoom] =
+        useState(null);
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] =
+        useState("");
 
-    const [status, setStatus] = useState("all");
+    const [status, setStatus] =
+        useState("all");
 
-    const [roomType, setRoomType] = useState("all");
+    const [roomType, setRoomType] =
+        useState("all");
+
+    // ============================================================
+    // PAGINATION
+    // ============================================================
+
+    const [currentPage, setCurrentPage] =
+        useState(1);
 
 
     /*
     ============================================================
-    FETCH ROOMS FROM DJANGO
+    FORMAT ROOM DATA
+    ============================================================
+    */
+
+    const formatRooms = (roomData) => {
+
+        return roomData.map((room) => ({
+
+            id: room.id,
+
+            hotelName:
+                room.hotel_name || "",
+
+            roomNumber:
+                room.room_number || "",
+
+            roomType:
+                room.room_type_name || "",
+
+            floor:
+                room.floor ?? "",
+
+            capacity:
+                room.capacity ?? 0,
+
+            price:
+                room.price ?? 0,
+
+            status:
+                room.status || "",
+
+            cleaningUntil:
+                room.cleaning_until || null,
+
+            notes:
+                room.notes || "",
+
+            createdAt:
+                room.created_at || null,
+
+            updatedAt:
+                room.updated_at || null,
+
+        }));
+
+    };
+
+
+    /*
+    ============================================================
+    FETCH ROOMS
+    ============================================================
+    */
+
+    const fetchRooms = async (
+        showLoader = false
+    ) => {
+
+        try {
+
+            if (showLoader) {
+                setLoading(true);
+            }
+
+            setError("");
+
+            const response =
+                await fetch(API_URL);
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to fetch rooms."
+                );
+
+            }
+
+            const data =
+                await response.json();
+
+            const roomData =
+                Array.isArray(data)
+                    ? data
+                    : data.results || [];
+
+            const formattedRooms =
+                formatRooms(roomData);
+
+            setRooms(formattedRooms);
+
+
+            /*
+            If currently opened room was updated
+            by backend, update the panel too.
+            */
+
+            setSelectedRoom((currentRoom) => {
+
+                if (!currentRoom) {
+                    return null;
+                }
+
+                const updatedRoom =
+                    formattedRooms.find(
+                        (room) =>
+                            room.id === currentRoom.id
+                    );
+
+                return updatedRoom || null;
+
+            });
+
+        } catch (err) {
+
+            console.error(
+                "Room fetch error:",
+                err
+            );
+
+            setError(
+                "Unable to load rooms from the server."
+            );
+
+        } finally {
+
+            if (showLoader) {
+                setLoading(false);
+            }
+
+        }
+
+    };
+
+
+    /*
+    ============================================================
+    INITIAL LOAD + AUTO REFRESH
     ============================================================
     */
 
     useEffect(() => {
 
-        const fetchRooms = async () => {
+        fetchRooms(true);
 
-            try {
+        const interval =
+            setInterval(() => {
 
-                setLoading(true);
+                fetchRooms(false);
 
-                setError("");
+            }, 30000);
 
-                const response = await fetch(
-                    "http://127.0.0.1:8000/api/rooms/"
-                );
+        return () => {
 
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "Failed to fetch rooms."
-                    );
-
-                }
-
-
-                const data = await response.json();
-
-
-                /*
-                Django DRF may return:
-
-                [
-                    {...},
-                    {...}
-                ]
-
-                OR
-
-                {
-                    "results": [...]
-                }
-                */
-
-                const roomData =
-                    Array.isArray(data)
-                        ? data
-                        : data.results || [];
-
-
-                /*
-                Convert Django fields
-                into UI fields
-                */
-
-                const formattedRooms =
-                    roomData.map((room) => ({
-
-                        id: room.id,
-
-                        hotelName:
-                            room.hotel_name || "",
-
-                        roomNumber:
-                            room.room_number || "",
-
-                        roomType:
-                            room.room_type_name || "",
-
-                        floor:
-                            room.floor ?? "",
-
-                        capacity:
-                            room.capacity ?? 0,
-
-                        price:
-                            room.price ?? 0,
-
-                        status:
-                            room.status || "",
-
-                        notes:
-                            room.notes || "",
-
-                        createdAt:
-                            room.created_at || null,
-
-                        updatedAt:
-                            room.updated_at || null,
-
-                    }));
-
-
-                setRooms(formattedRooms);
-
-
-            } catch (err) {
-
-                console.error(
-                    "Room fetch error:",
-                    err
-                );
-
-                setError(
-                    "Unable to load rooms from the server."
-                );
-
-
-            } finally {
-
-                setLoading(false);
-
-            }
+            clearInterval(interval);
 
         };
-
-
-        fetchRooms();
 
     }, []);
 
@@ -156,11 +209,6 @@ const Rooms = () => {
     */
 
     const handleView = (room) => {
-
-        console.log(
-            "View room:",
-            room
-        );
 
         setSelectedRoom(room);
 
@@ -175,10 +223,13 @@ const Rooms = () => {
 
     const roomTypes = useMemo(() => {
 
-        const types = rooms
-            .map((room) => room.roomType)
-            .filter(Boolean);
-
+        const types =
+            rooms
+                .map(
+                    (room) =>
+                        room.roomType
+                )
+                .filter(Boolean);
 
         return [
             ...new Set(types)
@@ -224,7 +275,7 @@ const Rooms = () => {
 
 
             /*
-            STATUS FILTER
+            STATUS
             */
 
             const matchesStatus =
@@ -236,7 +287,7 @@ const Rooms = () => {
 
 
             /*
-            ROOM TYPE FILTER
+            ROOM TYPE
             */
 
             const matchesRoomType =
@@ -259,6 +310,119 @@ const Rooms = () => {
         status,
         roomType
     ]);
+
+
+    /*
+    ============================================================
+    RESET PAGE WHEN FILTER / SEARCH CHANGES
+    ============================================================
+    */
+
+    useEffect(() => {
+
+        setCurrentPage(1);
+
+    }, [
+        search,
+        status,
+        roomType
+    ]);
+
+
+    /*
+    ============================================================
+    PAGINATION
+    ============================================================
+    */
+
+    const totalPages =
+        Math.ceil(
+            filteredRooms.length /
+            RECORDS_PER_PAGE
+        );
+
+
+    /*
+    If current page becomes invalid
+    after filtering or auto refresh.
+    */
+
+    useEffect(() => {
+
+        if (
+            totalPages > 0 &&
+            currentPage > totalPages
+        ) {
+
+            setCurrentPage(totalPages);
+
+        }
+
+        if (totalPages === 0) {
+
+            setCurrentPage(1);
+
+        }
+
+    }, [
+        totalPages,
+        currentPage
+    ]);
+
+
+    /*
+    ============================================================
+    GET CURRENT 5 RECORDS
+    ============================================================
+    */
+
+    const paginatedRooms =
+        useMemo(() => {
+
+            const startIndex =
+                (currentPage - 1) *
+                RECORDS_PER_PAGE;
+
+            const endIndex =
+                startIndex +
+                RECORDS_PER_PAGE;
+
+            return filteredRooms.slice(
+                startIndex,
+                endIndex
+            );
+
+        }, [
+            filteredRooms,
+            currentPage
+        ]);
+
+
+    /*
+    ============================================================
+    PAGINATION BUTTONS
+    ============================================================
+    */
+
+    const handlePreviousPage = () => {
+
+        setCurrentPage((page) =>
+            Math.max(page - 1, 1)
+        );
+
+    };
+
+
+    const handleNextPage = () => {
+
+        setCurrentPage((page) =>
+            Math.min(
+                page + 1,
+                totalPages
+            )
+        );
+
+    };
 
 
     /*
@@ -369,14 +533,91 @@ const Rooms = () => {
             ) : (
 
                 <>
-                    
+
                     <RoomTable
 
-                        rooms={filteredRooms}
+                        rooms={paginatedRooms}
 
                         onView={handleView}
 
                     />
+
+
+                    {/* ==================================================
+                        PAGINATION
+                    ================================================== */}
+
+                    {filteredRooms.length > 0 && (
+                        
+                        <div className="rooms-pagination">
+
+                            <div className="pagination-info">
+
+                                Showing{" "}
+
+                                <strong>
+                                    {(
+                                        (currentPage - 1) *
+                                        RECORDS_PER_PAGE
+                                    ) + 1}
+                                </strong>
+
+                                {" "}to{" "}
+
+                                <strong>
+                                    {Math.min(
+                                        currentPage *
+                                        RECORDS_PER_PAGE,
+                                        filteredRooms.length
+                                    )}
+                                </strong>
+
+                                {" "}of{" "}
+
+                                <strong>
+                                    {filteredRooms.length}
+                                </strong>
+
+                                {" "}rooms
+
+                            </div>
+
+
+                            <div className="pagination-controls">
+
+                                <button
+                                    type="button"
+                                    className="pagination-arrow"
+                                    onClick={handlePreviousPage}
+                                    disabled={currentPage === 1}
+                                >
+                                    &lt;
+                                </button>
+
+
+                                <span className="pagination-page">
+
+                                    {currentPage}
+
+                                </span>
+
+
+                                <button
+                                    type="button"
+                                    className="pagination-arrow"
+                                    onClick={handleNextPage}
+                                    disabled={
+                                        currentPage === totalPages
+                                    }
+                                >
+                                    &gt;
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    )}
 
 
                     {/* ==================================================

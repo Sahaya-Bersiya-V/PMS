@@ -87,9 +87,13 @@ class RoomSerializer(
             "capacity",
 
             "status",
+            "cleaning_until",
             "price",
             "notes",
 
             "created_at",
             "updated_at",
+        ]
+        read_only_fields = [
+            "cleaning_until",
         ]

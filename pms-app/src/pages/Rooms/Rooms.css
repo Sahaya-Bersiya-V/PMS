@@ -286,3 +286,156 @@
 
     pointer-events: none;
 }
+
+/* ============================================================
+   PAGINATION
+============================================================ */
+
+.rooms-pagination {
+    margin-top: 18px;
+
+    padding: 14px 18px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    border: 1px solid #dce6f3;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 18px rgba(35, 75, 130, .05);
+}
+
+
+/* ============================================================
+   PAGINATION INFO
+============================================================ */
+
+.pagination-info {
+
+    color: #7c8da5;
+
+    font-size: 12px;
+}
+
+.pagination-info strong {
+
+    color: #172b4d;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   PAGINATION CONTROLS
+============================================================ */
+
+.pagination-controls {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* Previous / Next */
+
+.pagination-arrow {
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #dce6f3;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+}
+
+
+.pagination-arrow:hover:not(:disabled) {
+
+    background: #eef4ff;
+
+    border-color: #2563eb;
+
+}
+
+
+/* Disabled */
+
+.pagination-arrow:disabled {
+
+    opacity: .4;
+
+    cursor: not-allowed;
+
+}
+
+
+/* Current page */
+
+.pagination-page {
+
+    min-width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+
+@media (max-width: 600px) {
+
+    .rooms-pagination {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+    }
+
+}

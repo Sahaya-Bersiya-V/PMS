@@ -2,14 +2,14 @@ from django.shortcuts import render
 from django.db import transaction
 from django.db.models import Q
 from django.utils.dateparse import parse_datetime
-
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import time
 from hotels.models import Hotel
 from rooms.models import Room, RoomType
-
+from datetime import timedelta
 from .models import Guest, Reservation
 from .serializers import (
     GuestSerializer,
@@ -1103,20 +1103,20 @@ class CheckOutView(APIView):
     def post(self, request, pk):
 
         try:
+
             reservation = Reservation.objects.select_related(
-                "room"
+                "room",
+                "guest"
             ).get(pk=pk)
 
         except Reservation.DoesNotExist:
 
             return Response(
                 {
-                    "error":
-                        "Reservation not found."
+                    "error": "Reservation not found."
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
-
 
         if reservation.status != "checked_in":
 
@@ -1128,27 +1128,50 @@ class CheckOutView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # -----------------------------------------
+        # ACTUAL CHECKOUT TIME
+        # -----------------------------------------
+
+        actual_checkout = timezone.now()
+
+        # -----------------------------------------
+        # RESERVATION
+        # -----------------------------------------
 
         reservation.status = "checked_out"
+
+        # If you want the reservation's checkout
+        # date/time to reflect the actual checkout:
+        reservation.check_out = actual_checkout
 
         reservation.save(
             update_fields=[
                 "status",
+                "check_out",
                 "updated_at"
             ]
         )
 
+        # -----------------------------------------
+        # ROOM
+        # -----------------------------------------
 
-        # Room becomes available after checkout
-        reservation.room.status = "available"
+        room = reservation.room
 
-        reservation.room.save(
+        room.status = "cleaning"
+
+        # 1 hour cleaning period
+        room.cleaning_until = (
+            actual_checkout + timedelta(hours=1)
+        )
+
+        room.save(
             update_fields=[
                 "status",
+                "cleaning_until",
                 "updated_at"
             ]
         )
-
 
         return Response(
             ReservationSerializer(

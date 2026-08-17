@@ -16,6 +16,12 @@ import RoomTypeDetailsPanel
     from "./components/RoomTypeDetailsPanel";
 
 
+const API_URL =
+    "http://127.0.0.1:8000/api/room-types/";
+
+const RECORDS_PER_PAGE = 5;
+
+
 const RoomTypes = () => {
 
     const [roomTypes, setRoomTypes] = useState([]);
@@ -30,6 +36,13 @@ const RoomTypes = () => {
 
     const [selectedRoomType, setSelectedRoomType] =
         useState(null);
+
+    // ============================================================
+    // PAGINATION
+    // ============================================================
+
+    const [currentPage, setCurrentPage] =
+        useState(1);
 
 
     /*
@@ -48,11 +61,9 @@ const RoomTypes = () => {
 
                 setError("");
 
-
                 const response = await fetch(
-                    "http://127.0.0.1:8000/api/room-types/"
+                    API_URL
                 );
-
 
                 if (!response.ok) {
 
@@ -62,10 +73,8 @@ const RoomTypes = () => {
 
                 }
 
-
                 const data =
                     await response.json();
-
 
                 const roomTypeData =
                     Array.isArray(data)
@@ -74,7 +83,7 @@ const RoomTypes = () => {
 
 
                 /*
-                Backend → Frontend format
+                Backend → Frontend
                 */
 
                 const formattedRoomTypes =
@@ -201,16 +210,122 @@ const RoomTypes = () => {
 
     /*
     ============================================================
+    RESET PAGE WHEN SEARCH / FILTER CHANGES
+    ============================================================
+    */
+
+    useEffect(() => {
+
+        setCurrentPage(1);
+
+    }, [
+        search,
+        status
+    ]);
+
+
+    /*
+    ============================================================
+    PAGINATION
+    ============================================================
+    */
+
+    const totalPages =
+        Math.ceil(
+            filteredRoomTypes.length /
+            RECORDS_PER_PAGE
+        );
+
+
+    /*
+    Make sure current page is valid
+    */
+
+    useEffect(() => {
+
+        if (
+            totalPages > 0 &&
+            currentPage > totalPages
+        ) {
+
+            setCurrentPage(totalPages);
+
+        }
+
+        if (totalPages === 0) {
+
+            setCurrentPage(1);
+
+        }
+
+    }, [
+        totalPages,
+        currentPage
+    ]);
+
+
+    /*
+    ============================================================
+    CURRENT PAGE DATA
+    ============================================================
+    */
+
+    const paginatedRoomTypes =
+        useMemo(() => {
+
+            const startIndex =
+                (currentPage - 1) *
+                RECORDS_PER_PAGE;
+
+            const endIndex =
+                startIndex +
+                RECORDS_PER_PAGE;
+
+            return filteredRoomTypes.slice(
+                startIndex,
+                endIndex
+            );
+
+        }, [
+            filteredRoomTypes,
+            currentPage
+        ]);
+
+
+    /*
+    ============================================================
+    PAGINATION CONTROLS
+    ============================================================
+    */
+
+    const handlePreviousPage = () => {
+
+        setCurrentPage((page) =>
+            Math.max(page - 1, 1)
+        );
+
+    };
+
+
+    const handleNextPage = () => {
+
+        setCurrentPage((page) =>
+            Math.min(
+                page + 1,
+                totalPages
+            )
+        );
+
+    };
+
+
+    /*
+    ============================================================
     VIEW
     ============================================================
     */
 
     const handleView = (roomType) => {
-
-        console.log(
-            "View room type:",
-            roomType
-        );
 
         setSelectedRoomType(
             roomType
@@ -320,7 +435,7 @@ const RoomTypes = () => {
                     <RoomTypeTable
 
                         roomTypes={
-                            filteredRoomTypes
+                            paginatedRoomTypes
                         }
 
                         onView={
@@ -330,7 +445,97 @@ const RoomTypes = () => {
                     />
 
 
-                    {/* VIEW PANEL */}
+                    {/* ==================================================
+                        PAGINATION
+                    ================================================== */}
+
+                    {filteredRoomTypes.length > 0 && (
+
+                        <div className="roomtypes-pagination">
+
+
+                            {/* INFO */}
+
+                            <div className="roomtypes-pagination-info">
+
+                                Showing{" "}
+
+                                <strong>
+                                    {(
+                                        (currentPage - 1) *
+                                        RECORDS_PER_PAGE
+                                    ) + 1}
+                                </strong>
+
+                                {" "}to{" "}
+
+                                <strong>
+                                    {Math.min(
+                                        currentPage *
+                                        RECORDS_PER_PAGE,
+                                        filteredRoomTypes.length
+                                    )}
+                                </strong>
+
+                                {" "}of{" "}
+
+                                <strong>
+                                    {filteredRoomTypes.length}
+                                </strong>
+
+                                {" "}room types
+
+                            </div>
+
+
+                            {/* BUTTONS */}
+
+                            <div className="roomtypes-pagination-controls">
+
+                                <button
+                                    type="button"
+                                    className="roomtypes-pagination-arrow"
+                                    onClick={
+                                        handlePreviousPage
+                                    }
+                                    disabled={
+                                        currentPage === 1
+                                    }
+                                >
+                                    &lt;
+                                </button>
+
+
+                                <span className="roomtypes-pagination-page">
+
+                                    {currentPage}
+
+                                </span>
+
+
+                                <button
+                                    type="button"
+                                    className="roomtypes-pagination-arrow"
+                                    onClick={
+                                        handleNextPage
+                                    }
+                                    disabled={
+                                        currentPage === totalPages
+                                    }
+                                >
+                                    &gt;
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    )}
+
+
+                    {/* ==================================================
+                        VIEW PANEL
+                    ================================================== */}
 
                     {selectedRoomType && (
 

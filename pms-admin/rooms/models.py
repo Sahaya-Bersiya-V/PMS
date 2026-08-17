@@ -81,6 +81,11 @@ class Room(models.Model):
         default="available"
     )
 
+    cleaning_until=models.DateTimeField(
+        blank=True,
+        null=True
+    )
+
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,

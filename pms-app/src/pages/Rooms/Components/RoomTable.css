@@ -196,3 +196,13 @@
 .empty-room span {
     font-size: 11px;
 }
+
+.cleaning-until {
+    margin-top: 6px;
+
+    font-size: 11px;
+
+    color: #8a6a24;
+
+    font-weight: 500;
+}
