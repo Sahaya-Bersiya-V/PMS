@@ -4,337 +4,683 @@
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="employee-page">
 
-    <div>
-        <h2 class="fw-bold mb-1">Add Employee</h2>
-        <p class="text-muted mb-0">
-            Create a new employee account.
-        </p>
+    <!-- ==========================================
+         PAGE HEADER
+    =========================================== -->
+
+    <div class="employee-page-header">
+
+        <div>
+            <h2>
+                Add Employee
+            </h2>
+
+            <p>
+                Create a new employee account and assign
+                access to the hotel.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'employee-list' %}"
+            class="employee-back-btn"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Back to Employees
+        </a>
+
     </div>
 
-    <a href="{% url 'employee-list' %}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left"></i>
-        Back
-    </a>
+
+    <!-- ==========================================
+         MESSAGES
+    =========================================== -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="employee-alert">
+
+                <i class="bi bi-info-circle"></i>
+
+                <span>
+                    {{ message }}
+                </span>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- ==========================================
+         FORM
+    =========================================== -->
+
+    <form
+        method="POST"
+        autocomplete="off"
+    >
+
+        {% csrf_token %}
+
+
+        <!-- ======================================
+             PERSONAL INFORMATION
+        ======================================= -->
+
+        <div class="employee-card">
+
+            <div class="employee-card-header">
+
+                <div class="section-icon blue">
+                    <i class="bi bi-person"></i>
+                </div>
+
+                <div>
+
+                    <h4>
+                        Personal Information
+                    </h4>
+
+                    <p>
+                        Enter the employee's personal details.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="employee-card-body">
+
+                <div class="form-grid">
+
+                    <!-- First Name -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            First Name
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="first_name"
+                            class="employee-input"
+                            placeholder="Enter first name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Last Name -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Last Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="last_name"
+                            class="employee-input"
+                            placeholder="Enter last name"
+                        >
+
+                    </div>
+
+
+                    <!-- Phone -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Phone Number
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="tel"
+                            name="phone"
+                            class="employee-input"
+                            placeholder="Enter phone number"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="employee-input"
+                            placeholder="Enter email address"
+                        >
+
+                    </div>
+
+
+                    <!-- Address -->
+
+                    <div class="employee-field full">
+
+                        <label>
+                            Address
+                        </label>
+
+                        <textarea
+                            name="address"
+                            class="employee-input employee-textarea"
+                            placeholder="Enter employee address"
+                            rows="3"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             EMPLOYMENT INFORMATION
+        ======================================= -->
+
+        <div class="employee-card">
+
+            <div class="employee-card-header">
+
+                <div class="section-icon purple">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+
+                <div>
+
+                    <h4>
+                        Employment Information
+                    </h4>
+
+                    <p>
+                        Assign the employee to a hotel and department.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="employee-card-body">
+
+                <div class="form-grid">
+
+                    <!-- Hotel -->
+
+                    <div class="employee-field full">
+
+                        <label>
+                            Hotel
+                            <span>*</span>
+                        </label>
+
+                        <select
+                            name="hotel"
+                            class="employee-input"
+                            required
+                        >
+
+                            <option value="">
+                                Select Hotel
+                            </option>
+
+                            {% for hotel in hotels %}
+
+                                <option
+                                    value="{{ hotel.id }}"
+                                >
+                                    {{ hotel.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Employee ID -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Employee ID
+                        </label>
+
+                        <div class="readonly-input">
+
+                            <i class="bi bi-hash"></i>
+
+                            Auto Generated
+
+                        </div>
+
+                        <small>
+                            Employee ID will be generated automatically.
+                        </small>
+
+                    </div>
+
+
+                    <!-- Department -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Department
+                            <span>*</span>
+                        </label>
+
+                        <select
+                            name="department"
+                            class="employee-input"
+                            required
+                        >
+
+                            <option value="">
+                                Select Department
+                            </option>
+
+                            {% for value, label in department_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Designation -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Designation
+                            <span>*</span>
+                        </label>
+
+                        <select
+                            name="designation"
+                            class="employee-input"
+                            required
+                        >
+
+                            <option value="">
+                                Select Designation
+                            </option>
+
+                            <option value="Frontdesk">
+                                Frontdesk
+                            </option>
+
+                            <option value="Receptionist">
+                                Receptionist
+                            </option>
+
+                            <option value="Manager">
+                                Manager
+                            </option>
+
+                            <option value="Accountant">
+                                Accountant
+                            </option>
+
+                            <option value="Housekeeping">
+                                Housekeeping
+                            </option>
+
+                            <option value="Admin">
+                                Admin
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Joining Date -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Joining Date
+                            <span>*</span>
+                        </label>
+
+                        <input
+                            type="date"
+                            name="joining_date"
+                            class="employee-input"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- Salary -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Salary
+                        </label>
+
+                        <div class="money-input">
+
+                            <span>₹</span>
+
+                            <input
+                                type="number"
+                                name="salary"
+                                min="0"
+                                step="0.01"
+                                placeholder="0.00"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Employment Status
+                            <span>*</span>
+                        </label>
+
+                        <select
+                            name="status"
+                            class="employee-input"
+                            required
+                        >
+
+                            {% for value, label in status_choices %}
+
+                                <option
+                                    value="{{ value }}"
+                                    {% if value == "active" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ label }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             ACCOUNT INFORMATION
+        ======================================= -->
+
+        <div class="employee-card">
+
+            <div class="employee-card-header">
+
+                <div class="section-icon green">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+
+                <div>
+
+                    <h4>
+                        Account Information
+                    </h4>
+
+                    <p>
+                        These credentials will be used to log in.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="employee-card-body">
+
+                <div class="form-grid">
+
+                    <!-- Username -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Username
+                            <span>*</span>
+                        </label>
+
+                        <div class="input-with-icon">
+
+                            <i class="bi bi-person"></i>
+
+                            <input
+                                type="text"
+                                name="username"
+                                class="employee-input"
+                                placeholder="Enter username"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Password -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Password
+                            <span>*</span>
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                name="password"
+                                id="employeePassword"
+                                class="employee-input"
+                                placeholder="Enter password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword(
+                                    'employeePassword',
+                                    'passwordIcon'
+                                )"
+                            >
+
+                                <i
+                                    class="bi bi-eye"
+                                    id="passwordIcon"
+                                ></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Confirm Password -->
+
+                    <div class="employee-field">
+
+                        <label>
+                            Confirm Password
+                            <span>*</span>
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                name="confirm_password"
+                                id="confirmPassword"
+                                class="employee-input"
+                                placeholder="Confirm password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword(
+                                    'confirmPassword',
+                                    'confirmPasswordIcon'
+                                )"
+                            >
+
+                                <i
+                                    class="bi bi-eye"
+                                    id="confirmPasswordIcon"
+                                ></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="login-info">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    <span>
+                        The username and password will be used by
+                        the employee to access the Front Desk system.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             ACTIONS
+        ======================================= -->
+
+        <div class="employee-form-actions">
+
+            <a
+                href="{% url 'employee-list' %}"
+                class="cancel-btn"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="save-employee-btn"
+            >
+
+                <i class="bi bi-person-plus"></i>
+
+                Create Employee
+
+            </button>
+
+        </div>
+
+    </form>
 
 </div>
 
-<form>
 
-<!-- Personal Information -->
+<!-- ==========================================
+     PASSWORD SCRIPT
+=========================================== -->
 
-<div class="card shadow-sm border-0 mb-4">
+<script>
 
-<div class="card-header bg-white">
+function togglePassword(inputId, iconId) {
 
-<h5 class="mb-0">
-👤 Personal Information
-</h5>
+    const input =
+        document.getElementById(inputId);
 
-</div>
+    const icon =
+        document.getElementById(iconId);
 
-<div class="card-body">
+    if (input.type === "password") {
 
-<div class="row">
+        input.type = "text";
 
-<div class="col-md-6 mb-3">
+        icon.classList.remove(
+            "bi-eye"
+        );
 
-<label class="form-label">Full Name</label>
+        icon.classList.add(
+            "bi-eye-slash"
+        );
 
-<input
-type="text"
-class="form-control"
-placeholder="Enter Full Name">
+    } else {
 
-</div>
+        input.type = "password";
 
-<div class="col-md-6 mb-3">
+        icon.classList.remove(
+            "bi-eye-slash"
+        );
 
-<label class="form-label">Gender</label>
+        icon.classList.add(
+            "bi-eye"
+        );
+    }
+}
 
-<select class="form-select">
-
-<option>Select Gender</option>
-<option>Male</option>
-<option>Female</option>
-<option>Other</option>
-
-</select>
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">Phone Number</label>
-
-<input
-type="text"
-class="form-control"
-placeholder="Enter Phone Number">
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">Email</label>
-
-<input
-type="email"
-class="form-control"
-placeholder="Enter Email">
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">Date of Birth</label>
-
-<input
-type="date"
-class="form-control">
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">Address</label>
-
-<textarea
-rows="3"
-class="form-control"
-placeholder="Enter Address"></textarea>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- Employment -->
-
-<div class="card shadow-sm border-0 mb-4">
-
-<div class="card-header bg-white">
-
-<h5 class="mb-0">
-💼 Employment Information
-</h5>
-
-</div>
-
-<div class="card-body">
-
-<div class="row">
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">
-
-Employee ID
-
-</label>
-
-<input
-type="text"
-class="form-control"
-placeholder="Auto Generated"
-disabled>
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">
-
-Department
-
-</label>
-
-<select class="form-select">
-
-<option>Front Office</option>
-<option>Management</option>
-<option>Accounts</option>
-
-</select>
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">
-
-Role
-
-</label>
-
-<select class="form-select">
-
-<option>Frontdesk</option>
-<option>Manager</option>
-<option>Admin</option>
-
-</select>
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">
-
-Joining Date
-
-</label>
-
-<input
-type="date"
-class="form-control">
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">
-
-Employment Type
-
-</label>
-
-<select class="form-select">
-
-<option>Full Time</option>
-<option>Part Time</option>
-
-</select>
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-<label class="form-label">
-
-Status
-
-</label>
-
-<select class="form-select">
-
-<option>Active</option>
-<option>Inactive</option>
-
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- Account -->
-
-<div class="card shadow-sm border-0 mb-4">
-
-<div class="card-header bg-white">
-
-<h5 class="mb-0">
-🔐 Account Information
-</h5>
-
-</div>
-
-<div class="card-body">
-
-<div class="row">
-
-<div class="col-md-4 mb-3">
-
-<label class="form-label">
-
-Username
-
-</label>
-
-<input
-type="text"
-class="form-control"
-placeholder="Username">
-
-</div>
-
-<div class="col-md-4 mb-3">
-
-<label class="form-label">
-
-Password
-
-</label>
-
-<input
-type="password"
-class="form-control"
-placeholder="Password">
-
-</div>
-
-<div class="col-md-4 mb-3">
-
-<label class="form-label">
-
-Confirm Password
-
-</label>
-
-<input
-type="password"
-class="form-control"
-placeholder="Confirm Password">
-
-</div>
-
-<div class="col-md-12">
-
-<label class="form-label">
-
-Profile Photo
-
-</label>
-
-<input
-type="file"
-class="form-control">
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="text-end">
-
-<a
-href="{% url 'employee-list' %}"
-class="btn btn-secondary">
-
-Cancel
-
-</a>
-
-<button
-class="btn btn-primary">
-
-Save Employee
-
-</button>
-
-</div>
-
-</form>
+</script>
 
 {% endblock %}

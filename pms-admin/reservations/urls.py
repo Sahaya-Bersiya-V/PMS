@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    reservation_list_page,
     ReservationListCreateView,
     ReservationDetailView,
     AvailableRoomsView,
@@ -9,11 +10,24 @@ from .views import (
     CancelReservationView,
     MarkPaymentPaidView,
     GuestListView,
-    GuestDetailView
+    GuestDetailView,
+    reservation_ui_detail
 )
 
 
 urlpatterns = [
+
+    path(
+        "ui/",
+        reservation_list_page,
+        name="reservation-list"
+    ),
+
+    path(
+    "<int:pk>/view/",
+    reservation_ui_detail,
+    name="reservation-ui-detail"
+),
 
     path(
         "guests/",

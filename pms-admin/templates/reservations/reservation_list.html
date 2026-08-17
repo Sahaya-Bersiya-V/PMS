@@ -1,528 +1,714 @@
-{% extends 'base.html' %}
 
+{% extends 'base.html' %}
+{% load static %}
 {% block title %}Reservations{% endblock %}
 
 {% block content %}
+<link
+    rel="stylesheet"
+    href="{% static 'reservations/reservations.css' %}"
+>
 
-<!-- =======================================
-PAGE HEADER
-======================================== -->
+<div class="reservations-page">
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- ==========================================
+         PAGE HEADER
+    =========================================== -->
 
-    <div>
+    <div class="reservation-header">
 
-        <h2 class="fw-bold mb-1">
-            Reservations
-        </h2>
+        <div class="reservation-header-left">
 
-        <p class="text-muted mb-0">
-            Monitor all hotel reservations.
-        </p>
+            <div class="reservation-title-icon">
+                <i class="bi bi-calendar2-check"></i>
+            </div>
+
+            <div>
+
+                <h1>
+                    Reservations
+                </h1>
+
+                <p>
+                    Manage guest reservations, stays and booking status.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="reservation-header-right">
+
+            <div class="header-date">
+
+                <i class="bi bi-calendar3"></i>
+
+                <span>
+                    {% now "l, d M Y" %}
+                </span>
+
+            </div>
+
+        </div>
 
     </div>
 
-    <button class="btn btn-outline-primary">
 
-        <i class="bi bi-download me-2"></i>
+    <!-- ==========================================
+         SUMMARY CARDS
+    =========================================== -->
 
-        Export
+    <div class="reservation-summary-grid">
 
-    </button>
 
-</div>
+        <!-- Total -->
 
-<!-- =======================================
-SUMMARY CARDS
-======================================== -->
+        <div class="reservation-stat-card total-card">
 
-<div class="row g-3 mb-4">
+            <div class="stat-content">
 
-    <div class="col-lg-3 col-md-6">
-
-        <div class="card shadow-sm border-0">
-
-            <div class="card-body">
-
-                <small class="text-muted">
+                <span class="stat-label">
                     Total Reservations
-                </small>
+                </span>
 
-                <h3 class="mt-2 fw-bold">
+                <strong class="stat-number">
                     {{ reservations|length }}
-                </h3>
+                </strong>
 
+                <span class="stat-description">
+                    All bookings
+                </span>
+
+            </div>
+
+            <div class="stat-icon">
+                <i class="bi bi-calendar-check"></i>
             </div>
 
         </div>
 
-    </div>
 
-    <div class="col-lg-3 col-md-6">
+        <!-- Checked In -->
 
-        <div class="card shadow-sm border-0">
+        <div class="reservation-stat-card checkin-card">
 
-            <div class="card-body">
+            <div class="stat-content">
 
-                <small class="text-muted">
+                <span class="stat-label">
                     Checked In
-                </small>
+                </span>
 
-                <h3 class="mt-2 fw-bold text-success">
+                <strong class="stat-number">
+                    {{ checked_in_count }}
+                </strong>
 
-                    12
+                <span class="stat-description">
+                    Currently staying
+                </span>
 
-                </h3>
+            </div>
 
+            <div class="stat-icon">
+                <i class="bi bi-box-arrow-in-right"></i>
             </div>
 
         </div>
 
-    </div>
 
-    <div class="col-lg-3 col-md-6">
+        <!-- Checked Out -->
 
-        <div class="card shadow-sm border-0">
+        <div class="reservation-stat-card checkout-card">
 
-            <div class="card-body">
+            <div class="stat-content">
 
-                <small class="text-muted">
+                <span class="stat-label">
                     Checked Out
-                </small>
+                </span>
 
-                <h3 class="mt-2 fw-bold text-primary">
+                <strong class="stat-number">
+                    {{ checked_out_count }}
+                </strong>
 
-                    20
+                <span class="stat-description">
+                    Completed stays
+                </span>
 
-                </h3>
+            </div>
 
+            <div class="stat-icon">
+                <i class="bi bi-box-arrow-right"></i>
             </div>
 
         </div>
 
-    </div>
 
-    <div class="col-lg-3 col-md-6">
+        <!-- Pending -->
 
-        <div class="card shadow-sm border-0">
+        <div class="reservation-stat-card pending-card">
 
-            <div class="card-body">
+            <div class="stat-content">
 
-                <small class="text-muted">
+                <span class="stat-label">
                     Pending Payment
-                </small>
+                </span>
 
-                <h3 class="mt-2 fw-bold text-warning">
+                <strong class="stat-number">
+                    {{ pending_payment_count }}
+                </strong>
 
-                    5
+                <span class="stat-description">
+                    Awaiting payment
+                </span>
 
-                </h3>
+            </div>
 
+            <div class="stat-icon">
+                <i class="bi bi-credit-card"></i>
             </div>
 
         </div>
 
     </div>
 
-</div>
 
-<!-- =======================================
-FILTERS
-======================================== -->
+    <!-- ==========================================
+         FILTER SECTION
+    =========================================== -->
 
-<form method="GET">
+    <div class="reservation-filter-card">
 
-<div class="card shadow-sm border-0 mb-4">
+        <div class="filter-header">
 
-<div class="card-body">
+            <div>
 
-<div class="row g-3 align-items-end">
+                <h3>
+                    <i class="bi bi-funnel"></i>
+                    Find Reservations
+                </h3>
 
-<div class="col-lg-3">
+                <p>
+                    Search and filter reservation records.
+                </p>
 
-<label class="form-label">
+            </div>
 
-Search
+        </div>
 
-</label>
 
-<input
+        <form method="GET">
 
-type="text"
+            <div class="reservation-filter-grid">
 
-name="search"
 
-class="form-control"
+                <!-- Search -->
 
-value="{{ search }}"
+                <div class="filter-field search-field">
 
-placeholder="Reservation / Guest / Phone">
+                    <label>
+                        Search
+                    </label>
 
-</div>
+                    <div class="input-with-icon">
 
-<div class="col-lg-2">
+                        <i class="bi bi-search"></i>
 
-<label class="form-label">
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ search }}"
+                            placeholder="Reservation, guest, phone or room"
+                        >
 
-Status
+                    </div>
 
-</label>
+                </div>
 
-<select
 
-name="status"
+                <!-- Status -->
 
-class="form-select">
+                <div class="filter-field">
 
-<option value="">All</option>
+                    <label>
+                        Status
+                    </label>
 
-<option value="Confirmed">Confirmed</option>
+                    <select
+                        name="status"
+                        class="reservation-select"
+                    >
 
-<option value="Checked In">Checked In</option>
+                        <option value="">
+                            All Status
+                        </option>
 
-<option value="Checked Out">Checked Out</option>
+                        <option
+                            value="pending"
+                            {% if status == "pending" %}selected{% endif %}
+                        >
+                            Pending
+                        </option>
 
-<option value="Cancelled">Cancelled</option>
+                        <option
+                            value="confirmed"
+                            {% if status == "confirmed" %}selected{% endif %}
+                        >
+                            Confirmed
+                        </option>
 
-</select>
+                        <option
+                            value="checked_in"
+                            {% if status == "checked_in" %}selected{% endif %}
+                        >
+                            Checked In
+                        </option>
 
-</div>
+                        <option
+                            value="checked_out"
+                            {% if status == "checked_out" %}selected{% endif %}
+                        >
+                            Checked Out
+                        </option>
 
-<div class="col-lg-2">
+                        <option
+                            value="cancelled"
+                            {% if status == "cancelled" %}selected{% endif %}
+                        >
+                            Cancelled
+                        </option>
 
-<label class="form-label">
+                        <option
+                            value="no_show"
+                            {% if status == "no_show" %}selected{% endif %}
+                        >
+                            No Show
+                        </option>
 
-Payment
+                    </select>
 
-</label>
+                </div>
 
-<select
 
-name="payment"
+                <!-- Payment -->
 
-class="form-select">
+                <div class="filter-field">
 
-<option value="">All</option>
+                    <label>
+                        Payment
+                    </label>
 
-<option value="Paid">Paid</option>
+                    <select
+                        name="payment"
+                        class="reservation-select"
+                    >
 
-<option value="Pending">Pending</option>
+                        <option value="">
+                            All Payments
+                        </option>
 
-</select>
+                        <option
+                            value="paid"
+                            {% if payment == "paid" %}selected{% endif %}
+                        >
+                            Paid
+                        </option>
 
-</div>
+                        <option
+                            value="pending"
+                            {% if payment == "pending" %}selected{% endif %}
+                        >
+                            Pending
+                        </option>
 
-<div class="col-lg-2">
+                    </select>
 
-<label class="form-label">
+                </div>
 
-Check-in
 
-</label>
+                <!-- Check In -->
 
-<input
+                <div class="filter-field">
 
-type="date"
+                    <label>
+                        Check-In From
+                    </label>
 
-name="check_in"
+                    <input
+                        type="date"
+                        name="check_in"
+                        value="{{ check_in }}"
+                    >
 
-value="{{ check_in }}"
+                </div>
 
-class="form-control">
 
-</div>
+                <!-- Check Out -->
 
-<div class="col-lg-2">
+                <div class="filter-field">
 
-<label class="form-label">
+                    <label>
+                        Check-Out Until
+                    </label>
 
-Check-out
+                    <input
+                        type="date"
+                        name="check_out"
+                        value="{{ check_out }}"
+                    >
 
-</label>
+                </div>
 
-<input
 
-type="date"
+            </div>
 
-name="check_out"
 
-value="{{ check_out }}"
+            <div class="filter-actions">
 
-class="form-control">
+                <button
+                    type="submit"
+                    class="reservation-filter-btn"
+                >
+                    <i class="bi bi-funnel"></i>
+                    Apply Filters
+                </button>
 
-</div>
 
-<div class="col-lg-1 d-grid">
+                <a
+                    href="{% url 'reservation-list' %}"
+                    class="reservation-clear-btn"
+                >
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    Clear
+                </a>
 
-<button
+            </div>
 
-class="btn btn-primary">
+        </form>
 
-Go
+    </div>
 
-</button>
 
-</div>
+    <!-- ==========================================
+         RESERVATION TABLE
+    =========================================== -->
 
-</div>
+    <div class="reservation-table-card">
 
-<div class="mt-3">
 
-<a
+        <div class="table-card-header">
 
-href="{% url 'reservation-list' %}"
+            <div>
 
-class="btn btn-outline-secondary">
+                <h3>
+                    Reservation List
+                </h3>
 
-Reset Filters
+                <p>
+                    {{ reservations|length }} reservation(s) found
+                </p>
 
-</a>
+            </div>
 
-</div>
+        </div>
 
-</div>
 
-</div>
+        <div class="reservation-table-wrapper">
 
-</form>
+            <table class="reservation-table">
 
-<!-- =======================================
-TABLE
-======================================== -->
+                <thead>
 
-<div class="card shadow-sm border-0">
+                    <tr>
 
-<div class="table-responsive">
+                        <th>
+                            Reservation
+                        </th>
 
-<table class="table table-hover align-middle mb-0">
+                        <th>
+                            Guest
+                        </th>
 
-<thead class="table-light">
+                        <th>
+                            Room
+                        </th>
 
-<tr>
+                        <th>
+                            Stay
+                        </th>
 
-<th width="20%">Reservation</th>
+                        <th>
+                            Payment
+                        </th>
 
-<th width="20%">Guest</th>
+                        <th>
+                            Status
+                        </th>
 
-<th width="20%">Stay</th>
+                        <th class="text-center">
+                            Action
+                        </th>
 
-<th width="15%">Payment</th>
+                    </tr>
 
-<th width="15%">Status</th>
+                </thead>
 
-<th width="10%" class="text-center">
 
-Actions
+                <tbody>
 
-</th>
 
-</tr>
+                {% for reservation in reservations %}
 
-</thead>
+                    <tr>
 
-<tbody>
 
-{% for reservation in reservations %}
+                        <!-- Reservation -->
 
-<tr>
+                        <td>
+
+                            <div class="reservation-id">
+
+                                <span class="reservation-id-icon">
+                                    <i class="bi bi-receipt"></i>
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        {{ reservation.reservation_number }}
+                                    </strong>
+
+                                    <small>
+                                        {{ reservation.hotel.name }}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+    <div class="guest-cell">
+
+        <div class="guest-avatar">
+
+            {{ reservation.guest.first_name|first|upper }}
+
+        </div>
+
+        <div>
+
+            <strong>
+                {{ reservation.guest.first_name }}
+                {{ reservation.guest.last_name }}
+            </strong>
+
+            <small>
+                {{ reservation.guest.phone }}
+            </small>
+
+        </div>
+
+    </div>
+
+</td>
+
 
 <td>
 
-<strong>
+    <div class="room-cell">
 
-{{ reservation.id }}
+        <span class="room-number">
+            Room {{ reservation.room.room_number }}
+        </span>
 
-</strong>
+        <small>
+            {{ reservation.room.room_type.name }}
+        </small>
 
-<br>
-
-<small class="text-muted">
-
-{{ reservation.hotel }}
-
-</small>
+    </div>
 
 </td>
 
-<td>
 
-<strong>
+                        <!-- Stay -->
 
-{{ reservation.guest }}
+                        <td>
 
-</strong>
+                            <div class="stay-cell">
 
-<br>
+                                <div>
 
-<small class="text-muted">
+                                    <i class="bi bi-box-arrow-in-right"></i>
 
-{{ reservation.phone }}
+                                    {{ reservation.check_in|date:"d M Y" }}
 
-</small>
+                                </div>
 
-</td>
+                                <div>
 
-<td>
+                                    <i class="bi bi-box-arrow-right"></i>
 
-Room {{ reservation.room }}
+                                    {{ reservation.check_out|date:"d M Y" }}
 
-<br>
+                                </div>
 
-<small class="text-muted">
+                            </div>
 
-{{ reservation.check_in }}
+                        </td>
 
-→
 
-{{ reservation.check_out }}
+                        <!-- Payment -->
 
-</small>
+                        <td>
 
-</td>
+                            <div class="payment-cell">
 
-<td>
+                                <strong>
+                                    ₹{{ reservation.total_amount|floatformat:0 }}
+                                </strong>
 
-<strong>
+                                {% if reservation.payment_status == "paid" %}
 
-{{ reservation.amount }}
+                                    <span class="payment-badge paid">
+                                        <i class="bi bi-check-circle"></i>
+                                        Paid
+                                    </span>
 
-</strong>
+                                {% else %}
 
-<br>
+                                    <span class="payment-badge pending">
+                                        <i class="bi bi-clock"></i>
+                                        Pending
+                                    </span>
 
-<small>
+                                {% endif %}
 
-{{ reservation.payment }}
+                            </div>
 
-</small>
+                        </td>
 
-</td>
 
-<td>
+                        <!-- Status -->
 
-{% if reservation.status == "Checked In" %}
+                        <td>
 
-<span class="badge bg-success">
+                            {% if reservation.status == "pending" %}
 
-{{ reservation.status }}
+                                <span class="status-badge status-pending">
+                                    Pending
+                                </span>
 
-</span>
+                            {% elif reservation.status == "confirmed" %}
 
-{% elif reservation.status == "Checked Out" %}
+                                <span class="status-badge status-confirmed">
+                                    Confirmed
+                                </span>
 
-<span class="badge bg-primary">
+                            {% elif reservation.status == "checked_in" %}
 
-{{ reservation.status }}
+                                <span class="status-badge status-checked-in">
+                                    Checked In
+                                </span>
 
-</span>
+                            {% elif reservation.status == "checked_out" %}
 
-{% elif reservation.status == "Confirmed" %}
+                                <span class="status-badge status-checked-out">
+                                    Checked Out
+                                </span>
 
-<span class="badge bg-info text-dark">
+                            {% elif reservation.status == "cancelled" %}
 
-{{ reservation.status }}
+                                <span class="status-badge status-cancelled">
+                                    Cancelled
+                                </span>
 
-</span>
+                            {% elif reservation.status == "no_show" %}
 
-{% else %}
+                                <span class="status-badge status-no-show">
+                                    No Show
+                                </span>
 
-<span class="badge bg-danger">
+                            {% endif %}
 
-{{ reservation.status }}
+                        </td>
 
-</span>
 
-{% endif %}
+                        <!-- Action -->
 
-</td>
+                        <td class="text-center">
 
-<td class="text-center">
-
-<a
-
-href="#"
-
-class="btn btn-info btn-sm text-white">
-
-<i class="bi bi-eye"></i>
-
+                            <a
+    href="{% url 'reservation-ui-detail' reservation.id %}"
+    class="btn btn-view"
+>
+    <i class="bi bi-eye"></i>
+    View
 </a>
 
-</td>
+                        </td>
 
-</tr>
+                    </tr>
 
-{% empty %}
 
-<tr>
+                {% empty %}
 
-<td colspan="6" class="text-center py-5">
+                    <tr>
 
-No reservations found.
+                        <td
+                            colspan="7"
+                            class="empty-reservations"
+                        >
 
-</td>
+                            <div>
 
-</tr>
+                                <div class="empty-icon">
 
-{% endfor %}
+                                    <i class="bi bi-calendar-x"></i>
 
-</tbody>
+                                </div>
 
-</table>
+                                <h3>
+                                    No Reservations Found
+                                </h3>
 
-</div>
+                                <p>
+                                    Try changing your search or filter criteria.
+                                </p>
 
-</div>
+                            </div>
 
-<!-- =======================================
-PAGINATION
-======================================== -->
+                        </td>
 
-<div class="d-flex justify-content-between align-items-center mt-4">
+                    </tr>
 
-<span class="text-muted">
+                {% endfor %}
 
-Showing {{ reservations|length }} reservation(s)
 
-</span>
+                </tbody>
 
-<nav>
+            </table>
 
-<ul class="pagination mb-0">
+        </div>
 
-<li class="page-item disabled">
 
-<a class="page-link">
+        <!-- TABLE FOOTER -->
 
-Previous
+        <div class="reservation-table-footer">
 
-</a>
+            <span>
 
-</li>
+                Showing
+                <strong>{{ reservations|length }}</strong>
+                reservation(s)
 
-<li class="page-item active">
+            </span>
 
-<a class="page-link">
+        </div>
 
-1
-
-</a>
-
-</li>
-
-<li class="page-item disabled">
-
-<a class="page-link">
-
-Next
-
-</a>
-
-</li>
-
-</ul>
-
-</nav>
+    </div>
 
 </div>
 

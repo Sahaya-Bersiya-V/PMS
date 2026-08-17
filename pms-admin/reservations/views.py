@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.db import transaction
 from django.db.models import Q
 from django.utils.dateparse import parse_datetime
@@ -55,7 +55,27 @@ from .serializers import (
 #     },
 # ]
 
+def reservation_ui_detail(request, pk):
 
+    reservation = get_object_or_404(
+        Reservation.objects.select_related(
+            "hotel",
+            "guest",
+            "room",
+            "room__room_type",
+        ),
+        pk=pk
+    )
+
+    context = {
+        "reservation": reservation,
+    }
+
+    return render(
+        request,
+        "reservations/reservation_detail.html",
+        context
+    )
 # =========================================================
 # GUEST SEARCH
 # =========================================================
@@ -1367,3 +1387,177 @@ class GuestDetailView(APIView):
         return Response(
             serializer.data
         )
+
+
+    # =========================================================
+# RESERVATION ADMIN UI
+# =========================================================
+
+def reservation_list_page(request):
+
+    reservations = Reservation.objects.select_related(
+        "hotel",
+        "guest",
+        "room",
+        "room__room_type"
+    ).all()
+
+    search = request.GET.get(
+        "search",
+        ""
+    ).strip()
+
+    reservation_status = request.GET.get(
+        "status",
+        ""
+    )
+
+    payment = request.GET.get(
+        "payment",
+        ""
+    )
+
+    check_in = request.GET.get(
+        "check_in",
+        ""
+    )
+
+    check_out = request.GET.get(
+        "check_out",
+        ""
+    )
+
+
+    # ==========================================
+    # SEARCH
+    # ==========================================
+
+    if search:
+
+        reservations = reservations.filter(
+
+            Q(
+                reservation_number__icontains=search
+            )
+
+            |
+
+            Q(
+                guest__first_name__icontains=search
+            )
+
+            |
+
+            Q(
+                guest__last_name__icontains=search
+            )
+
+            |
+
+            Q(
+                guest__phone__icontains=search
+            )
+
+            |
+
+            Q(
+                room__room_number__icontains=search
+            )
+
+        )
+
+
+    # ==========================================
+    # STATUS
+    # ==========================================
+
+    if reservation_status:
+
+        reservations = reservations.filter(
+            status=reservation_status
+        )
+
+
+    # ==========================================
+    # PAYMENT
+    # ==========================================
+
+    if payment:
+
+        reservations = reservations.filter(
+            payment_status=payment
+        )
+
+
+    # ==========================================
+    # CHECK-IN
+    # ==========================================
+
+    if check_in:
+
+        reservations = reservations.filter(
+            check_in__date__gte=check_in
+        )
+
+
+    # ==========================================
+    # CHECK-OUT
+    # ==========================================
+
+    if check_out:
+
+        reservations = reservations.filter(
+            check_out__date__lte=check_out
+        )
+
+
+    # ==========================================
+    # SUMMARY COUNTS
+    # ==========================================
+
+    checked_in_count = Reservation.objects.filter(
+        status="checked_in"
+    ).count()
+
+
+    checked_out_count = Reservation.objects.filter(
+        status="checked_out"
+    ).count()
+
+
+    pending_payment_count = Reservation.objects.filter(
+        payment_status="pending"
+    ).count()
+
+
+    context = {
+
+        "reservations": reservations,
+
+        "search": search,
+
+        "status": reservation_status,
+
+        "payment": payment,
+
+        "check_in": check_in,
+
+        "check_out": check_out,
+
+        "checked_in_count":
+            checked_in_count,
+
+        "checked_out_count":
+            checked_out_count,
+
+        "pending_payment_count":
+            pending_payment_count,
+
+    }
+
+
+    return render(
+        request,
+        "reservations/reservation_list.html",
+        context
+    )

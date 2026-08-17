@@ -1,0 +1,721 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Reservation Details
+{% endblock %}
+
+{% block content %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'reservations/reservation_detail.css' %}"
+>
+
+<div class="reservation-detail-page">
+
+    <!-- =====================================
+         PAGE HEADER
+    ====================================== -->
+
+    <div class="detail-header">
+
+        <div class="header-left">
+
+            <a
+                href="{% url 'reservation-list' %}"
+                class="back-button"
+            >
+                <i class="bi bi-arrow-left"></i>
+            </a>
+
+            <div>
+
+                <div class="page-title-row">
+
+                    <h2>
+                        Reservation Details
+                    </h2>
+
+                    <span class="reservation-number">
+                        {{ reservation.reservation_number }}
+                    </span>
+
+                </div>
+
+                <p>
+                    View complete reservation information
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            {% if reservation.payment_status == "paid" %}
+
+                <span class="status-badge payment-paid">
+                    <i class="bi bi-check-circle"></i>
+                    Paid
+                </span>
+
+            {% else %}
+
+                <span class="status-badge payment-pending">
+                    <i class="bi bi-clock"></i>
+                    Payment Pending
+                </span>
+
+            {% endif %}
+
+
+            {% if reservation.status == "confirmed" %}
+
+                <span class="status-badge status-confirmed">
+                    Confirmed
+                </span>
+
+            {% elif reservation.status == "checked_in" %}
+
+                <span class="status-badge status-checked-in">
+                    Checked In
+                </span>
+
+            {% elif reservation.status == "checked_out" %}
+
+                <span class="status-badge status-checked-out">
+                    Checked Out
+                </span>
+
+            {% elif reservation.status == "cancelled" %}
+
+                <span class="status-badge status-cancelled">
+                    Cancelled
+                </span>
+
+            {% else %}
+
+                <span class="status-badge status-pending">
+                    Pending
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         MAIN GRID
+    ====================================== -->
+
+    <div class="detail-grid-layout">
+
+
+        <!-- =================================
+             LEFT COLUMN
+        ================================== -->
+
+        <div class="detail-main">
+
+
+            <!-- GUEST INFORMATION -->
+
+            <div class="detail-card guest-card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon blue">
+                        <i class="bi bi-person"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Guest Information
+                        </h3>
+
+                        <p>
+                            Primary guest details
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="information-grid">
+
+                    <div class="info-item">
+
+                        <span>
+                            Guest Name
+                        </span>
+
+                        <strong>
+                            {{ reservation.guest.first_name }}
+                            {{ reservation.guest.last_name }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Phone
+                        </span>
+
+                        <strong>
+                            {{ reservation.guest.phone }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong>
+                            {{ reservation.guest.email|default:"Not provided" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Guest ID
+                        </span>
+
+                        <strong>
+                            {{ reservation.guest.guest_id }}
+                        </strong>
+
+                    </div>
+
+
+                    {% if reservation.guest.identity_type %}
+
+                    <div class="info-item">
+
+                        <span>
+                            Identity Type
+                        </span>
+
+                        <strong>
+                            {{ reservation.guest.get_identity_type_display }}
+                        </strong>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    {% if reservation.guest.identity_number %}
+
+                    <div class="info-item">
+
+                        <span>
+                            Identity Number
+                        </span>
+
+                        <strong>
+                            {{ reservation.guest.identity_number }}
+                        </strong>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- HOTEL & ROOM -->
+
+            <div class="detail-card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon purple">
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Room Information
+                        </h3>
+
+                        <p>
+                            Assigned accommodation
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="room-highlight">
+
+                    <div class="room-icon">
+
+                        <i class="bi bi-door-open"></i>
+
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Room Number
+                        </span>
+
+                        <strong>
+                            Room {{ reservation.room.room_number }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="information-grid">
+
+                    <div class="info-item">
+
+                        <span>
+                            Room Type
+                        </span>
+
+                        <strong>
+                            {{ reservation.room.room_type.name }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Floor
+                        </span>
+
+                        <strong>
+                            Floor {{ reservation.room.floor }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Room Rate
+                        </span>
+
+                        <strong>
+                            ₹{{ reservation.room_rate|floatformat:2 }}
+                            / night
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Hotel
+                        </span>
+
+                        <strong>
+                            {{ reservation.hotel.name }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STAY INFORMATION -->
+
+            <div class="detail-card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon orange">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Stay Information
+                        </h3>
+
+                        <p>
+                            Guest stay details
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stay-grid">
+
+                    <div class="date-box">
+
+                        <span>
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Check-In
+                        </span>
+
+                        <strong>
+                            {{ reservation.check_in|date:"d M Y" }}
+                        </strong>
+
+                        <small>
+                            {{ reservation.check_in|date:"h:i A" }}
+                        </small>
+
+                    </div>
+
+
+                    <div class="stay-arrow">
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </div>
+
+
+                    <div class="date-box">
+
+                        <span>
+                            <i class="bi bi-box-arrow-right"></i>
+                            Check-Out
+                        </span>
+
+                        <strong>
+                            {{ reservation.check_out|date:"d M Y" }}
+                        </strong>
+
+                        <small>
+                            {{ reservation.check_out|date:"h:i A" }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="guest-count">
+
+                    <div>
+
+                        <i class="bi bi-people"></i>
+
+                        <span>
+                            Adults
+                        </span>
+
+                        <strong>
+                            {{ reservation.adults }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <i class="bi bi-person"></i>
+
+                        <span>
+                            Children
+                        </span>
+
+                        <strong>
+                            {{ reservation.children }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <i class="bi bi-door-open"></i>
+
+                        <span>
+                            Rooms
+                        </span>
+
+                        <strong>
+                            {{ reservation.number_of_rooms }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SPECIAL REQUEST -->
+
+            {% if reservation.special_requests %}
+
+            <div class="detail-card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon green">
+                        <i class="bi bi-chat-left-text"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Special Requests
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="special-request">
+
+                    {{ reservation.special_requests }}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================
+             RIGHT COLUMN
+        ================================== -->
+
+        <div class="detail-sidebar">
+
+
+            <!-- PAYMENT -->
+
+            <div class="detail-card payment-card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon green">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Payment Summary
+                        </h3>
+
+                        <p>
+                            Reservation billing
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="payment-row">
+
+                    <span>
+                        Room Rate
+                    </span>
+
+                    <strong>
+                        ₹{{ reservation.room_rate|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+
+                <div class="payment-row">
+
+                    <span>
+                        Total Amount
+                    </span>
+
+                    <strong>
+                        ₹{{ reservation.total_amount|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+
+                <div class="payment-row">
+
+                    <span>
+                        Advance Paid
+                    </span>
+
+                    <strong class="paid-text">
+                        ₹{{ reservation.advance_amount|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+
+                <div class="payment-total">
+
+                    <span>
+                        Balance Due
+                    </span>
+
+                    <strong>
+                        ₹{{ reservation.balance_amount|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+
+                <div class="payment-status">
+
+                    {% if reservation.payment_status == "paid" %}
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Payment Completed
+
+                    {% else %}
+
+                        <i class="bi bi-clock-fill"></i>
+
+                        Payment Pending
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- RESERVATION INFORMATION -->
+
+            <div class="detail-card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon blue">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Booking Information
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="booking-info">
+
+                    <div>
+
+                        <span>
+                            Reservation ID
+                        </span>
+
+                        <strong>
+                            {{ reservation.reservation_number }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Booking Source
+                        </span>
+
+                        <strong>
+                            {{ reservation.get_booking_source_display }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Created
+                        </span>
+
+                        <strong>
+                            {{ reservation.created_at|date:"d M Y, h:i A" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Last Updated
+                        </span>
+
+                        <strong>
+                            {{ reservation.updated_at|date:"d M Y, h:i A" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="action-card">
+
+                <a
+                    href="{% url 'reservation-list' %}"
+                    class="action-btn secondary"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Reservations
+                </a>
+
+
+                <!-- <button
+                    type="button"
+                    class="action-btn primary"
+                >
+                    <i class="bi bi-pencil"></i>
+                    Edit Reservation
+                </button> -->
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
