@@ -1353,60 +1353,82 @@ const updateReservationStatus = async (
 ) => {
   try {
 
-    let endpoint = "";
+    console.log("=================================");
+    console.log("DATABASE ID:", databaseId);
+    console.log("STATUS RECEIVED:", status);
+    console.log("STATUS LOWERCASE:", status?.toLowerCase());
+    console.log("=================================");
 
-    if (status === "checked_in") {
+    const normalizedStatus =
+      status?.toLowerCase();
+
+    let endpoint = "";
+    let method = "PATCH";
+
+    if (normalizedStatus === "checked_in") {
 
       endpoint =
         `${RESERVATION_API}/${databaseId}/check-in/`;
 
-    } else if (status === "checked_out") {
+      method = "POST";
+
+    } else if (normalizedStatus === "checked_out") {
 
       endpoint =
         `${RESERVATION_API}/${databaseId}/check-out/`;
 
-    } else if (status === "cancelled") {
+      method = "POST";
+
+    } else if (normalizedStatus === "cancelled") {
 
       endpoint =
         `${RESERVATION_API}/${databaseId}/cancel/`;
+
+      method = "POST";
 
     } else {
 
       endpoint =
         `${RESERVATION_API}/${databaseId}/`;
 
+      method = "PATCH";
+
     }
 
+    console.log("FINAL ENDPOINT:", endpoint);
+    console.log("FINAL METHOD:", method);
 
     const response = await fetch(
       endpoint,
       {
-        method: status === "checked_in" ||
-                status === "checked_out" ||
-                status === "cancelled"
-          ? "POST"
-          : "PATCH",
+        method: method,
 
         headers: {
           "Content-Type": "application/json",
         },
 
-        ...(status !== "checked_in" &&
-          status !== "checked_out" &&
-          status !== "cancelled"
+        ...(method === "PATCH"
           ? {
               body: JSON.stringify({
-                status,
+                status: normalizedStatus,
               }),
             }
           : {}),
       }
     );
 
-
     const data =
       await response.json();
 
+    console.log(
+      "UPDATE STATUS:",
+      response.status
+    );
+
+    console.log(
+      "UPDATE RESPONSE:",
+      data
+    );
 
     if (!response.ok) {
 
@@ -1418,15 +1440,7 @@ const updateReservationStatus = async (
 
     }
 
-
-    console.log(
-      "Status updated:",
-      data
-    );
-
-
     await fetchReservations();
-
 
     setSelectedReservation(
       (prev) => {
@@ -1436,23 +1450,21 @@ const updateReservationStatus = async (
         }
 
         if (
-          prev.databaseId !==
-          databaseId
+          prev.databaseId !== databaseId
         ) {
           return prev;
         }
-
 
         return {
           ...prev,
 
           status:
-            formatStatus(status),
+            formatStatus(normalizedStatus),
+
         };
 
       }
     );
-
 
   } catch (error) {
 
@@ -1464,7 +1476,6 @@ const updateReservationStatus = async (
     alert(
       error.message
     );
-
   }
 };
 

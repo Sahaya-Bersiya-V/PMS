@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Employee(models.Model):
-
+ 
     DEPARTMENT_CHOICES = [
         ("front_office", "Front Office"),
         ("housekeeping", "Housekeeping"),

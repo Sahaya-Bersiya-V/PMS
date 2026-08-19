@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Invoice {{ invoice.invoice_number }}
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.invoice-page {
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.invoice-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 40px;
+    box-shadow: 0 10px 35px rgba(0,0,0,.08);
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+}
+
+.invoice-title {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.invoice-section {
+    margin-top: 25px;
+}
+
+.invoice-section h6 {
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 15px;
+}
+
+.invoice-total {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+@media print {
+
+    body * {
+        visibility: hidden;
+    }
+
+    .invoice-card,
+    .invoice-card * {
+        visibility: visible;
+    }
+
+    .invoice-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="invoice-page">
+
+    <div class="invoice-card">
+
+        <!-- HEADER -->
+
+        <div class="invoice-header">
+
+            <div>
+
+                <div class="invoice-title">
+                    HOTEL INVOICE
+                </div>
+
+                <p class="text-muted mb-0">
+                    {{ invoice.reservation.hotel.name }}
+                </p>
+
+            </div>
+
+            <div class="text-end">
+
+                <strong>
+                    {{ invoice.invoice_number }}
+                </strong>
+
+                <br>
+
+                <small class="text-muted">
+
+                    {{ invoice.issued_at|date:"d M Y" }}
+
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- GUEST -->
+
+        <div class="invoice-section">
+
+            <h6>
+                <i class="bi bi-person me-2"></i>
+                Guest Information
+            </h6>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <strong>
+                        {{ invoice.guest.first_name }}
+                        {{ invoice.guest.last_name }}
+                    </strong>
+
+                    <br>
+
+                    {{ invoice.guest.phone }}
+
+                    <br>
+
+                    {{ invoice.guest.email }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESERVATION -->
+
+        <div class="invoice-section">
+
+            <h6>
+                <i class="bi bi-calendar-check me-2"></i>
+                Reservation
+            </h6>
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+
+                    <small class="text-muted">
+                        Reservation
+                    </small>
+
+                    <div class="fw-semibold">
+                        {{ invoice.reservation.reservation_number }}
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <small class="text-muted">
+                        Room
+                    </small>
+
+                    <div class="fw-semibold">
+                        {{ invoice.reservation.room.room_number }}
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <small class="text-muted">
+                        Check-in
+                    </small>
+
+                    <div class="fw-semibold">
+                        {{ invoice.reservation.check_in }}
+                    </div>
+
+                </div>
+
+                <div class="col-md-3">
+
+                    <small class="text-muted">
+                        Check-out
+                    </small>
+
+                    <div class="fw-semibold">
+                        {{ invoice.reservation.check_out }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <hr>
+
+
+        <!-- BILLING -->
+
+        <div class="invoice-section">
+
+            <h6>
+                <i class="bi bi-receipt me-2"></i>
+                Billing Summary
+            </h6>
+
+            <table class="table">
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            Subtotal
+                        </td>
+
+                        <td class="text-end">
+                            ₹{{ invoice.subtotal }}
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            Tax
+                        </td>
+
+                        <td class="text-end">
+                            ₹{{ invoice.tax_amount }}
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            Discount
+                        </td>
+
+                        <td class="text-end">
+                            - ₹{{ invoice.discount_amount }}
+                        </td>
+
+                    </tr>
+
+                    <tr class="fw-bold">
+
+                        <td>
+                            Grand Total
+                        </td>
+
+                        <td class="text-end">
+                            ₹{{ invoice.total_amount }}
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            Paid Amount
+                        </td>
+
+                        <td class="text-end text-success">
+                            ₹{{ invoice.paid_amount }}
+                        </td>
+
+                    </tr>
+
+                    <tr class="fw-bold">
+
+                        <td>
+                            Balance
+                        </td>
+
+                        <td class="text-end text-warning">
+                            ₹{{ invoice.balance_amount }}
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="invoice-section">
+
+            <h6>
+                Payment Status
+            </h6>
+
+            {% if invoice.status == "paid" %}
+
+                <span class="badge bg-success px-3 py-2">
+                    Paid
+                </span>
+
+            {% elif invoice.status == "partially_paid" %}
+
+                <span class="badge bg-warning text-dark px-3 py-2">
+                    Partially Paid
+                </span>
+
+            {% elif invoice.status == "unpaid" %}
+
+                <span class="badge bg-danger px-3 py-2">
+                    Unpaid
+                </span>
+
+            {% else %}
+
+                <span class="badge bg-secondary px-3 py-2">
+                    {{ invoice.get_status_display }}
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ACTIONS -->
+
+        <div class="text-end mt-4 no-print">
+
+            <a
+                href="{% url 'billing:billing_dashboard' %}"
+                class="btn btn-outline-secondary"
+            >
+
+                Back
+
+            </a>
+
+            <button
+                onclick="window.print()"
+                class="btn btn-primary"
+            >
+
+                <i class="bi bi-printer me-2"></i>
+
+                Print Invoice
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

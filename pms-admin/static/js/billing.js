@@ -1,135 +1,46 @@
-// const revenueChart=document.getElementById("revenueChart");
-
-// if(revenueChart){
-
-// new Chart(revenueChart,{
-
-// type:"line",
-
-// data:{
-
-// labels:["Jan","Feb","Mar","Apr","May","Jun","Jul"],
-
-// datasets:[{
-
-// label:"Revenue",
-
-// data:[12000,18000,16000,24000,28000,25000,32000],
-
-// borderColor:"#0d6efd",
-
-// backgroundColor:"rgba(13,110,253,.12)",
-
-// fill:true,
-
-// tension:.4
-
-// }]
-
-// },
-
-// options:{
-
-// plugins:{
-
-// legend:{display:false}
-
-// }
-
-// }
-
-// });
-
-// }
-
-// const paymentChart=document.getElementById("paymentChart");
-
-// if(paymentChart){
-
-// new Chart(paymentChart,{
-
-// type:"doughnut",
-
-// data:{
-
-// labels:["UPI","Card","Cash"],
-
-// datasets:[{
-
-// data:[55,30,15],
-
-// backgroundColor:[
-
-// "#0d6efd",
-
-// "#198754",
-
-// "#ffc107"
-
-// ]
-
-// }]
-
-// },
-
-// options:{
-
-// plugins:{
-
-// legend:{
-
-// position:"bottom"
-
-// }
-
-// }
-
-// }
-
-// });
-
-// }
-
-// document.addEventListener("DOMContentLoaded", function () {
-
-//     if (sessionStorage.getItem("billingScroll")) {
-
-//         window.scrollTo(
-//             0,
-//             sessionStorage.getItem("billingScroll")
-//         );
-
-//         sessionStorage.removeItem("billingScroll");
-//     }
-
-//     const form = document.querySelector("form");
-
-//     if (form) {
-
-//         form.addEventListener("submit", function () {
-
-//             sessionStorage.setItem(
-//                 "billingScroll",
-//                 window.scrollY
-//             );
-
-//         });
-
-//     }
-
-// });
-
-
 document.addEventListener("DOMContentLoaded", function () {
 
-    /* =========================================
-       REVENUE CHART
-    ========================================= */
+    // ==========================================
+    // MONTHLY REVENUE CHART
+    // ==========================================
 
     const revenueCanvas =
         document.getElementById("revenueChart");
 
-    if (revenueCanvas && typeof Chart !== "undefined") {
+    if (revenueCanvas) {
+
+        // Destroy existing chart if one already exists
+        const existingRevenueChart =
+            Chart.getChart(revenueCanvas);
+
+        if (existingRevenueChart) {
+            existingRevenueChart.destroy();
+        }
+
+        const revenueDataElement =
+            document.getElementById("monthly-revenue-data");
+
+        let revenueData = [];
+
+        if (revenueDataElement) {
+
+            try {
+
+                revenueData =
+                    JSON.parse(
+                        revenueDataElement.textContent
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "Revenue data error:",
+                    error
+                );
+
+            }
+
+        }
 
         new Chart(revenueCanvas, {
 
@@ -144,31 +55,29 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Apr",
                     "May",
                     "Jun",
-                    "Jul"
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec"
                 ],
 
                 datasets: [{
 
                     label: "Revenue",
 
-                    data: [
-                        12000,
-                        18000,
-                        16000,
-                        24000,
-                        28000,
-                        25000,
-                        32000
-                    ],
+                    data: revenueData,
 
-                    borderColor: "#0d6efd",
+                    borderWidth: 3,
 
-                    backgroundColor:
-                        "rgba(13,110,253,.12)",
+                    tension: 0.4,
 
                     fill: true,
 
-                    tension: 0.4
+                    pointRadius: 4,
+
+                    pointHoverRadius: 6
 
                 }]
 
@@ -177,6 +86,8 @@ document.addEventListener("DOMContentLoaded", function () {
             options: {
 
                 responsive: true,
+
+                maintainAspectRatio: false,
 
                 plugins: {
 
@@ -184,63 +95,25 @@ document.addEventListener("DOMContentLoaded", function () {
                         display: false
                     }
 
-                }
+                },
 
-            }
+                scales: {
 
-        });
+                    y: {
 
-    }
+                        beginAtZero: true,
 
+                        ticks: {
 
-    /* =========================================
-       PAYMENT CHART
-    ========================================= */
+                            callback: function (value) {
 
-    const paymentCanvas =
-        document.getElementById("paymentChart");
+                                return "₹" +
+                                    Number(value)
+                                        .toLocaleString("en-IN");
 
-    if (paymentCanvas && typeof Chart !== "undefined") {
+                            }
 
-        new Chart(paymentCanvas, {
-
-            type: "doughnut",
-
-            data: {
-
-                labels: [
-                    "UPI",
-                    "Card",
-                    "Cash"
-                ],
-
-                datasets: [{
-
-                    data: [
-                        55,
-                        30,
-                        15
-                    ],
-
-                    backgroundColor: [
-                        "#0d6efd",
-                        "#198754",
-                        "#ffc107"
-                    ]
-
-                }]
-
-            },
-
-            options: {
-
-                responsive: true,
-
-                plugins: {
-
-                    legend: {
-
-                        position: "bottom"
+                        }
 
                     }
 
@@ -253,51 +126,148 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /* =========================================
-       BILLING FILTER SCROLL POSITION
-    ========================================= */
+    // ==========================================
+    // INVOICE STATUS DONUT
+    // ==========================================
 
-    if (
-        sessionStorage.getItem("billingScroll")
-    ) {
-
-        window.scrollTo(
-            0,
-            parseInt(
-                sessionStorage.getItem("billingScroll"),
-                10
-            )
+    const statusCanvas =
+        document.getElementById(
+            "invoiceStatusChart"
         );
 
-        sessionStorage.removeItem(
-            "billingScroll"
-        );
+    if (statusCanvas) {
 
-    }
+        const existingStatusChart =
+            Chart.getChart(statusCanvas);
 
+        if (existingStatusChart) {
 
-    /* =========================================
-       BILLING FILTER FORM
-    ========================================= */
+            existingStatusChart.destroy();
 
-    const form =
-        document.querySelector(
-            ".billing-filter-form"
-        );
+        }
 
-    if (form) {
+        const statusDataElement =
+            document.getElementById(
+                "invoice-status-data"
+            );
 
-        form.addEventListener(
-            "submit",
-            function () {
+        let statusData = {};
 
-                sessionStorage.setItem(
-                    "billingScroll",
-                    window.scrollY
+        if (statusDataElement) {
+
+            try {
+
+                statusData =
+                    JSON.parse(
+                        statusDataElement.textContent
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "Invoice status data error:",
+                    error
                 );
 
             }
-        );
+
+        }
+
+        const labels =
+            Object.keys(statusData);
+
+        const values =
+            Object.values(statusData)
+                .map(Number);
+
+        const total =
+            values.reduce(
+                (sum, value) => sum + value,
+                0
+            );
+
+
+        // ==========================================
+        // NO DATA
+        // ==========================================
+
+        if (total === 0) {
+
+            const chartContainer =
+                statusCanvas.parentElement;
+
+            chartContainer.innerHTML = `
+
+                <div class="empty-chart">
+
+                    <i class="bi bi-pie-chart"></i>
+
+                    <span>
+                        No invoice data available
+                    </span>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        // ==========================================
+        // CREATE DONUT
+        // ==========================================
+
+        new Chart(statusCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [{
+
+                    data: values,
+
+                    borderWidth: 3,
+
+                    hoverOffset: 6
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "68%",
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom",
+
+                        labels: {
+
+                            padding: 18,
+
+                            usePointStyle: true
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 

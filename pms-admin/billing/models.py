@@ -84,10 +84,6 @@ class Payment(models.Model):
 
     PAYMENT_METHOD_CHOICES = [
         ("cash", "Cash"),
-        ("card", "Card"),
-        ("upi", "UPI"),
-        ("bank_transfer", "Bank Transfer"),
-        ("online", "Online"),
     ]
 
     STATUS_CHOICES = [
@@ -117,7 +113,8 @@ class Payment(models.Model):
 
     payment_method = models.CharField(
         max_length=30,
-        choices=PAYMENT_METHOD_CHOICES
+        choices=PAYMENT_METHOD_CHOICES,
+        default="cash"
     )
 
     status = models.CharField(
@@ -137,3 +134,47 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.invoice.invoice_number} - {self.amount}"
+
+
+class Refund(models.Model):
+
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    ]
+
+    refund_number = models.CharField(
+        max_length=50,
+        unique=True
+    )
+
+    invoice = models.ForeignKey(
+        Invoice,
+        on_delete=models.PROTECT,
+        related_name="refunds"
+    )
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    reason = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pending"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return self.refund_number

@@ -574,3 +574,59 @@ select.employee-input {
         justify-content: center;
     }
 }
+
+
+
+
+/* =========================================
+   EMPLOYEE INFORMATION
+========================================= */
+
+/* =========================================
+   EMPLOYEE INFORMATION
+========================================= */
+
+.employee-info-item {
+    display: block !important;
+    width: 100%;
+    min-width: 0;
+}
+
+.employee-info-label {
+    display: block !important;
+    width: 100%;
+
+    margin: 0 0 8px 0;
+    padding: 0;
+
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.employee-info-value {
+    display: block !important;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    color: #172033;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+/* 
+.employee-info-label {
+    display: block;
+    margin-bottom: 7px;
+}
+
+.employee-info-value {
+    display: block;
+} */
+

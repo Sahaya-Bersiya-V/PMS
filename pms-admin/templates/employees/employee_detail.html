@@ -137,26 +137,26 @@
 
                     <div class="row g-4">
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 First Name
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
                                 {{ employee.first_name }}
                             </div>
 
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Last Name
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.last_name|default:"-" }}
 
@@ -165,13 +165,13 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Phone
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.phone }}
 
@@ -180,13 +180,13 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Email
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.email|default:"-" }}
 
@@ -195,13 +195,13 @@
                         </div>
 
 
-                        <div class="col-12">
+                        <div class="col-12 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Address
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.address|default:"-" }}
 
@@ -241,13 +241,13 @@
 
                     <div class="row g-4">
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Employee ID
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.employee_id }}
 
@@ -256,13 +256,13 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Hotel
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.hotel.name }}
 
@@ -271,13 +271,13 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Department
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.get_department_display }}
 
@@ -286,13 +286,13 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Designation
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.designation }}
 
@@ -301,13 +301,13 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Joining Date
                             </small>
 
-                            <div class="fw-semibold mt-1">
+                            <div class="employee-info-value">
 
                                 {{ employee.joining_date }}
 
@@ -316,13 +316,13 @@
                         </div>
 
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 employee-info-item">
 
-                            <small class="text-muted">
+                            <small class="employee-info-label">
                                 Status
                             </small>
 
-                            <div class="mt-1">
+                            <div class="employee-info-value">
 
                                 {% if employee.status == "active" %}
 

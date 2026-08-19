@@ -1,0 +1,451 @@
+.frontdesk-login-page {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #172554,
+            #1e3a8a
+        );
+}
+
+
+.frontdesk-login-background {
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(59, 130, 246, 0.25),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(14, 165, 233, 0.2),
+            transparent 30%
+        );
+
+    pointer-events: none;
+}
+
+
+/* ============================
+   LOGIN CARD
+============================ */
+
+.frontdesk-login-card {
+
+    position: relative;
+
+    width: 430px;
+
+    padding: 42px;
+
+    border-radius: 24px;
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.95
+    );
+
+    backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 30px 80px
+        rgba(0, 0, 0, 0.3);
+
+    z-index: 2;
+}
+
+
+/* ============================
+   LOGO
+============================ */
+
+.frontdesk-login-logo {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-bottom: 20px;
+}
+
+
+.login-logo-icon {
+
+    width: 70px;
+
+    height: 70px;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 30px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    box-shadow:
+        0 12px 25px
+        rgba(37, 99, 235, 0.3);
+}
+
+
+/* ============================
+   HEADER
+============================ */
+
+.frontdesk-login-header {
+
+    text-align: center;
+
+    margin-bottom: 28px;
+}
+
+
+.frontdesk-login-header h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 750;
+
+    color: #0f172a;
+}
+
+
+.frontdesk-login-header p {
+
+    margin: 8px 0 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+/* ============================
+   ERROR
+============================ */
+
+.login-error {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px 14px;
+
+    margin-bottom: 20px;
+
+    border-radius: 10px;
+
+    background: #fef2f2;
+
+    color: #dc2626;
+
+    font-size: 13px;
+
+    border: 1px solid #fecaca;
+}
+
+
+/* ============================
+   FORM
+============================ */
+
+.frontdesk-login-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+
+.login-field label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #334155;
+}
+
+
+.login-input-wrapper {
+
+    display: flex;
+
+    align-items: center;
+
+    height: 50px;
+
+    padding: 0 14px;
+
+    border: 1px solid #dbe2ea;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    transition: all 0.2s ease;
+}
+
+
+.login-input-wrapper:focus-within {
+
+    border-color: #2563eb;
+
+    background: white;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37, 99, 235, 0.1);
+}
+
+
+.login-input-wrapper > i {
+
+    color: #64748b;
+
+    font-size: 17px;
+
+    margin-right: 11px;
+}
+
+
+.login-input-wrapper input {
+
+    flex: 1;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    font-size: 14px;
+
+    color: #0f172a;
+}
+
+
+.login-input-wrapper input::placeholder {
+
+    color: #94a3b8;
+}
+
+
+.password-toggle {
+
+    border: none;
+
+    background: transparent;
+
+    color: #64748b;
+
+    cursor: pointer;
+
+    font-size: 17px;
+
+    padding: 5px;
+}
+
+
+/* ============================
+   FORGOT PASSWORD
+============================ */
+
+.login-options {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: -8px;
+}
+
+
+.forgot-password {
+
+    border: none;
+
+    background: transparent;
+
+    color: #2563eb;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    font-weight: 500;
+}
+
+
+/* ============================
+   LOGIN BUTTON
+============================ */
+
+.frontdesk-login-button {
+
+    height: 52px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    box-shadow:
+        0 10px 20px
+        rgba(37, 99, 235, 0.25);
+
+    transition: all 0.2s ease;
+}
+
+
+.frontdesk-login-button:hover {
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 14px 25px
+        rgba(37, 99, 235, 0.3);
+}
+
+
+.frontdesk-login-button:disabled {
+
+    opacity: 0.7;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* ============================
+   SPINNER
+============================ */
+
+.login-spinner {
+
+    width: 17px;
+
+    height: 17px;
+
+    border: 2px solid
+        rgba(255,255,255,0.4);
+
+    border-top-color: white;
+
+    border-radius: 50%;
+
+    animation:
+        login-spin 0.7s linear infinite;
+}
+
+
+@keyframes login-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* ============================
+   FOOTER
+============================ */
+
+.login-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    margin-top: 25px;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+.login-footer i {
+
+    color: #22c55e;
+}
+
+
+/* ============================
+   MOBILE
+============================ */
+
+@media (max-width: 520px) {
+
+    .frontdesk-login-card {
+
+        width: calc(100% - 30px);
+
+        padding: 30px 24px;
+
+        border-radius: 20px;
+    }
+
+}

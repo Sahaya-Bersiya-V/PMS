@@ -15,7 +15,7 @@ from .serializers import (
     GuestSerializer,
     ReservationSerializer
 )
-
+from billing.models import Invoice, Payment,Refund
 # RESERVATIONS = [
 #     {
 #         "id": "RSV001",
@@ -149,6 +149,156 @@ class GuestListView(APIView):
         return Response(
             serializer.data
         )
+
+
+def create_invoice_for_reservation(reservation):
+    """
+    Create or update the invoice for a reservation.
+    If the reservation is paid, create a payment and transaction ID.
+    """
+
+    invoice_number = (
+        f"INV{reservation.reservation_number.replace('RES', '')}"
+    )
+
+    invoice, created = Invoice.objects.get_or_create(
+        reservation=reservation,
+        defaults={
+            "invoice_number": invoice_number,
+            "guest": reservation.guest,
+            "subtotal": reservation.total_amount,
+            "tax_amount": 0,
+            "discount_amount": 0,
+            "total_amount": reservation.total_amount,
+            "paid_amount": (
+                reservation.total_amount
+                if reservation.payment_status == "paid"
+                else 0
+            ),
+            "status": (
+                "paid"
+                if reservation.payment_status == "paid"
+                else "unpaid"
+            ),
+        }
+    )
+
+    # -----------------------------------------
+    # Synchronize existing invoice
+    # -----------------------------------------
+
+    if not created:
+
+        invoice.guest = reservation.guest
+        invoice.total_amount = reservation.total_amount
+
+        if reservation.payment_status == "paid":
+
+            invoice.paid_amount = reservation.total_amount
+            invoice.status = "paid"
+
+        else:
+
+            invoice.paid_amount = 0
+            invoice.status = "unpaid"
+
+        invoice.save()
+
+    # -----------------------------------------
+    # CREATE PAYMENT
+    # -----------------------------------------
+
+    if reservation.payment_status == "paid":
+
+        payment = Payment.objects.filter(
+            invoice=invoice,
+            status="successful"
+        ).first()
+
+        # Create payment if it doesn't exist
+        if not payment:
+
+            payment = Payment.objects.create(
+                invoice=invoice,
+                amount=reservation.total_amount,
+                payment_method="cash",
+                status="successful",
+                notes="Cash payment received during reservation"
+            )
+
+        # -----------------------------------------
+        # GENERATE TRANSACTION ID
+        # -----------------------------------------
+
+        if not payment.transaction_id:
+
+            payment.transaction_id = (
+                f"TXN{timezone.now().year}{payment.id:04d}"
+            )
+
+            payment.save(
+                update_fields=["transaction_id"]
+            )
+
+    return invoice
+
+
+def create_refund_for_reservation(reservation):
+    """
+    Create a refund request when a paid reservation is cancelled.
+    """
+
+    # Only paid reservations can have refunds
+    if reservation.payment_status != "paid":
+        return None
+
+    # Get the invoice
+    try:
+        invoice = reservation.invoice
+    except Invoice.DoesNotExist:
+        invoice = create_invoice_for_reservation(
+            reservation
+        )
+
+    # Prevent duplicate refund requests
+    existing_refund = Refund.objects.filter(
+        invoice=invoice
+    ).first()
+
+    if existing_refund:
+        return existing_refund
+
+    # Refund the amount actually paid
+    refund_amount = invoice.paid_amount
+
+    if refund_amount <= 0:
+        return None
+
+    # -----------------------------------------
+    # CREATE REFUND
+    # -----------------------------------------
+
+    refund = Refund.objects.create(
+        refund_number="TEMP",
+        invoice=invoice,
+        amount=refund_amount,
+        reason="Room reservation cancelled",
+        status="pending"
+    )
+
+    # -----------------------------------------
+    # GENERATE REFUND NUMBER
+    # -----------------------------------------
+
+    refund.refund_number = (
+        f"REF{timezone.now().year}{refund.id:04d}"
+    )
+
+    refund.save(
+        update_fields=["refund_number"]
+    )
+
+    return refund
 # =========================================================
 # RESERVATION LIST + CREATE
 # =========================================================
@@ -461,6 +611,10 @@ class ReservationListCreateView(APIView):
         )
 
         reservation = serializer.save()
+
+        create_invoice_for_reservation(
+    reservation
+)
 
         # --------------------------------
         # Update room status
@@ -1002,6 +1156,14 @@ class ReservationDetailView(APIView):
         reservation.save()
 
     # =========================================
+# SYNC BILLING
+# =========================================
+
+        create_invoice_for_reservation(
+    reservation
+)
+
+    # =========================================
     # UPDATE ROOM STATUS
     # =========================================
 
@@ -1207,22 +1369,31 @@ class CancelReservationView(APIView):
 
     @transaction.atomic
     def post(self, request, pk):
+        print("🔥🔥🔥 CANCEL RESERVATION VIEW CALLED 🔥🔥🔥")
+        print("Reservation ID:", pk)
 
         try:
-
-            reservation = Reservation.objects.select_related(
-                "room"
-            ).get(pk=pk)
+            reservation = (
+                Reservation.objects
+                .select_related(
+                    "room",
+                    "guest"
+                )
+                .get(pk=pk)
+            )
 
         except Reservation.DoesNotExist:
 
             return Response(
                 {
-                    "error":
-                    "Reservation not found."
+                    "error": "Reservation not found."
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        # -----------------------------------------
+        # CHECK CURRENT STATUS
+        # -----------------------------------------
 
         if reservation.status in [
             "checked_out",
@@ -1232,10 +1403,27 @@ class CancelReservationView(APIView):
             return Response(
                 {
                     "error":
-                    "Reservation cannot be cancelled."
+                        "Reservation cannot be cancelled."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # -----------------------------------------
+        # CHECK PAYMENT
+        # -----------------------------------------
+
+        is_paid = (
+            reservation.payment_status == "paid"
+        )
+
+        print("========== CANCELLATION DEBUG ==========")
+        print("Reservation:", reservation.id)
+        print("Payment status:", reservation.payment_status)
+        print("Is paid:", is_paid)
+
+        # -----------------------------------------
+        # CANCEL RESERVATION
+        # -----------------------------------------
 
         reservation.status = "cancelled"
 
@@ -1246,20 +1434,298 @@ class CancelReservationView(APIView):
             ]
         )
 
-        reservation.room.status = "available"
+        # -----------------------------------------
+        # MAKE ROOM AVAILABLE
+        # -----------------------------------------
 
-        reservation.room.save(
+        room = reservation.room
+
+        room.status = "available"
+
+        room.save(
             update_fields=[
                 "status",
                 "updated_at"
             ]
         )
 
-        return Response(
-            ReservationSerializer(
+        # -----------------------------------------
+        # GET INVOICE
+        # -----------------------------------------
+
+        try:
+
+            invoice = reservation.invoice
+
+        except Invoice.DoesNotExist:
+
+            invoice = create_invoice_for_reservation(
                 reservation
-            ).data
+            )
+
+        # -----------------------------------------
+        # CANCEL INVOICE
+        # -----------------------------------------
+
+        invoice.status = "cancelled"
+
+        invoice.save(
+            update_fields=[
+                "status",
+                "updated_at"
+            ]
         )
+
+        # -----------------------------------------
+        # CREATE REFUND
+        # -----------------------------------------
+
+        refund = None
+
+        print("========== CANCEL DEBUG ==========")
+        print("Reservation:", reservation.id)
+        print("Payment status:", reservation.payment_status)
+        print("Invoice:", invoice.invoice_number)
+        print("Invoice paid:", invoice.paid_amount)
+        print("Invoice status:", invoice.status)
+        print("Is paid:", is_paid)
+
+        if is_paid:
+
+            refund = create_refund_for_reservation(
+                reservation
+            )
+
+        print("Refund object:", refund)
+
+        # -----------------------------------------
+        # RESPONSE
+        # -----------------------------------------
+
+        response_data = {
+
+            "reservation": ReservationSerializer(
+                reservation
+            ).data,
+
+            "refund_created":
+                refund is not None,
+        }
+
+        if refund:
+
+            response_data["refund"] = {
+
+                "refund_number":
+                    refund.refund_number,
+
+                "amount":
+                    str(refund.amount),
+
+                "status":
+                    refund.get_status_display(),
+
+                "reason":
+                    refund.reason,
+
+                "invoice":
+                    refund.invoice.invoice_number,
+
+            }
+
+        return Response(
+            response_data,
+            status=status.HTTP_200_OK
+        )
+
+# class CancelReservationView(APIView):
+
+#     @transaction.atomic
+#     def post(self, request, pk):
+
+#         print("🔥🔥🔥 CANCEL VIEW CALLED 🔥🔥🔥")
+#         print("Reservation ID:", pk)
+
+#         try:
+#             reservation = (
+#                 Reservation.objects
+#                 .select_related(
+#                     "room",
+#                     "guest"
+#                 )
+#                 .get(pk=pk)
+#             )
+
+#         except Reservation.DoesNotExist:
+
+#             return Response(
+#                 {
+#                     "error": "Reservation not found."
+#                 },
+#                 status=status.HTTP_404_NOT_FOUND
+#             )
+
+#         print("BEFORE STATUS:", reservation.status)
+#         print("PAYMENT STATUS:", reservation.payment_status)
+
+#         # -----------------------------------------
+#         # CHECK CURRENT STATUS
+#         # -----------------------------------------
+
+#         if reservation.status in [
+#             "checked_out",
+#             "cancelled"
+#         ]:
+
+#             return Response(
+#                 {
+#                     "error":
+#                         "Reservation cannot be cancelled."
+#                 },
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
+
+#         # -----------------------------------------
+#         # CHECK PAYMENT
+#         # -----------------------------------------
+
+#         is_paid = (
+#             reservation.payment_status == "paid"
+#         )
+
+#         print("IS PAID:", is_paid)
+
+#         # -----------------------------------------
+#         # CANCEL RESERVATION
+#         # -----------------------------------------
+
+#         reservation.status = "cancelled"
+
+#         reservation.save(
+#             update_fields=[
+#                 "status",
+#                 "updated_at"
+#             ]
+#         )
+
+#         # -----------------------------------------
+#         # MAKE ROOM AVAILABLE
+#         # -----------------------------------------
+
+#         room = reservation.room
+
+#         room.status = "available"
+
+#         room.save(
+#             update_fields=[
+#                 "status",
+#                 "updated_at"
+#             ]
+#         )
+
+#         print("ROOM STATUS:", room.status)
+
+#         # -----------------------------------------
+#         # GET / CREATE INVOICE
+#         # -----------------------------------------
+
+#         try:
+
+#             invoice = reservation.invoice
+
+#         except Invoice.DoesNotExist:
+
+#             invoice = create_invoice_for_reservation(
+#                 reservation
+#             )
+
+#         print("INVOICE:", invoice.invoice_number)
+#         print("INVOICE PAID:", invoice.paid_amount)
+
+#         # -----------------------------------------
+#         # CANCEL INVOICE
+#         # -----------------------------------------
+
+#         invoice.status = "cancelled"
+
+#         invoice.save(
+#             update_fields=[
+#                 "status",
+#                 "updated_at"
+#             ]
+#         )
+
+#         # -----------------------------------------
+#         # CREATE REFUND
+#         # -----------------------------------------
+
+#         refund = None
+
+#         if is_paid:
+
+#             print("💰 CREATING REFUND...")
+
+#             refund = create_refund_for_reservation(
+#                 reservation
+#             )
+
+#             print("💰 REFUND RESULT:", refund)
+
+#         # -----------------------------------------
+#         # RESPONSE
+#         # -----------------------------------------
+
+#         response_data = {
+
+#             "reservation": ReservationSerializer(
+#                 reservation
+#             ).data,
+
+#             "refund_created":
+#                 refund is not None,
+#         }
+
+#         if refund:
+
+#             response_data["refund"] = {
+
+#                 "refund_number":
+#                     refund.refund_number,
+
+#                 "amount":
+#                     str(refund.amount),
+
+#                 "status":
+#                     refund.get_status_display(),
+
+#                 "reason":
+#                     refund.reason,
+
+#                 "invoice":
+#                     refund.invoice.invoice_number,
+
+#             }
+
+#         print("🔥 FINAL RESPONSE:")
+#         print(response_data)
+
+#         return Response(
+#             response_data,
+#             status=status.HTTP_200_OK
+#         )
+
+# class CancelReservationView(APIView):
+
+#     @transaction.atomic
+#     def post(self, request, pk):
+
+#         print("🚨🚨🚨 THIS IS THE CANCEL VIEW 🚨🚨🚨")
+#         print("PK =", pk)
+
+#         return Response({
+#             "TEST": "CANCEL VIEW IS WORKING",
+#             "reservation_id": pk
+#         })
 
         # =========================================================
 # MARK PAYMENT AS PAID
@@ -1267,23 +1733,39 @@ class CancelReservationView(APIView):
 
 class MarkPaymentPaidView(APIView):
 
+    @transaction.atomic
     def post(self, request, pk):
 
         try:
-
-            reservation = Reservation.objects.get(
-                pk=pk
-            )
+            reservation = Reservation.objects.select_related(
+                "guest"
+            ).get(pk=pk)
 
         except Reservation.DoesNotExist:
 
             return Response(
                 {
-                    "error":
-                    "Reservation not found."
+                    "error": "Reservation not found."
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        # --------------------------------
+        # Check already paid
+        # --------------------------------
+
+        if reservation.payment_status == "paid":
+
+            return Response(
+                {
+                    "error": "Reservation is already paid."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # --------------------------------
+        # Update reservation
+        # --------------------------------
 
         reservation.payment_status = "paid"
 
@@ -1292,10 +1774,17 @@ class MarkPaymentPaidView(APIView):
         )
 
         if reservation.status == "pending":
-
             reservation.status = "confirmed"
 
         reservation.save()
+
+        # --------------------------------
+        # Create / update invoice
+        # --------------------------------
+
+        invoice = create_invoice_for_reservation(
+            reservation
+        )
 
         return Response(
             ReservationSerializer(

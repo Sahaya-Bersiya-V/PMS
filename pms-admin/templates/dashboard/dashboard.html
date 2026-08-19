@@ -1,43 +1,194 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/dashboard.css' %}"
+>
+
+{% endblock %}
 
 {% block content %}
 
-<div class="card shadow-sm border-0 mb-4">
 
-    <div class="card-body d-flex justify-content-between align-items-center">
 
-        <div>
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
 
-            <h2 class="mb-1">
-                Dashboard
+<div class="dashboard-page">
+
+    <div class="dashboard-header">
+
+        <div class="dashboard-header-content">
+
+            <div>
+                <h2 class="dashboard-title">
+                    Dashboard
+                </h2>
+
+                <p class="dashboard-subtitle">
+                    Overview of hotel operations
+                </p>
+            </div>
+
+            <form method="GET" class="hotel-filter">
+
+                <label>
+                    Select Hotel
+                </label>
+
+                <select
+                    name="hotel"
+                    onchange="this.form.submit()"
+                >
+
+                    <option value="">
+                        All Hotels
+                    </option>
+
+                    {% for hotel in hotels %}
+
+                    <option
+                        value="{{ hotel.id }}"
+                        {% if selected_hotel == hotel.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ hotel.name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Your existing cards/table/quick actions go here -->
+
+</div>
+
+
+<!-- =====================================================
+     SUMMARY CARDS
+===================================================== -->
+
+<div class="row g-4">
+
+
+    <!-- TOTAL GUESTS -->
+
+    <div class="col-md-3">
+
+<div class="card dashboard-card">
+
+    <div class="stat-icon blue">
+        <i class="bi bi-people"></i>
+    </div>
+
+    <h6>
+        Total Guests
+    </h6>
+
+    <h2 >
+        {{ total_guests }}
+    </h2>
+
+    <small class="text-muted">
+            Registered guests
+        </small>
+
+</div>
+
+    </div>
+
+
+    <!-- OCCUPIED ROOMS -->
+
+    <div class="col-md-3">
+
+        <div class="card dashboard-card">
+
+            <!-- Occupied -->
+<div class="stat-icon red">
+    <i class="bi bi-door-closed"></i>
+</div>
+
+            <h6>
+                Occupied Rooms
+            </h6>
+
+            <h2>
+                {{ occupied_rooms }}
             </h2>
 
             <small class="text-muted">
-
-                Overview of hotel operations
-
+                Currently occupied
             </small>
 
         </div>
 
-        <div>
+    </div>
 
-            <label class="form-label fw-semibold">
 
-                Select Hotel
+    <!-- REVENUE -->
 
-            </label>
+    <div class="col-md-3">
 
-            <select class="form-select">
+        <div class="card dashboard-card">
+            <!-- Revenue -->
+<div class="stat-icon green">
+    <i class="bi bi-currency-rupee"></i>
+</div>
 
-                <option>All Hotels</option>
-                <option>Hotel Paradise</option>
-                <option>Ocean View Resort</option>
-                <option>Grand Palace</option>
+            <h6>
+                Today's Revenue
+            </h6>
 
-            </select>
+            <h2>
+                ₹{{ todays_revenue|floatformat:0 }}
+            </h2>
+
+            <small class="text-muted">
+                Reservations created today
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHECK INS -->
+
+    <div class="col-md-3">
+
+        <div class="card dashboard-card">
+            <!-- Check-ins -->
+<div class="stat-icon purple">
+    <i class="bi bi-box-arrow-in-right"></i>
+</div>
+
+            <h6>
+                Today's Check-ins
+            </h6>
+
+            <h2>
+                {{ today_checkins }}
+            </h2>
+
+            <small class="text-muted">
+                Expected today
+            </small>
 
         </div>
 
@@ -45,209 +196,449 @@
 
 </div>
 
-<div class="row g-4">
 
-    <div class="col-md-3">
-        <div class="card dashboard-card">
-            <h6>Total Guests</h6>
-            <h2>245</h2>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card dashboard-card">
-            <h6>Occupied Rooms</h6>
-            <h2>58</h2>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card dashboard-card">
-            <h6>Today's Revenue</h6>
-            <h2>₹1.2L</h2>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card dashboard-card">
-            <h6>Check-ins</h6>
-            <h2>12</h2>
-        </div>
-    </div>
-
-</div>
+<!-- =====================================================
+     SECOND SUMMARY ROW
+===================================================== -->
 
 <div class="row g-4 mt-2">
 
-    <div class="col-md-3">
-        <div class="card dashboard-card">
-            <h6>Available Rooms</h6>
-            <h2>42</h2>
-        </div>
-    </div>
+
+    <!-- AVAILABLE ROOMS -->
 
     <div class="col-md-3">
+
         <div class="card dashboard-card">
-            <h6>Check-outs</h6>
-            <h2>9</h2>
+
+            <h6>
+                Available Rooms
+            </h6>
+
+            <h2>
+                {{ available_rooms }}
+            </h2>
+
+            <small class="text-muted">
+                Ready for booking
+            </small>
+
         </div>
+
     </div>
 
-    <div class="col-md-3">
-        <div class="card dashboard-card">
-            <h6>Employees</h6>
-            <h2>18</h2>
-        </div>
-    </div>
+
+    <!-- CHECK OUTS -->
 
     <div class="col-md-3">
+
         <div class="card dashboard-card">
-            <h6>Bookings</h6>
-            <h2>32</h2>
+
+            <h6>
+                Today's Check-outs
+            </h6>
+
+            <h2>
+                {{ today_checkouts }}
+            </h2>
+
+            <small class="text-muted">
+                Expected departures
+            </small>
+
         </div>
+
+    </div>
+
+
+    <!-- EMPLOYEES -->
+
+    <div class="col-md-3">
+
+        <div class="card dashboard-card">
+
+            <h6>
+                Employees
+            </h6>
+
+            <h2>
+                {{ total_employees }}
+            </h2>
+
+            <small class="text-muted">
+                Active employees
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOOKINGS -->
+
+    <div class="col-md-3">
+
+        <div class="card dashboard-card">
+
+            <h6>
+                Bookings
+            </h6>
+
+            <h2>
+                {{ total_bookings }}
+            </h2>
+
+            <small class="text-muted">
+                Total reservations
+            </small>
+
+        </div>
+
     </div>
 
 </div>
-<div class="card mt-5">
 
-    <div class="card-header">
 
-        <h5>Recent Reservations</h5>
+<!-- =====================================================
+     RECENT RESERVATIONS
+===================================================== -->
+
+<div class="card mt-5 shadow-sm border-0">
+
+    <div class="card-header bg-white">
+
+        <h5 class="mb-0">
+            Recent Reservations
+        </h5>
 
     </div>
+
 
     <div class="card-body">
 
-        <table class="table">
+        <div class="table-responsive">
 
-            <thead>
+            <table class="table align-middle">
 
-                <tr>
+                <thead>
 
-                    <th>Guest</th>
-                    <th>Room</th>
-                    <th>Check-in</th>
-                    <th>Check-out</th>
-                    <th>Status</th>
+                    <tr>
 
-                </tr>
+                        <th>
+                            Reservation
+                        </th>
 
-            </thead>
+                        <th>
+                            Guest
+                        </th>
 
-            <tbody>
+                        <th>
+                            Room
+                        </th>
 
-                <tr>
+                        <th>
+                            Check-in
+                        </th>
 
-                    <td>John Smith</td>
-                    <td>201</td>
-                    <td>06 Aug</td>
-                    <td>08 Aug</td>
-                    <td>
-                        <span class="badge bg-success">
-                            Confirmed
-                        </span>
-                    </td>
+                        <th>
+                            Check-out
+                        </th>
 
-                </tr>
+                        <th>
+                            Status
+                        </th>
 
-                <tr>
+                        <th>
+                            Amount
+                        </th>
 
-                    <td>Emma Davis</td>
-                    <td>305</td>
-                    <td>06 Aug</td>
-                    <td>09 Aug</td>
-                    <td>
-                        <span class="badge bg-primary">
-                            Checked In
-                        </span>
-                    </td>
+                    </tr>
 
-                </tr>
+                </thead>
 
-                <tr>
 
-                    <td>Michael Lee</td>
-                    <td>102</td>
-                    <td>07 Aug</td>
-                    <td>10 Aug</td>
-                    <td>
-                        <span class="badge bg-warning">
-                            Pending
-                        </span>
-                    </td>
+                <tbody>
 
-                </tr>
+                    {% for reservation in recent_reservations %}
 
-            </tbody>
+                    <tr>
 
-        </table>
+                        <td>
+
+                            <strong>
+                                {{ reservation.reservation_number }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            {{ reservation.guest.first_name }}
+                            {{ reservation.guest.last_name }}
+
+                        </td>
+
+
+                        <td>
+
+                            Room
+                            {{ reservation.room.room_number }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ reservation.check_in|date:"d M Y" }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ reservation.check_out|date:"d M Y" }}
+
+                        </td>
+
+
+                        <td>
+
+                            {% if reservation.status == "confirmed" %}
+
+                                <span class="badge bg-info text-dark">
+                                    Confirmed
+                                </span>
+
+                            {% elif reservation.status == "checked_in" %}
+
+                                <span class="badge bg-success">
+                                    Checked In
+                                </span>
+
+                            {% elif reservation.status == "checked_out" %}
+
+                                <span class="badge bg-primary">
+                                    Checked Out
+                                </span>
+
+                            {% elif reservation.status == "pending" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    Pending
+                                </span>
+
+                            {% elif reservation.status == "cancelled" %}
+
+                                <span class="badge bg-danger">
+                                    Cancelled
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    {{ reservation.get_status_display }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                ₹{{ reservation.total_amount|floatformat:0 }}
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="text-center py-4 text-muted"
+                        >
+
+                            No reservations found.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
 </div>
+
+
+<!-- =====================================================
+     QUICK ACTIONS + ROOM STATUS
+===================================================== -->
+
 <div class="row mt-4">
 
-    <div class="col-md-6">
 
-        <div class="card p-4">
-
-    <h5>Quick Actions</h5>
-
-    <div class="d-grid gap-2 mt-3">
-
-        <button class="btn btn-primary">
-            <i class="bi bi-door-open"></i>
-            Add Room
-        </button>
-
-        <button class="btn btn-success">
-            <i class="bi bi-grid"></i>
-            Add Room Category
-        </button>
-
-        <button class="btn btn-warning">
-            <i class="bi bi-person-plus"></i>
-            Add Employee
-        </button>
-
-        <button class="btn btn-info">
-            <i class="bi bi-shield-lock"></i>
-            Add Role
-        </button>
-
-    </div>
-
-</div>
-
-    </div>
+    <!-- QUICK ACTIONS -->
 
     <div class="col-md-6">
 
-        <div class="card p-4">
+        <div class="card p-4 shadow-sm border-0">
 
-            <h5>Room Status</h5>
+            <h5>
+                Quick Actions
+            </h5>
+
+
+            <div class="d-grid gap-2 mt-3">
+
+
+                <!-- ADD ROOM -->
+
+                <a
+                    href="{% url 'add-room' %}"
+                    class="btn btn-primary"
+                >
+
+                    <i class="bi bi-door-open me-2"></i>
+
+                    Add Room
+
+                </a>
+
+
+                <!-- ADD ROOM TYPE -->
+
+                <a
+                    href="{% url 'add-room-type' %}"
+                    class="btn btn-success"
+                >
+
+                    <i class="bi bi-grid me-2"></i>
+
+                    Add Room Category
+
+                </a>
+
+
+                <!-- ADD EMPLOYEE -->
+
+                <a
+                    href="{% url 'add-employee' %}"
+                    class="btn btn-warning"
+                >
+
+                    <i class="bi bi-person-plus me-2"></i>
+
+                    Add Employee
+
+                </a>
+
+
+                <!-- ADD ROLE -->
+
+                <a
+                    href="{% url 'add-role' %}"
+                    class="btn btn-info"
+                >
+
+                    <i class="bi bi-shield-lock me-2"></i>
+
+                    Add Role
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ROOM STATUS -->
+
+    <div class="col-md-6">
+
+        <div class="card p-4 shadow-sm border-0">
+
+            <h5>
+                Room Status
+            </h5>
+
 
             <ul class="list-group mt-3">
 
+
+                <!-- AVAILABLE -->
+
                 <li class="list-group-item d-flex justify-content-between">
+
                     Available
-                    <span class="badge bg-success">42</span>
+
+                    <span class="badge bg-success">
+
+                        {{ available_rooms }}
+
+                    </span>
+
                 </li>
 
+
+                <!-- OCCUPIED -->
+
                 <li class="list-group-item d-flex justify-content-between">
+
                     Occupied
-                    <span class="badge bg-danger">58</span>
+
+                    <span class="badge bg-danger">
+
+                        {{ occupied_rooms }}
+
+                    </span>
+
                 </li>
 
+
+                <!-- CLEANING -->
+
                 <li class="list-group-item d-flex justify-content-between">
+
                     Cleaning
-                    <span class="badge bg-warning">8</span>
+
+                    <span class="badge bg-warning text-dark">
+
+                        {{ cleaning_rooms }}
+
+                    </span>
+
                 </li>
 
+
+                <!-- MAINTENANCE -->
+
                 <li class="list-group-item d-flex justify-content-between">
+
                     Maintenance
-                    <span class="badge bg-secondary">2</span>
+
+                    <span class="badge bg-secondary">
+
+                        {{ maintenance_rooms }}
+
+                    </span>
+
                 </li>
+
 
             </ul>
 

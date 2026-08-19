@@ -29,13 +29,13 @@
 
         </div>
 
-        <button class="btn btn-primary px-4">
-
-            <i class="bi bi-download me-2"></i>
-
-            Export Report
-
-        </button>
+        <a
+    href="{% url 'billing:export_billing_report' %}"
+    class="btn btn-primary px-4"
+>
+    <i class="bi bi-download me-2"></i>
+    Export Report
+</a>
 
     </div>
 
@@ -44,181 +44,130 @@
     <!-- SUMMARY CARDS -->
     <!-- ========================================= -->
 
-    <div class="row g-4 mb-4">
+ <div class="billing-summary-grid">
 
-        <!-- Revenue -->
+    <!-- TOTAL INVOICED -->
 
-        <div class="col-xl-3 col-md-6">
+    <div class="billing-stat-card total-card">
 
-            <div class="glass-card revenue-card">
+        <div class="billing-stat-top">
 
-                <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <span class="billing-stat-label">
+                    Total Invoiced
+                </span>
 
-                    <div>
+                <h3>
+                    ₹{{ total_billed|floatformat:0 }}
+                </h3>
 
-                        <small class="text-muted">
-                            Total Revenue
-                        </small>
-
-                        <h3 class="fw-bold mt-2">
-
-                            ₹{{ total_billed }}
-
-                        </h3>
-
-                        <span class="text-success">
-
-                            <i class="bi bi-arrow-up"></i>
-
-                            12% this month
-
-                        </span>
-
-                    </div>
-
-                    <div class="card-icon bg-primary">
-
-                        <i class="bi bi-currency-rupee"></i>
-
-                    </div>
-
-                </div>
-
+                <small>
+                    Total invoice value
+                </small>
             </div>
 
-        </div>
-
-
-        <!-- Paid -->
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="glass-card">
-
-                <div class="d-flex justify-content-between">
-
-                    <div>
-
-                        <small class="text-muted">
-
-                            Paid
-
-                        </small>
-
-                        <h3 class="fw-bold mt-2">
-
-                            ₹{{ total_paid }}
-
-                        </h3>
-
-                        <span class="text-success">
-
-                            Paid invoices
-
-                        </span>
-
-                    </div>
-
-                    <div class="card-icon bg-success">
-
-                        <i class="bi bi-check-circle-fill"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Pending -->
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="glass-card">
-
-                <div class="d-flex justify-content-between">
-
-                    <div>
-
-                        <small class="text-muted">
-
-                            Pending
-
-                        </small>
-
-                        <h3 class="fw-bold mt-2">
-
-                            ₹{{ total_pending }}
-
-                        </h3>
-
-                        <span class="text-warning">
-
-                            Awaiting payment
-
-                        </span>
-
-                    </div>
-
-                    <div class="card-icon bg-warning">
-
-                        <i class="bi bi-hourglass-split"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Overdue -->
-
-        <div class="col-xl-3 col-md-6">
-
-            <div class="glass-card">
-
-                <div class="d-flex justify-content-between">
-
-                    <div>
-
-                        <small class="text-muted">
-
-                            Overdue
-
-                        </small>
-
-                        <h3 class="fw-bold mt-2">
-
-                            ₹{{ total_overdue }}
-
-                        </h3>
-
-                        <span class="text-danger">
-
-                            Immediate action
-
-                        </span>
-
-                    </div>
-
-                    <div class="card-icon bg-danger">
-
-                        <i class="bi bi-exclamation-circle-fill"></i>
-
-                    </div>
-
-                </div>
-
+            <div class="billing-stat-icon">
+                <i class="bi bi-receipt"></i>
             </div>
 
         </div>
 
     </div>
 
+
+    <!-- PAID -->
+
+    <div class="billing-stat-card paid-card">
+
+        <div class="billing-stat-top">
+
+            <div>
+
+                <span class="billing-stat-label">
+                    Paid Amount
+                </span>
+
+                <h3>
+                    ₹{{ total_paid|floatformat:0 }}
+                </h3>
+
+                <small>
+                    Amount received
+                </small>
+
+            </div>
+
+            <div class="billing-stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PENDING -->
+
+    <div class="billing-stat-card pending-card">
+
+        <div class="billing-stat-top">
+
+            <div>
+
+                <span class="billing-stat-label">
+                    Pending Amount
+                </span>
+
+                <h3>
+                    ₹{{ total_pending|floatformat:0 }}
+                </h3>
+
+                <small>
+                    Awaiting payment
+                </small>
+
+            </div>
+
+            <div class="billing-stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- OUTSTANDING -->
+
+    <div class="billing-stat-card outstanding-card">
+
+        <div class="billing-stat-top">
+
+            <div>
+
+                <span class="billing-stat-label">
+                    Outstanding Balance
+                </span>
+
+                <h3>
+                    ₹{{ total_outstanding|floatformat:0 }}
+                </h3>
+
+                <small>
+                    Remaining amount
+                </small>
+
+            </div>
+
+            <div class="billing-stat-icon">
+                <i class="bi bi-wallet2"></i>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
     <!-- ========================================= -->
@@ -243,11 +192,17 @@
 
                 </div>
 
-                <div class="card-body">
+              <div class="card-body">
 
-                    <canvas id="revenueChart" height="110"></canvas>
+    {{ monthly_revenue|json_script:"monthly-revenue-data" }}
 
-                </div>
+    <div class="chart-container">
+
+        <canvas id="revenueChart"></canvas>
+
+    </div>
+
+</div>
 
             </div>
 
@@ -264,15 +219,25 @@
 
                     <h5 class="fw-bold mb-0">
 
-                        Payment Methods
+                        Invoice Status
 
                     </h5>
 
                 </div>
 
-                <div class="card-body">
+                <div class="card-body d-flex justify-content-center align-items-center">
 
-                    <canvas id="paymentChart"></canvas>
+                   <div class="card-body">
+
+    {{ status_counts|json_script:"invoice-status-data" }}
+
+    <div class="chart-container">
+
+        <canvas id="invoiceStatusChart"></canvas>
+
+    </div>
+
+</div>
 
                 </div>
 
@@ -433,26 +398,41 @@
 
             <option value="">All</option>
 
-            <option value="Paid"
-            {% if status == "Paid" %}selected{% endif %}>
+            <option value="paid"
+            {% if status == "paid" %}selected{% endif %}>
                 Paid
             </option>
 
-            <option value="Pending"
-            {% if status == "Pending" %}selected{% endif %}>
-                Pending
+            <option value="unpaid"
+            {% if status == "unpaid" %}selected{% endif %}>
+                Unpaid
             </option>
 
+            <option value="partially_paid"
+            {% if status == "partially_paid" %}selected{% endif %}>
+                Partially Paid
+            </option>
+
+            <option value="draft"
+            {% if status == "draft" %}selected{% endif %}>
+                Draft
+            </option>
+
+            <option value="cancelled"
+            {% if status == "cancelled" %}selected{% endif %}>
+                Cancelled
+            </option>
+<!-- 
             <option value="Overdue"
             {% if status == "Overdue" %}selected{% endif %}>
                 Overdue
-            </option>
+            </option> -->
 
         </select>
 
     </div>
 
-    <!-- Payment -->
+    <!-- Payment
 
     <div class="col-lg-2">
 
@@ -478,7 +458,7 @@
 
         </select>
 
-    </div>
+    </div> -->
 
     <!-- Date -->
 
@@ -486,7 +466,7 @@
 
         <label class="form-label fw-semibold">
 
-            Date
+            From Date
 
         </label>
 
@@ -581,7 +561,8 @@ Reset Filters
 
                                 <th width="12%">Amount</th>
 
-                                <th width="12%">Method</th>
+                                <th width="12%">Paid</th>
+                                <th width="12%">Balance</th>
 
                                 <th width="12%">Status</th>
 
@@ -599,189 +580,217 @@ Reset Filters
 
                         {% for invoice in invoices %}
 
-                        <tr>
+<tr>
 
-                            <!-- Invoice -->
+    <!-- Invoice -->
 
-                            <td>
+    <td>
 
-                                <strong>
+        <strong>
+            {{ invoice.invoice_number }}
+        </strong>
 
-                                    {{ invoice.invoice_no }}
+        <br>
 
-                                </strong>
+        <small class="text-muted">
 
-                                <br>
+            {{ invoice.issued_at|date:"d M Y" }}
 
-                                <small class="text-muted">
+        </small>
 
-                                    {{ invoice.invoice_date }}
+    </td>
 
-                                </small>
 
-                            </td>
+    <!-- Guest -->
 
-                            <!-- Guest -->
+    <td>
 
-                            <td>
+        <div class="fw-semibold">
 
-                                <div class="fw-semibold">
+            <i class="bi bi-person-circle text-primary me-1"></i>
 
-                                    <i class="bi bi-person-circle text-primary me-1"></i>
+            {{ invoice.guest.first_name }}
+            {{ invoice.guest.last_name }}
 
-                                    {{ invoice.guest_name }}
+        </div>
 
-                                </div>
+        <small class="text-muted">
 
-                                <small class="text-muted">
+            <i class="bi bi-telephone me-1"></i>
 
-                                    <i class="bi bi-telephone me-1"></i>
+            {{ invoice.guest.phone }}
 
-                                    {{ invoice.phone }}
+        </small>
 
-                                </small>
+    </td>
 
-                            </td>
 
-                            <!-- Reservation -->
+    <!-- Reservation -->
 
-                            <td>
+    <td>
 
-                                <strong>
+        <strong>
+            {{ invoice.reservation.reservation_number }}
+        </strong>
 
-                                    {{ invoice.reservation }}
+        <br>
 
-                                </strong>
+        <small class="text-muted">
 
-                                <br>
+            Room
+            {{ invoice.reservation.room.room_number }}
 
-                                <small class="text-muted">
+        </small>
 
-                                    Room {{ invoice.room }}
+    </td>
 
-                                </small>
 
-                            </td>
+    <!-- Amount -->
 
-                            <!-- Amount -->
+    <td>
 
-                            <td>
+        <span class="fw-bold">
 
-                                <span class="fw-bold text-success">
+            ₹{{ invoice.total_amount }}
 
-                                    ₹{{ invoice.amount }}
+        </span>
 
-                                </span>
+    </td>
 
-                            </td>
 
-                            <!-- Method -->
+    <!-- Paid -->
 
-                            <td>
+    <td>
 
-                                {{ invoice.method }}
+        <span class="fw-semibold text-success">
 
-                            </td>
+            ₹{{ invoice.paid_amount }}
 
-                            <!-- Status -->
+        </span>
 
-                            <td>
+    </td>
 
-                                {% if invoice.status == "Paid" %}
 
-                                <span class="badge bg-success">
+    <!-- Balance -->
 
-                                    Paid
+    <td>
 
-                                </span>
+        <span
+            class="fw-semibold
+            {% if invoice.balance_amount > 0 %}
+                text-warning
+            {% else %}
+                text-success
+            {% endif %}"
+        >
 
-                                {% elif invoice.status == "Pending" %}
+            ₹{{ invoice.balance_amount }}
 
-                                <span class="badge bg-warning text-dark">
+        </span>
 
-                                    Pending
+    </td>
 
-                                </span>
 
-                                {% else %}
+    <!-- Status -->
 
-                                <span class="badge bg-danger">
+    <td>
 
-                                    Overdue
+        {% if invoice.status == "paid" %}
 
-                                </span>
+            <span class="badge bg-success">
+                Paid
+            </span>
 
-                                {% endif %}
+        {% elif invoice.status == "partially_paid" %}
 
-                            </td>
+            <span class="badge bg-warning text-dark">
+                Partially Paid
+            </span>
 
-                            <!-- Actions -->
+        {% elif invoice.status == "unpaid" %}
 
-                            <td class="text-center">
+            <span class="badge bg-danger">
+                Unpaid
+            </span>
 
-                                <div class="btn-group">
+        {% elif invoice.status == "draft" %}
 
-                                    <button
-    class="btn btn-sm btn-outline-primary"
-    data-bs-toggle="modal"
-    data-bs-target="#billingModal">
+            <span class="badge bg-secondary">
+                Draft
+            </span>
 
-    <i class="bi bi-eye"></i>
+        {% else %}
 
-</button>
+            <span class="badge bg-dark">
+                Cancelled
+            </span>
 
-                                    <button
-                                        class="btn btn-sm btn-outline-success"
-                                        title="Print">
+        {% endif %}
 
-                                        <i class="bi bi-printer"></i>
+    </td>
 
-                                    </button>
 
-                                    <button
-                                        class="btn btn-sm btn-outline-secondary"
-                                        title="Send">
+    <!-- Actions -->
 
-                                        <i class="bi bi-envelope"></i>
+    <td class="text-center">
 
-                                    </button>
+        <div class="btn-group">
 
-                                </div>
+            <a
+                href="{% url 'billing:invoice_detail' invoice.id %}"
+                class="btn btn-sm btn-outline-primary"
+                title="View Details"
+            >
 
-                            </td>
+                <i class="bi bi-eye"></i>
 
-                        </tr>
+            </a>
 
-                        {% empty %}
+            <a
+                href="{% url 'billing:invoice_detail' invoice.id %}?print=1"
+                target="_blank"
+                class="btn btn-sm btn-outline-success"
+                title="Print Invoice"
+            >
 
-                        <tr>
+                <i class="bi bi-printer"></i>
 
-                            <td colspan="7">
+            </a>
 
-                                <div class="text-center py-5">
+        </div>
 
-                                    <i class="bi bi-receipt-cutoff text-secondary"
-                                       style="font-size:60px;"></i>
+    </td>
 
-                                    <h5 class="mt-3">
+</tr>
 
-                                        No invoices found
+{% empty %}
 
-                                    </h5>
+<tr>
 
-                                    <p class="text-muted">
+    <td colspan="8">
 
-                                        Try changing the filters.
+        <div class="text-center py-5">
 
-                                    </p>
+            <i
+                class="bi bi-receipt-cutoff text-secondary"
+                style="font-size:60px;"
+            ></i>
 
-                                </div>
+            <h5 class="mt-3">
+                No invoices found
+            </h5>
 
-                            </td>
+            <p class="text-muted">
+                No billing records match your filters.
+            </p>
 
-                        </tr>
+        </div>
 
-                        {% endfor %}
+    </td>
+
+</tr>
+
+{% endfor %}
 
                         </tbody>
 
@@ -838,7 +847,7 @@ Reset Filters
 
                                 <th>Amount</th>
 
-                                <th>Method</th>
+        
 
                                 <th>Status</th>
 
@@ -852,125 +861,111 @@ Reset Filters
 
                         <tbody>
 
-                        {% for transaction in transactions %}
+                       {% for transaction in transactions %}
 
-                        <tr>
+<tr>
 
-                            <td>
+    <!-- Transaction ID -->
+    <td>
+        <strong>
+            {{ transaction.transaction_id|default:"—" }}
+        </strong>
+    </td>
 
-                                <strong>
+    <!-- Guest -->
+    <td>
+        <i class="bi bi-person-circle text-primary me-1"></i>
 
-                                    {{ transaction.transaction_no }}
+        {{ transaction.invoice.guest.first_name }}
+        {{ transaction.invoice.guest.last_name }}
+    </td>
 
-                                </strong>
+    <!-- Invoice -->
+    <td>
+        {{ transaction.invoice.invoice_number }}
+    </td>
 
-                            </td>
+    <!-- Amount -->
+    <td>
+        <strong class="text-success">
+            ₹{{ transaction.amount }}
+        </strong>
+    </td>
 
-                            <td>
+    <!-- Status -->
+    <td>
 
-                                <i class="bi bi-person-circle text-primary me-1"></i>
+        {% if transaction.status == "successful" %}
 
-                                {{ transaction.guest_name }}
+            <span class="badge bg-success">
+                Successful
+            </span>
 
-                            </td>
+        {% elif transaction.status == "pending" %}
 
-                            <td>
+            <span class="badge bg-warning text-dark">
+                Pending
+            </span>
 
-                                {{ transaction.invoice_no }}
+        {% elif transaction.status == "refunded" %}
 
-                            </td>
+            <span class="badge bg-info">
+                Refunded
+            </span>
 
-                            <td>
+        {% else %}
 
-                                <strong class="text-success">
+            <span class="badge bg-danger">
+                Failed
+            </span>
 
-                                    ₹{{ transaction.amount }}
+        {% endif %}
 
-                                </strong>
+    </td>
 
-                            </td>
+    <!-- Date -->
+    <td>
+        {{ transaction.payment_date|date:"d M Y, h:i A" }}
+    </td>
 
-                            <td>
+    <!-- Action -->
+    <td class="text-center">
 
-                                {{ transaction.method }}
+        <button
+            class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#billingModal">
 
-                            </td>
+            <i class="bi bi-eye"></i>
 
-                            <td>
+        </button>
 
-                                {% if transaction.status == "Success" %}
+    </td>
 
-                                    <span class="badge bg-success">
+</tr>
 
-                                        Success
+{% empty %}
 
-                                    </span>
+<tr>
+    <td colspan="7">
 
-                                {% elif transaction.status == "Pending" %}
+        <div class="text-center py-5">
 
-                                    <span class="badge bg-warning text-dark">
+            <i
+                class="bi bi-credit-card"
+                style="font-size:60px;color:#bcbcbc;"
+            ></i>
 
-                                        Pending
+            <h5 class="mt-3">
+                No Transactions Found
+            </h5>
 
-                                    </span>
+        </div>
 
-                                {% else %}
+    </td>
+</tr>
 
-                                    <span class="badge bg-danger">
-
-                                        Failed
-
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
-
-                            <td>
-
-                                {{ transaction.date }}
-
-                            </td>
-
-                            <td class="text-center">
-
-                                <button
-    class="btn btn-sm btn-outline-primary"
-    data-bs-toggle="modal"
-    data-bs-target="#billingModal">
-
-    <i class="bi bi-eye"></i>
-
-</button>
-
-                            </td>
-
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-
-                            <td colspan="8">
-
-                                <div class="text-center py-5">
-
-                                    <i class="bi bi-credit-card"
-                                       style="font-size:60px;color:#bcbcbc;"></i>
-
-                                    <h5 class="mt-3">
-
-                                        No Transactions Found
-
-                                    </h5>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
+{% endfor %}
 
                         </tbody>
 
@@ -1020,150 +1015,140 @@ Reset Filters
                         <thead class="table-light">
 
                             <tr>
-
-                                <th>Refund ID</th>
-
-                                <th>Guest</th>
-
-                                <th>Invoice</th>
-
-                                <th>Refund Amount</th>
-
-                                <th>Reason</th>
-
-                                <th>Status</th>
-
-                                <th>Date</th>
-
-                                <th class="text-center">
-
-                                    Action
-
-                                </th>
-
-                            </tr>
+    <th>Refund ID</th>
+    <th>Guest</th>
+    <th>Reservation</th>
+    <th>Room</th>
+    <th>Invoice</th>
+    <th>Refund Amount</th>
+    <th>Reason</th>
+    <th>Status</th>
+    <th>Date</th>
+    <th class="text-center">Action</th>
+</tr>
 
                         </thead>
 
                         <tbody>
 
-                        {% for refund in refunds %}
+                       {% for refund in refunds %}
 
-                        <tr>
+<tr>
 
-                            <td>
+    <!-- Refund ID -->
+    <td>
+        <strong>
+            {{ refund.refund_number }}
+        </strong>
+    </td>
 
-                                <strong>
+    <!-- Guest -->
+    <td>
+        <i class="bi bi-person-circle text-primary me-1"></i>
 
-                                    {{ refund.refund_no }}
+        {{ refund.invoice.guest.first_name }}
+        {{ refund.invoice.guest.last_name }}
+    </td>
 
-                                </strong>
+    <!-- Reservation -->
+    <td>
+        <strong>
+            {{ refund.invoice.reservation.reservation_number }}
+        </strong>
+    </td>
 
-                            </td>
+    <!-- Room -->
+    <td>
+        {{ refund.invoice.reservation.room.room_number }}
+    </td>
 
-                            <td>
+    <!-- Invoice -->
+    <td>
+        {{ refund.invoice.invoice_number }}
+    </td>
 
-                                {{ refund.guest_name }}
+    <!-- Refund Amount -->
+    <td>
+        <strong class="text-danger">
+            ₹{{ refund.amount }}
+        </strong>
+    </td>
 
-                            </td>
+    <!-- Reason -->
+    <td>
+        {{ refund.reason }}
+    </td>
 
-                            <td>
+    <!-- Status -->
+    <td>
 
-                                {{ refund.invoice_no }}
+        {% if refund.status == "approved" %}
 
-                            </td>
+            <span class="badge bg-success">
+                Approved
+            </span>
 
-                            <td>
+        {% elif refund.status == "pending" %}
 
-                                <strong class="text-danger">
+            <span class="badge bg-warning text-dark">
+                Pending
+            </span>
 
-                                    ₹{{ refund.amount }}
+        {% elif refund.status == "rejected" %}
 
-                                </strong>
+            <span class="badge bg-danger">
+                Rejected
+            </span>
 
-                            </td>
+        {% endif %}
 
-                            <td>
+    </td>
 
-                                {{ refund.reason }}
+    <!-- Date -->
+    <td>
+        {{ refund.created_at|date:"d M Y, h:i A" }}
+    </td>
 
-                            </td>
+    <!-- Action -->
+    <td class="text-center">
 
-                            <td>
+        <button
+            class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#billingModal">
 
-                                {% if refund.status == "Approved" %}
+            <i class="bi bi-eye"></i>
 
-                                    <span class="badge bg-success">
+        </button>
 
-                                        Approved
+    </td>
 
-                                    </span>
+</tr>
 
-                                {% elif refund.status == "Pending" %}
+{% empty %}
 
-                                    <span class="badge bg-warning text-dark">
+<tr>
 
-                                        Pending
+    <td colspan="10">
 
-                                    </span>
+        <div class="text-center py-5">
 
-                                {% else %}
+            <i
+                class="bi bi-arrow-counterclockwise"
+                style="font-size:60px;color:#bcbcbc;"
+            ></i>
 
-                                    <span class="badge bg-danger">
+            <h5 class="mt-3">
+                No Refund Requests
+            </h5>
 
-                                        Rejected
+        </div>
 
-                                    </span>
+    </td>
 
-                                {% endif %}
+</tr>
 
-                            </td>
-
-                            <td>
-
-                                {{ refund.date }}
-
-                            </td>
-
-                            <td class="text-center">
-
-                                <button
-    class="btn btn-sm btn-outline-primary"
-    data-bs-toggle="modal"
-    data-bs-target="#billingModal">
-
-    <i class="bi bi-eye"></i>
-
-</button>
-
-                            </td>
-
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-
-                            <td colspan="8">
-
-                                <div class="text-center py-5">
-
-                                    <i class="bi bi-arrow-counterclockwise"
-                                       style="font-size:60px;color:#bcbcbc;"></i>
-
-                                    <h5 class="mt-3">
-
-                                        No Refund Requests
-
-                                    </h5>
-
-                                </div>
-
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
+{% endfor %}
 
                         </tbody>
 
@@ -1515,10 +1500,4 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 {% endblock %}
-{% block extra_js %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script src="{% static 'js/billing.js' %}"></script>
-
-{% endblock %}

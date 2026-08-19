@@ -56,6 +56,22 @@ class GuestSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+        extra_kwargs = {
+            "guest_id": {
+                "required": False,
+                "allow_blank": False,
+            }
+        }
+
+    def create(self, validated_data):
+
+            if not validated_data.get("guest_id"):
+             import time
+
+            validated_data["guest_id"] = f"G{int(time.time() * 1000)}"
+
+            return Guest.objects.create(**validated_data)
+
 
     def get_guest_name(self, obj):
 
