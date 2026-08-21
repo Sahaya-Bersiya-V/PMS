@@ -16,6 +16,7 @@ from .serializers import (
     ReservationSerializer
 )
 from billing.models import Invoice, Payment,Refund
+from django.core.paginator import Paginator
 # RESERVATIONS = [
 #     {
 #         "id": "RSV001",
@@ -1878,11 +1879,15 @@ class GuestDetailView(APIView):
         )
 
 
-    # =========================================================
+# =========================================================
 # RESERVATION ADMIN UI
 # =========================================================
 
 def reservation_list_page(request):
+
+    # ==========================================
+    # RESERVATIONS
+    # ==========================================
 
     reservations = Reservation.objects.select_related(
         "hotel",
@@ -1891,30 +1896,52 @@ def reservation_list_page(request):
         "room__room_type"
     ).all()
 
+
+    # ==========================================
+    # HOTELS
+    # ==========================================
+
+    hotels = Hotel.objects.all().order_by("name")
+
+
+    # ==========================================
+    # GET FILTER VALUES
+    # ==========================================
+
     search = request.GET.get(
         "search",
         ""
     ).strip()
 
+
+    hotel = request.GET.get(
+        "hotel",
+        ""
+    ).strip()
+
+
     reservation_status = request.GET.get(
         "status",
         ""
-    )
+    ).strip()
+
 
     payment = request.GET.get(
         "payment",
         ""
-    )
+    ).strip()
+
 
     check_in = request.GET.get(
         "check_in",
         ""
-    )
+    ).strip()
+
 
     check_out = request.GET.get(
         "check_out",
         ""
-    )
+    ).strip()
 
 
     # ==========================================
@@ -1953,6 +1980,17 @@ def reservation_list_page(request):
                 room__room_number__icontains=search
             )
 
+        )
+
+
+    # ==========================================
+    # HOTEL
+    # ==========================================
+
+    if hotel:
+
+        reservations = reservations.filter(
+            hotel_id=hotel
         )
 
 
@@ -2004,25 +2042,63 @@ def reservation_list_page(request):
     # SUMMARY COUNTS
     # ==========================================
 
-    checked_in_count = Reservation.objects.filter(
+    total_reservations = reservations.count()
+
+    checked_in_count = reservations.filter(
         status="checked_in"
     ).count()
 
-
-    checked_out_count = Reservation.objects.filter(
+    checked_out_count = reservations.filter(
         status="checked_out"
     ).count()
 
-
-    pending_payment_count = Reservation.objects.filter(
+    pending_payment_count = reservations.filter(
         payment_status="pending"
     ).count()
 
 
+    # ==========================================
+    # PAGINATION
+    # ==========================================
+
+    paginator = Paginator(
+        reservations,
+        5
+    )
+
+    page_number = request.GET.get(
+        "page"
+    )
+
+    page_obj = paginator.get_page(
+        page_number
+    )
+
+    reservations = page_obj.object_list
+
+
+    # ==========================================
+    # CONTEXT
+    # ==========================================
+
     context = {
 
+        # Reservations
         "reservations": reservations,
 
+        # Pagination
+        "page_obj": page_obj,
+
+        "paginator": paginator,
+
+
+        # Hotels
+        "hotels": hotels,
+
+        "hotel": hotel,
+
+
+        # Filters
         "search": search,
 
         "status": reservation_status,
@@ -2032,7 +2108,9 @@ def reservation_list_page(request):
         "check_in": check_in,
 
         "check_out": check_out,
+        "total_reservations": total_reservations,
 
+        # Summary
         "checked_in_count":
             checked_in_count,
 

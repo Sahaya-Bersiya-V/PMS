@@ -606,38 +606,126 @@
 
 <!-- Pagination -->
 
-<div class="d-flex justify-content-between align-items-center mt-4">
+<!-- =====================================================
+     PAGINATION
+===================================================== -->
 
-    <span class="text-muted">
-        Showing 1 to 3 of 3 rooms
-    </span>
+{% if page_obj.paginator.count > 0 %}
 
-    <nav>
+<div class="rooms-pagination">
 
-        <ul class="pagination mb-0">
+    <!-- RESULT COUNT -->
 
-            <li class="page-item disabled">
+    <div class="pagination-info">
 
-                <a class="page-link">Previous</a>
+        Showing
 
-            </li>
+        <strong>
+            {{ page_obj.start_index }}
+        </strong>
 
-            <li class="page-item active">
+        to
 
-                <a class="page-link">1</a>
+        <strong>
+            {{ page_obj.end_index }}
+        </strong>
 
-            </li>
+        of
 
-            <li class="page-item disabled">
+        <strong>
+            {{ page_obj.paginator.count }}
+        </strong>
 
-                <a class="page-link">Next</a>
+        rooms
 
-            </li>
+    </div>
 
-        </ul>
 
-    </nav>
+    <!-- PAGINATION BUTTONS -->
+
+    <div class="pagination-controls">
+
+        <!-- PREVIOUS -->
+
+        {% if page_obj.has_previous %}
+
+            <a
+                href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search|urlencode }}{% endif %}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if selected_room_type %}&room_type={{ selected_room_type }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}"
+                class="pagination-arrow"
+                title="Previous page"
+            >
+
+                <i class="bi bi-chevron-left"></i>
+
+            </a>
+
+        {% else %}
+
+            <span class="pagination-arrow disabled">
+
+                <i class="bi bi-chevron-left"></i>
+
+            </span>
+
+        {% endif %}
+
+
+        <!-- PAGE NUMBERS -->
+
+        <div class="pagination-pages">
+
+            {% for num in page_obj.paginator.page_range %}
+
+                {% if num == page_obj.number %}
+
+                    <span class="pagination-page active">
+                        {{ num }}
+                    </span>
+
+                {% else %}
+
+                    <a
+                        href="?page={{ num }}{% if search %}&search={{ search|urlencode }}{% endif %}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if selected_room_type %}&room_type={{ selected_room_type }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}"
+                        class="pagination-page"
+                    >
+                        {{ num }}
+                    </a>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- NEXT -->
+
+        {% if page_obj.has_next %}
+
+            <a
+                href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search|urlencode }}{% endif %}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if selected_room_type %}&room_type={{ selected_room_type }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}"
+                class="pagination-arrow"
+                title="Next page"
+            >
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+        {% else %}
+
+            <span class="pagination-arrow disabled">
+
+                <i class="bi bi-chevron-right"></i>
+
+            </span>
+
+        {% endif %}
+
+    </div>
 
 </div>
+
+{% endif %}
 
 {% endblock %}

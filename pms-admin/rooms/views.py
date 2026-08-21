@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-
+from django.core.paginator import Paginator
 from .models import Room, RoomType
 from .forms import RoomForm, RoomTypeForm
 
@@ -54,6 +54,17 @@ def room_list(request):
         rooms = rooms.filter(
             room_number__icontains=search
         )
+    # =========================================================
+# PAGINATION
+# =========================================================
+
+    paginator = Paginator(rooms, 5)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
+    rooms = page_obj.object_list
 
     context = {
         "rooms": rooms,
@@ -64,6 +75,8 @@ def room_list(request):
         "selected_room_type": selected_room_type,
         "selected_status": selected_status,
         "search": search,
+        "page_obj":page_obj,
+        "paginator":paginator,
     }
 
     return render(
@@ -206,14 +219,55 @@ def delete_room(request, pk):
 
 def room_type_list(request):
 
-    room_types = RoomType.objects.select_related("hotel").all()
+    # =========================================================
+    # ROOM TYPES
+    # =========================================================
+
+    room_types = RoomType.objects.select_related(
+        "hotel"
+    ).order_by("hotel__name", "name")
+
+
+    # =========================================================
+    # PAGINATION
+    # Show 5 room types per page
+    # =========================================================
+
+    paginator = Paginator(
+        room_types,
+        5
+    )
+
+    page_number = request.GET.get(
+        "page"
+    )
+
+    page_obj = paginator.get_page(
+        page_number
+    )
+
+    room_types = page_obj.object_list
+
+
+    # =========================================================
+    # CONTEXT
+    # =========================================================
+
+    context = {
+
+        "room_types": room_types,
+
+        "page_obj": page_obj,
+
+        "paginator": paginator,
+
+    }
+
 
     return render(
         request,
         "rooms/room_type_list.html",
-        {
-            "room_types": room_types
-        }
+        context
     )
 
 

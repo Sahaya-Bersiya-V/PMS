@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Role Details - {{ role.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">{{ role.name }}</h2>
+        <p class="text-muted mb-0">Role Overview and Assigned Personnel.</p>
+    </div>
+    <div>
+        <a href="{% url 'edit-role' role.id %}" class="btn btn-warning text-white me-2">
+            <i class="bi bi-pencil me-1"></i> Edit
+        </a>
+        <a href="{% url 'role-list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">Assigned Employees ({{ assigned_employees.count }})</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for emp in assigned_employees %}
+                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        <h6 class="mb-0 fw-semibold">{{ emp.first_name }} {{ emp.last_name }}</h6>
+                        <small class="text-muted">{{ emp.employee_id }} | {{ emp.get_department_display }}</small>
+                    </div>
+                    <span class="badge bg-light text-dark border">{{ emp.designation }}</span>
+                </li>
+                {% empty %}
+                <li class="list-group-item py-3 text-muted text-center">No employees currently assigned.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">Granted Permissions ({{ permissions.count }})</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for perm in permissions %}
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle p-2">
+                            <i class="bi bi-check2 me-1"></i>{{ perm.name }}
+                        </span>
+                    {% empty %}
+                        <p class="text-muted mb-0">No permissions assigned.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

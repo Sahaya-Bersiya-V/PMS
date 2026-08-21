@@ -3,6 +3,7 @@ from django.db.models import Sum, Count
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 import csv
 import json
@@ -109,21 +110,75 @@ def billing_dashboard(request):
     # -----------------------------------------------------
 
     refunds = Refund.objects.select_related(
-    "invoice",
-    "invoice__guest",
-    "invoice__reservation",
-    "invoice__reservation__room",
-    "invoice__reservation__hotel",
-).order_by("-created_at")
+        "invoice",
+        "invoice__guest",
+        "invoice__reservation",
+        "invoice__reservation__room",
+        "invoice__reservation__hotel",
+    ).order_by("-created_at")
 
     if hotel:
         refunds = refunds.filter(
             invoice__reservation__hotel_id=hotel
         )
 
+    # =====================================================
+    # PAGINATION
+    # =====================================================
+
+    invoice_paginator = Paginator(
+        invoices,
+        5
+    )
+
+    transaction_paginator = Paginator(
+        transactions,
+        5
+    )
+
+    refund_paginator = Paginator(
+        refunds,
+        5
+    )
+
     # -----------------------------------------------------
-    # Summary
+    # Current pages
     # -----------------------------------------------------
+
+    invoice_page_number = request.GET.get(
+        "invoice_page",
+        1
+    )
+
+    transaction_page_number = request.GET.get(
+        "transaction_page",
+        1
+    )
+
+    refund_page_number = request.GET.get(
+        "refund_page",
+        1
+    )
+
+    # -----------------------------------------------------
+    # Page objects
+    # -----------------------------------------------------
+
+    invoices_page = invoice_paginator.get_page(
+        invoice_page_number
+    )
+
+    transactions_page = transaction_paginator.get_page(
+        transaction_page_number
+    )
+
+    refunds_page = refund_paginator.get_page(
+        refund_page_number
+    )
+
+    # =====================================================
+    # SUMMARY
+    # =====================================================
 
     all_invoices = Invoice.objects.all()
 
@@ -144,25 +199,42 @@ def billing_dashboard(request):
         )["total"] or 0
     )
 
-    total_pending = total_billed - total_paid
-    total_outstanding = total_billed - total_paid
-    total_refunds = (
-        Refund.objects.filter(
-            invoice__reservation__hotel_id=hotel
-        ).aggregate(
-            total=Sum("amount")
-        )["total"] or 0
-        if hotel
-        else Refund.objects.aggregate(
-            total=Sum("amount")
-        )["total"] or 0
+    total_pending = (
+        total_billed - total_paid
+    )
+
+    total_outstanding = (
+        total_billed - total_paid
     )
 
     # -----------------------------------------------------
-    # Invoice Status Chart
+    # Total Refunds
     # -----------------------------------------------------
 
+    if hotel:
+
+        total_refunds = (
+            Refund.objects.filter(
+                invoice__reservation__hotel_id=hotel
+            ).aggregate(
+                total=Sum("amount")
+            )["total"] or 0
+        )
+
+    else:
+
+        total_refunds = (
+            Refund.objects.aggregate(
+                total=Sum("amount")
+            )["total"] or 0
+        )
+
+    # =====================================================
+    # INVOICE STATUS CHART
+    # =====================================================
+
     status_counts = {
+
         "Paid": all_invoices.filter(
             status="paid"
         ).count(),
@@ -184,9 +256,9 @@ def billing_dashboard(request):
         ).count(),
     }
 
-    # -----------------------------------------------------
-    # Monthly Revenue
-    # -----------------------------------------------------
+    # =====================================================
+    # MONTHLY REVENUE
+    # =====================================================
 
     current_year = timezone.now().year
 
@@ -205,13 +277,19 @@ def billing_dashboard(request):
             )["total"] or 0
         )
 
-        monthly_revenue.append(float(amount))
+        monthly_revenue.append(
+            float(amount)
+        )
 
-    # -----------------------------------------------------
-    # Context
-    # -----------------------------------------------------
+    # =====================================================
+    # CONTEXT
+    # =====================================================
 
     context = {
+
+        # -------------------------------------------------
+        # Filters
+        # -------------------------------------------------
 
         "hotels": hotels,
 
@@ -225,25 +303,55 @@ def billing_dashboard(request):
 
         "to_date": to_date,
 
-        "invoices": invoices,
+        # -------------------------------------------------
+        # Paginated data
+        # -------------------------------------------------
 
-        "transactions": transactions,
+        "invoices": invoices_page,
 
-        "refunds": refunds,
+        "transactions": transactions_page,
+
+        "refunds": refunds_page,
+
+        # -------------------------------------------------
+        # Paginators
+        # -------------------------------------------------
+
+        "invoice_paginator": invoice_paginator,
+
+        "transaction_paginator": transaction_paginator,
+
+        "refund_paginator": refund_paginator,
+
+        # -------------------------------------------------
+        # Page objects
+        # -------------------------------------------------
+
+        "invoices_page": invoices_page,
+
+        "transactions_page": transactions_page,
+
+        "refunds_page": refunds_page,
+
+        # -------------------------------------------------
+        # Summary
+        # -------------------------------------------------
 
         "total_billed": total_billed,
 
         "total_paid": total_paid,
 
         "total_pending": total_pending,
-        "total_outstanding": total_outstanding,
 
+        "total_outstanding": total_outstanding,
 
         "total_refunds": total_refunds,
 
-        "status_counts": 
-            status_counts
-        ,
+        # -------------------------------------------------
+        # Charts
+        # -------------------------------------------------
+
+        "status_counts": status_counts,
 
         "monthly_revenue": json.dumps(
             monthly_revenue
@@ -292,6 +400,7 @@ def export_billing_report(request):
     for invoice in invoices:
 
         writer.writerow([
+
             invoice.invoice_number,
 
             invoice.guest,

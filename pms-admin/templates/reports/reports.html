@@ -1,302 +1,192 @@
 {% extends "base.html" %}
+
 {% load static %}
 
-{% block title %}Reports{% endblock %}
+{% block title %}
+Reports
+{% endblock %}
+
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+
+<link
+    rel="stylesheet"
+    href="{% static 'css/reports.css' %}"
+>
+
 {% endblock %}
+
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="reports-page">
 
-    <!-- Header -->
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="reports-header">
 
         <div>
 
-            <h2 class="fw-bold">
-
+            <h1>
                 Reports
+            </h1>
 
-            </h2>
-
-            <p class="text-muted">
-
-                Business analytics and performance reports
-
+            <p>
+                View hotel performance and business analytics
             </p>
 
         </div>
 
-        <div>
 
-            <button class="btn btn-outline-danger me-2">
+        <div class="report-actions">
 
-                <i class="bi bi-file-earmark-pdf"></i>
+            <form
+                method="GET"
+                class="date-filter"
+            >
 
-                PDF
+                <select
+                    name="hotel"
+                    class="form-select"
+                >
 
-            </button>
+                    <option value="">
+                        All Hotels
+                    </option>
 
-            <button class="btn btn-outline-success me-2">
+                    {% for hotel in hotels %}
 
-                <i class="bi bi-file-earmark-excel"></i>
+                    <option
+                        value="{{ hotel.id }}"
+                        {% if selected_hotel == hotel.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ hotel.name }}
+                    </option>
 
-                Excel
+                    {% endfor %}
 
-            </button>
+                </select>
 
-            <button class="btn btn-primary">
 
-                <i class="bi bi-printer"></i>
+                <input
+                    type="date"
+                    name="start_date"
+                    value="{{ start_date }}"
+                    class="form-control"
+                >
 
-                Print
 
-            </button>
+                <span>
+                    to
+                </span>
 
-        </div>
 
-    </div>
+                <input
+                    type="date"
+                    name="end_date"
+                    value="{{ end_date }}"
+                    class="form-control"
+                >
 
-    <!-- KPI Cards -->
 
-    <div class="row g-4">
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
 
-        <div class="col-lg-3">
+                    <i class="bi bi-search"></i>
 
-            <div class="glass-card">
+                    Apply
 
-                <small>Total Revenue</small>
-
-                <h3>{{ total_revenue }}</h3>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3">
-
-            <div class="glass-card">
-
-                <small>Bookings</small>
-
-                <h3>{{ total_bookings }}</h3>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3">
-
-            <div class="glass-card">
-
-                <small>Occupancy</small>
-
-                <h3>{{ occupancy_rate }}</h3>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3">
-
-            <div class="glass-card">
-
-                <small>Total Guests</small>
-
-                <h3>{{ total_guests }}</h3>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <br>
-
-        <!-- ========================================= -->
-    <!-- FILTER SECTION -->
-    <!-- ========================================= -->
-
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-        <div class="card-body">
-
-            <form method="GET">
-
-                <div class="row g-3 align-items-end">
-
-                    <!-- Hotel -->
-
-                    <div class="col-lg-3">
-
-                        <label class="form-label fw-semibold">
-
-                            Hotel
-
-                        </label>
-
-                        <select class="form-select" name="hotel">
-
-                            <option value="">All Hotels</option>
-
-                            {% for hotel in hotels %}
-
-                            <option value="{{ hotel.name }}"
-
-                                {% if selected_hotel == hotel.name %}
-                                selected
-                                {% endif %}>
-
-                                {{ hotel.name }}
-
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- Report Type -->
-
-                    <div class="col-lg-3">
-
-                        <label class="form-label fw-semibold">
-
-                            Report Type
-
-                        </label>
-
-                        <select class="form-select" name="report">
-
-                            <option value="">All Reports</option>
-
-                            {% for report in report_types %}
-
-                            <option value="{{ report }}"
-
-                                {% if selected_report == report %}
-                                selected
-                                {% endif %}>
-
-                                {{ report }}
-
-                            </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-                    <!-- From -->
-
-                    <div class="col-lg-2">
-
-                        <label class="form-label fw-semibold">
-
-                            From Date
-
-                        </label>
-
-                        <input
-                            type="date"
-                            class="form-control"
-                            name="from_date"
-                            value="{{ from_date }}">
-
-                    </div>
-
-                    <!-- To -->
-
-                    <div class="col-lg-2">
-
-                        <label class="form-label fw-semibold">
-
-                            To Date
-
-                        </label>
-
-                        <input
-                            type="date"
-                            class="form-control"
-                            name="to_date"
-                            value="{{ to_date }}">
-
-                    </div>
-
-                    <!-- Button -->
-
-                    <div class="col-lg-2 d-grid">
-
-                        <button class="btn btn-primary">
-
-                            <i class="bi bi-search me-2"></i>
-
-                            Generate
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="mt-3">
-
-                    <a href="{% url 'reports:reports_dashboard' %}"
-
-                       class="btn btn-outline-secondary">
-
-                        <i class="bi bi-arrow-clockwise me-2"></i>
-
-                        Reset
-
-                    </a>
-
-                </div>
+                </button>
 
             </form>
 
+
+            <a
+                href="{% url 'reports:export_reports' %}?start_date={{ start_date }}&end_date={{ end_date }}"
+                class="btn btn-outline-primary"
+            >
+
+                <i class="bi bi-download"></i>
+
+                Export
+
+            </a>
+
         </div>
 
     </div>
 
 
+    <!-- ================================================= -->
+    <!-- KPI CARDS -->
+    <!-- ================================================= -->
 
-    <!-- ========================================= -->
-    <!-- CHARTS -->
-    <!-- ========================================= -->
+    <div class="row g-4 report-kpis">
 
-    <div class="row">
 
         <!-- Revenue -->
 
-        <div class="col-lg-8 mb-4">
+        <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm rounded-4">
+            <div class="report-kpi-card">
 
-                <div class="card-header bg-white border-0">
+                <div>
 
-                    <h5 class="fw-bold">
+                    <span class="kpi-title">
+                        Total Revenue
+                    </span>
 
-                        Revenue Trend
+                    <h2>
+                        ₹{{ total_revenue|floatformat:2 }}
+                    </h2>
 
-                    </h5>
+                    <small>
+                        Total invoiced amount
+                    </small>
 
                 </div>
 
-                <div class="card-body">
 
-                    <canvas id="revenueChart"
+                <div class="kpi-icon revenue">
+                    <i class="bi bi-currency-rupee"></i>
+                </div>
 
-                            height="120">
+            </div>
 
-                    </canvas>
+        </div>
 
+
+        <!-- Bookings -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="report-kpi-card">
+
+                <div>
+
+                    <span class="kpi-title">
+                        Total Bookings
+                    </span>
+
+                    <h2>
+                        {{ total_bookings }}
+                    </h2>
+
+                    <small>
+                        Reservations in period
+                    </small>
+
+                </div>
+
+
+                <div class="kpi-icon booking">
+                    <i class="bi bi-calendar-check"></i>
                 </div>
 
             </div>
@@ -306,26 +196,61 @@
 
         <!-- Occupancy -->
 
-        <div class="col-lg-4 mb-4">
+        <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm rounded-4">
+            <div class="report-kpi-card">
 
-                <div class="card-header bg-white border-0">
+                <div>
 
-                    <h5 class="fw-bold">
+                    <span class="kpi-title">
+                        Occupancy Rate
+                    </span>
 
-                        Occupancy
+                    <h2>
+                        {{ occupancy_rate|floatformat:1 }}%
+                    </h2>
 
-                    </h5>
+                    <small>
+                        Room utilization
+                    </small>
 
                 </div>
 
-                <div class="card-body">
 
-                    <canvas id="occupancyChart">
+                <div class="kpi-icon occupancy">
+                    <i class="bi bi-building"></i>
+                </div>
 
-                    </canvas>
+            </div>
 
+        </div>
+
+
+        <!-- ADR -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="report-kpi-card">
+
+                <div>
+
+                    <span class="kpi-title">
+                        Avg. Daily Rate
+                    </span>
+
+                    <h2>
+                        ₹{{ adr|floatformat:2 }}
+                    </h2>
+
+                    <small>
+                        Average room revenue
+                    </small>
+
+                </div>
+
+
+                <div class="kpi-icon adr">
+                    <i class="bi bi-graph-up-arrow"></i>
                 </div>
 
             </div>
@@ -333,177 +258,153 @@
         </div>
 
     </div>
-        <!-- ========================================= -->
-    <!-- REPORT SUMMARY TABLE -->
-    <!-- ========================================= -->
 
-    <div class="card border-0 shadow-sm rounded-4">
 
-        <div class="card-header bg-white border-0 py-3">
+  <!-- ================================================= -->
+<!-- CHARTS -->
+<!-- ================================================= -->
 
-            <div class="d-flex justify-content-between align-items-center">
+<div class="reports-charts">
 
-                <div>
+    <!-- Revenue -->
 
-                    <h5 class="fw-bold mb-1">
+    <div class="report-card">
 
-                        Report Summary
+        <div class="report-card-header">
 
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Hotel performance overview
-
-                    </small>
-
-                </div>
-
-                <span class="badge bg-primary">
-
-                    {{ reports|length }} Hotels
-
-                </span>
-
-            </div>
+            <h4>
+                Revenue Overview
+            </h4>
 
         </div>
 
+        <div class="chart-container">
+
+            <canvas id="revenueReportChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- Booking Source -->
+
+    <div class="report-card">
+
+        <div class="report-card-header">
+
+            <h4>
+                Bookings by Source
+            </h4>
+
+        </div>
+
+        <div class="chart-container doughnut-container">
+
+            <canvas id="bookingSourceChart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{{ revenue_labels|json_script:"revenue-labels" }}
+
+{{ revenue_values|json_script:"revenue-values" }}
+
+{{ source_counts|json_script:"source-counts" }}
+
+
+    <!-- ================================================= -->
+    <!-- ROOM PERFORMANCE -->
+    <!-- ================================================= -->
+
+    <div class="report-card mt-4">
+
+        <div class="report-card-header">
+
+            <h4>
+                Room Type Performance
+            </h4>
+
+        </div>
+
+
         <div class="table-responsive">
 
-            <table class="table table-hover align-middle mb-0">
+            <table class="table report-table">
 
-                <thead class="table-light">
+                <thead>
 
                     <tr>
 
-                        <th>Hotel</th>
+                        <th>
+                            Room Type
+                        </th>
 
-                        <th>Revenue</th>
+                        <th>
+                            Occupancy
+                        </th>
 
-                        <th>Reservations</th>
+                        <th>
+                            ADR
+                        </th>
 
-                        <th>Occupancy</th>
-
-                        <th>Guests</th>
-
-                        <th>ADR</th>
-
-                        <th>RevPAR</th>
-
-                        <th class="text-center">Action</th>
+                        <th>
+                            Revenue
+                        </th>
 
                     </tr>
 
                 </thead>
 
+
                 <tbody>
 
-                {% for report in reports %}
+                    {% for room in room_type_data %}
 
                     <tr>
 
                         <td>
-
-                            <div class="fw-semibold">
-
-                                <i class="bi bi-building text-primary me-2"></i>
-
-                                {{ report.hotel }}
-
-                            </div>
-
-                        </td>
-
-                        <td>
-
-                            <strong class="text-success">
-
-                                ₹{{ report.revenue }}
-
+                            <strong>
+                                {{ room.name }}
                             </strong>
-
                         </td>
 
                         <td>
 
-                            {{ report.reservations }}
-
-                        </td>
-
-                        <td>
-
-                            <span class="badge bg-success">
-
-                                {{ report.occupancy }}
-
+                            <span class="performance-value">
+                                {{ room.occupancy }}%
                             </span>
 
                         </td>
 
                         <td>
-
-                            {{ report.guests }}
-
+                            ₹{{ room.adr|floatformat:2 }}
                         </td>
 
                         <td>
-
-                            ₹{{ report.adr }}
-
-                        </td>
-
-                        <td>
-
-                            ₹{{ report.revpar }}
-
-                        </td>
-
-                        <td class="text-center">
-
-                            <button
-                                class="btn btn-sm btn-outline-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#reportModal">
-
-                                <i class="bi bi-eye"></i>
-
-                            </button>
-
+                            ₹{{ room.revenue|floatformat:2 }}
                         </td>
 
                     </tr>
 
-                {% empty %}
+                    {% empty %}
 
                     <tr>
 
-                        <td colspan="8">
-
-                            <div class="text-center py-5">
-
-                                <i class="bi bi-bar-chart-line"
-                                   style="font-size:60px;color:#bdbdbd;"></i>
-
-                                <h5 class="mt-3">
-
-                                    No Reports Found
-
-                                </h5>
-
-                                <p class="text-muted">
-
-                                    Try changing the selected filters.
-
-                                </p>
-
-                            </div>
-
+                        <td
+                            colspan="4"
+                            class="text-center"
+                        >
+                            No room data available.
                         </td>
 
                     </tr>
 
-                {% endfor %}
+                    {% endfor %}
 
                 </tbody>
 
@@ -513,252 +414,105 @@
 
     </div>
 
-        <!-- ========================================= -->
-    <!-- PAGINATION -->
-    <!-- ========================================= -->
 
-    <div class="d-flex justify-content-between align-items-center mt-4">
+    <!-- ================================================= -->
+    <!-- THREE TABLES -->
+    <!-- ================================================= -->
+
+    <div class="reports-bottom-grid">
+
+
+        <!-- Recent Reservations -->
 
         <div>
 
-            <small class="text-muted">
+            <div class="report-card">
 
-                Showing {{ reports|length }} report(s)
+                <div class="report-card-header">
 
-            </small>
-
-        </div>
-
-        <nav>
-
-            <ul class="pagination mb-0">
-
-                <li class="page-item disabled">
-
-                    <a class="page-link">
-
-                        Previous
-
-                    </a>
-
-                </li>
-
-                <li class="page-item active">
-
-                    <a class="page-link">
-
-                        1
-
-                    </a>
-
-                </li>
-
-                <li class="page-item">
-
-                    <a class="page-link">
-
-                        2
-
-                    </a>
-
-                </li>
-
-                <li class="page-item">
-
-                    <a class="page-link">
-
-                        Next
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </nav>
-
-    </div>
-
-
-    <!-- ========================================= -->
-    <!-- REPORT DETAILS MODAL -->
-    <!-- ========================================= -->
-
-    <div class="modal fade"
-         id="reportModal"
-         tabindex="-1">
-
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-
-            <div class="modal-content border-0 rounded-4">
-
-                <div class="modal-header">
-
-                    <h5 class="modal-title">
-
-                        Report Details
-
-                    </h5>
-
-                    <button
-                        class="btn-close"
-                        data-bs-dismiss="modal">
-
-                    </button>
+                    <h4>
+                        Recent Reservations
+                    </h4>
 
                 </div>
 
-                <div class="modal-body">
 
-                    <div class="row">
+                <div class="table-responsive">
 
-                        <div class="col-md-6 mb-3">
+                    <table class="table report-table">
 
-                            <label class="text-muted">
-
-                                Hotel
-
-                            </label>
-
-                            <h6>
-
-                                Hotel Paradise
-
-                            </h6>
-
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="text-muted">
-
-                                Report Type
-
-                            </label>
-
-                            <h6>
-
-                                Revenue Report
-
-                            </h6>
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="text-muted">
-
-                                Revenue
-
-                            </label>
-
-                            <h5 class="text-success">
-
-                                ₹250,000
-
-                            </h5>
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="text-muted">
-
-                                Reservations
-
-                            </label>
-
-                            <h5>
-
-                                180
-
-                            </h5>
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="text-muted">
-
-                                Occupancy
-
-                            </label>
-
-                            <h5>
-
-                                82%
-
-                            </h5>
-
-                        </div>
-
-                        <div class="col-md-3 mb-3">
-
-                            <label class="text-muted">
-
-                                Guests
-
-                            </label>
-
-                            <h5>
-
-                                265
-
-                            </h5>
-
-                        </div>
-
-                    </div>
-
-                    <hr>
-
-                    <table class="table table-bordered">
-
-                        <thead class="table-light">
+                        <thead>
 
                             <tr>
 
-                                <th>Metric</th>
+                                <th>
+                                    Reservation
+                                </th>
 
-                                <th>Value</th>
+                                <th>
+                                    Guest
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
 
                             </tr>
 
                         </thead>
 
+
                         <tbody>
 
-                            <tr>
-
-                                <td>Average Daily Rate (ADR)</td>
-
-                                <td>₹4,200</td>
-
-                            </tr>
+                            {% for reservation in recent_reservations %}
 
                             <tr>
 
-                                <td>RevPAR</td>
+                                <td>
+                                    {{ reservation.reservation_number }}
+                                </td>
 
-                                <td>₹3,444</td>
+                                <td>
+                                    {{ reservation.guest.first_name }}
+                                </td>
+
+                                <td>
+                                    ₹{{ reservation.total_amount }}
+                                </td>
+
+                                <td>
+
+                                    <span class="
+                                        status-badge
+                                        status-{{ reservation.status }}
+                                    ">
+
+                                        {{ reservation.get_status_display }}
+
+                                    </span>
+
+                                </td>
 
                             </tr>
+
+                            {% empty %}
 
                             <tr>
 
-                                <td>Cancelled Reservations</td>
-
-                                <td>12</td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td>Average Stay</td>
-
-                                <td>2.8 Days</td>
+                                <td
+                                    colspan="4"
+                                    class="text-center"
+                                >
+                                    No reservations.
+                                </td>
 
                             </tr>
+
+                            {% endfor %}
 
                         </tbody>
 
@@ -766,39 +520,178 @@
 
                 </div>
 
-                <div class="modal-footer">
+            </div>
 
-                    <button
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
+        </div>
 
-                        Close
 
-                    </button>
+        <!-- Payment Summary -->
 
-                    <button class="btn btn-outline-danger">
+        <div>
 
-                        <i class="bi bi-file-earmark-pdf me-2"></i>
+            <div class="report-card">
 
-                        PDF
+                <div class="report-card-header">
 
-                    </button>
+                    <h4>
+                        Payment Summary
+                    </h4>
 
-                    <button class="btn btn-outline-success">
+                </div>
 
-                        <i class="bi bi-file-earmark-excel me-2"></i>
 
-                        Excel
+                <div class="summary-list">
 
-                    </button>
+                    <div>
+                        <span>
+                            Total Revenue
+                        </span>
 
-                    <button class="btn btn-primary">
+                        <strong>
+                            ₹{{ total_revenue|floatformat:2 }}
+                        </strong>
+                    </div>
 
-                        <i class="bi bi-printer me-2"></i>
 
-                        Print
+                    <div>
+                        <span>
+                            Total Received
+                        </span>
 
-                    </button>
+                        <strong>
+                            ₹{{ total_received|floatformat:2 }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            Pending Payments
+                        </span>
+
+                        <strong class="text-warning">
+                            ₹{{ pending_payments|floatformat:2 }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            Refunds Issued
+                        </span>
+
+                        <strong class="text-danger">
+                            ₹{{ refunds_issued|floatformat:2 }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            Cancelled Bookings
+                        </span>
+
+                        <strong>
+                            {{ cancelled_bookings }}
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            No Show Bookings
+                        </span>
+
+                        <strong>
+                            {{ no_show_bookings }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Top Guests -->
+
+        <div>
+
+            <div class="report-card">
+
+                <div class="report-card-header">
+
+                    <h4>
+                        Top Guests
+                    </h4>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table report-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Guest
+                                </th>
+
+                                <th>
+                                    Bookings
+                                </th>
+
+                                <th>
+                                    Total Spent
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for guest in guest_data %}
+
+                            <tr>
+
+                                <td>
+                                    {{ guest.name }}
+                                </td>
+
+                                <td>
+                                    {{ guest.bookings }}
+                                </td>
+
+                                <td>
+                                    ₹{{ guest.total_spent|floatformat:2 }}
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="3"
+                                    class="text-center"
+                                >
+                                    No guest data.
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
@@ -808,6 +701,128 @@
 
     </div>
 
+
+    <!-- ================================================= -->
+    <!-- DAILY PERFORMANCE -->
+    <!-- ================================================= -->
+
+    <div class="report-card mt-4">
+
+        <div class="report-card-header">
+
+            <h4>
+                Daily Performance Summary
+            </h4>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table report-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Bookings
+                        </th>
+
+                        <th>
+                            Check-ins
+                        </th>
+
+                        <th>
+                            Check-outs
+                        </th>
+
+                        <th>
+                            Occupancy
+                        </th>
+
+                        <th>
+                            ADR
+                        </th>
+
+                        <th>
+                            RevPAR
+                        </th>
+
+                        <th>
+                            Revenue
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for day in daily_performance %}
+
+                    <tr>
+
+                        <td>
+                            {{ day.date|date:"d M Y" }}
+                        </td>
+
+                        <td>
+                            {{ day.bookings }}
+                        </td>
+
+                        <td>
+                            {{ day.check_ins }}
+                        </td>
+
+                        <td>
+                            {{ day.check_outs }}
+                        </td>
+
+                        <td>
+                            {{ day.occupancy }}%
+                        </td>
+
+                        <td>
+                            ₹{{ day.adr|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            ₹{{ day.revpar|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ₹{{ day.revenue|floatformat:2 }}
+                            </strong>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{% static 'js/reports.js' %}"></script>
 
 {% endblock %}

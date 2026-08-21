@@ -73,7 +73,7 @@
                 </span>
 
                 <strong class="stat-number">
-                    {{ reservations|length }}
+                    {{ total_reservations }}
                 </strong>
 
                 <span class="stat-description">
@@ -223,6 +223,40 @@
                     </div>
 
                 </div>
+
+                <!-- Hotel -->
+
+<div class="filter-field">
+
+    <label>
+        Hotel
+    </label>
+
+    <select
+        name="hotel"
+        class="reservation-select"
+    >
+
+        <option value="">
+            All Hotels
+        </option>
+
+        {% for hotel_item in hotels %}
+
+            <option
+                value="{{ hotel_item.id }}"
+                {% if hotel == hotel_item.id|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+                {{ hotel_item.name }}
+            </option>
+
+        {% endfor %}
+
+    </select>
+
+</div>
 
 
                 <!-- Status -->
@@ -404,7 +438,7 @@
                 </h3>
 
                 <p>
-                    {{ reservations|length }} reservation(s) found
+                    {{ page_obj.paginator.count }} reservation(s) found
                 </p>
 
             </div>
@@ -698,15 +732,115 @@
 
         <div class="reservation-table-footer">
 
-            <span>
+    <span>
 
-                Showing
-                <strong>{{ reservations|length }}</strong>
-                reservation(s)
+        Showing
+
+        <strong>
+            {{ page_obj.start_index }}
+        </strong>
+
+        to
+
+        <strong>
+            {{ page_obj.end_index }}
+        </strong>
+
+        of
+
+        <strong>
+            {{ page_obj.paginator.count }}
+        </strong>
+
+        reservation(s)
+
+    </span>
+
+
+    <!-- PAGINATION -->
+
+    <div class="reservation-pagination">
+
+        <!-- PREVIOUS -->
+
+        {% if page_obj.has_previous %}
+
+            <a
+                href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if payment %}&payment={{ payment|urlencode }}{% endif %}{% if check_in %}&check_in={{ check_in|urlencode }}{% endif %}{% if check_out %}&check_out={{ check_out|urlencode }}{% endif %}"
+                class="reservation-page-arrow"
+                title="Previous"
+            >
+
+                <i class="bi bi-chevron-left"></i>
+
+            </a>
+
+        {% else %}
+
+            <span class="reservation-page-arrow disabled">
+
+                <i class="bi bi-chevron-left"></i>
 
             </span>
 
+        {% endif %}
+
+
+        <!-- PAGE NUMBERS -->
+
+        <div class="reservation-page-numbers">
+
+            {% for num in page_obj.paginator.page_range %}
+
+                {% if num == page_obj.number %}
+
+                    <span class="reservation-page-number active">
+                        {{ num }}
+                    </span>
+
+                {% else %}
+
+                    <a
+                        href="?page={{ num }}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if payment %}&payment={{ payment|urlencode }}{% endif %}{% if check_in %}&check_in={{ check_in|urlencode }}{% endif %}{% if check_out %}&check_out={{ check_out|urlencode }}{% endif %}"
+                        class="reservation-page-number"
+                    >
+                        {{ num }}
+                    </a>
+
+                {% endif %}
+
+            {% endfor %}
+
         </div>
+
+
+        <!-- NEXT -->
+
+        {% if page_obj.has_next %}
+
+            <a
+                href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if payment %}&payment={{ payment|urlencode }}{% endif %}{% if check_in %}&check_in={{ check_in|urlencode }}{% endif %}{% if check_out %}&check_out={{ check_out|urlencode }}{% endif %}"
+                class="reservation-page-arrow"
+                title="Next"
+            >
+
+                <i class="bi bi-chevron-right"></i>
+
+            </a>
+
+        {% else %}
+
+            <span class="reservation-page-arrow disabled">
+
+                <i class="bi bi-chevron-right"></i>
+
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
 
     </div>
 

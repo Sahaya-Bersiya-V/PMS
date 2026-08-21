@@ -2669,3 +2669,381 @@ body{
     color: #64748b;
 }
 
+/* =========================================================
+   ROOMS PAGINATION
+========================================================= */
+
+.rooms-pagination {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 24px;
+    padding: 5px 2px;
+}
+
+
+/* =========================================================
+   PAGINATION INFO
+========================================================= */
+
+.pagination-info {
+    color: #7c899c;
+
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.pagination-info strong {
+    color: #34445c;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+.pagination-controls {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+/* =========================================================
+   ARROWS
+========================================================= */
+
+.pagination-arrow {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e1e6ee;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.8);
+
+    color: #53647c;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    transition: all .2s ease;
+}
+
+.pagination-arrow:hover {
+    background: #eef4ff;
+
+    border-color: #b9d1ff;
+
+    color: #0d6efd;
+
+    transform: translateY(-1px);
+}
+
+
+/* Disabled */
+
+.pagination-arrow.disabled {
+    color: #c4cbd5;
+
+    background: #f7f8fa;
+
+    border-color: #edf0f4;
+
+    cursor: not-allowed;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   PAGE NUMBERS
+========================================================= */
+
+.pagination-pages {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+}
+
+.pagination-page {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #65748a;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: all .2s ease;
+}
+
+.pagination-page:hover {
+    background: #eef4ff;
+
+    color: #0d6efd;
+}
+
+.pagination-page.active {
+    background: #0d6efd;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 5px 15px rgba(13,110,253,.20);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .rooms-pagination {
+        flex-direction: column;
+
+        align-items: center;
+
+        gap: 15px;
+    }
+
+    .pagination-info {
+        font-size: 13px;
+    }
+
+}
+
+/* =========================================================
+   ROOM TYPE PAGINATION
+========================================================= */
+
+.room-type-pagination {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 24px;
+
+    padding: 5px 2px;
+
+}
+
+
+/* =========================================================
+   RESULT INFORMATION
+========================================================= */
+
+.room-type-pagination .pagination-info {
+
+    color: #7c899c;
+
+    font-size: 14px;
+
+    font-weight: 400;
+
+}
+
+.room-type-pagination .pagination-info strong {
+
+    color: #34445c;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+.room-type-pagination .pagination-controls {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+/* =========================================================
+   ARROW BUTTON
+========================================================= */
+
+.room-type-pagination .pagination-arrow {
+
+    width: 40px;
+
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #e1e6ee;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #53647c;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    transition: all .2s ease;
+
+}
+
+
+.room-type-pagination .pagination-arrow:hover {
+
+    background: #eef4ff;
+
+    border-color: #b9d1ff;
+
+    color: #0d6efd;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* =========================================================
+   DISABLED ARROW
+========================================================= */
+
+.room-type-pagination
+.pagination-arrow.disabled {
+
+    color: #c4cbd5;
+
+    background: #f7f8fa;
+
+    border-color: #edf0f4;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================================
+   PAGE NUMBERS
+========================================================= */
+
+.room-type-pagination .pagination-pages {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+}
+
+
+.room-type-pagination .pagination-page {
+
+    width: 40px;
+
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    color: #65748a;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: all .2s ease;
+
+}
+
+
+.room-type-pagination .pagination-page:hover {
+
+    background: #eef4ff;
+
+    color: #0d6efd;
+
+}
+
+
+.room-type-pagination
+.pagination-page.active {
+
+    background: #0d6efd;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 5px 15px
+        rgba(13,110,253,.20);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .room-type-pagination {
+
+        flex-direction: column;
+
+        align-items: center;
+
+        gap: 15px;
+
+    }
+
+    .room-type-pagination
+    .pagination-info {
+
+        font-size: 13px;
+
+    }
+
+}
+

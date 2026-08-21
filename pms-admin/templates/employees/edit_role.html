@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Role{% endblock %}
+{% block title %}Edit Role - {{ role.name }}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="fw-bold mb-1">Add Role</h2>
-        <p class="text-muted mb-0">Create a new role and assign permissions and employees.</p>
+        <h2 class="fw-bold mb-1">Edit Role</h2>
+        <p class="text-muted mb-0">Modify role settings and assigned employees.</p>
     </div>
     <a href="{% url 'role-list' %}" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left me-1"></i> Back
@@ -16,7 +16,6 @@
 <form method="POST">
     {% csrf_token %}
     
-    <!-- Role Information -->
     <div class="card border-0 shadow-sm rounded-3 mb-4">
         <div class="card-header bg-white py-3">
             <h5 class="mb-0 fw-bold">Role Information</h5>
@@ -25,17 +24,16 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label fw-medium">Role Name</label>
-                    <input type="text" name="role_name" class="form-control" placeholder="e.g. Frontdesk" required>
+                    <input type="text" name="role_name" value="{{ role.name }}" class="form-control" required>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-medium">Status</label>
                     <select name="status" class="form-select">
-                        <option value="Active" selected>Active</option>
-                        <option value="Inactive">Inactive</option>
+                        <option value="Active" {% if extension.is_active %}selected{% endif %}>Active</option>
+                        <option value="Inactive" {% if not extension.is_active %}selected{% endif %}>Inactive</option>
                     </select>
                 </div>
                 
-                <!-- Assigned Employees Dropdown -->
                 <div class="col-12">
     <label class="form-label fw-medium">Assign Employees</label>
     <select name="assigned_employees" class="form-select custom-multi-select" multiple>
@@ -52,7 +50,7 @@
 
                 <div class="col-12">
                     <label class="form-label fw-medium">Description</label>
-                    <textarea name="description" rows="3" class="form-control" placeholder="Enter role description"></textarea>
+                    <textarea name="description" rows="3" class="form-control">{{ extension.description }}</textarea>
                 </div>
             </div>
         </div>
@@ -69,15 +67,11 @@
                 {% for group in permission_groups %}
                 <div class="col-md-4">
                     <div class="p-3 border rounded-3 bg-light-subtle h-100">
-                        <h6 class="fw-bold text-uppercase text-primary small mb-3">
-                            <i class="bi bi-shield-check me-1"></i> {{ group.grouper|title }}
-                        </h6>
+                        <h6 class="fw-bold text-uppercase text-primary small mb-3">{{ group.grouper|title }}</h6>
                         {% for perm in group.list %}
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" name="permissions" value="{{ perm.id }}" id="perm_{{ perm.id }}">
-                            <label class="form-check-label small text-dark" for="perm_{{ perm.id }}">
-                                {{ perm.name }}
-                            </label>
+                            <input class="form-check-input" type="checkbox" name="permissions" value="{{ perm.id }}" id="perm_{{ perm.id }}" {% if perm.id in assigned_perm_ids %}checked{% endif %}>
+                            <label class="form-check-label small" for="perm_{{ perm.id }}">{{ perm.name }}</label>
                         </div>
                         {% endfor %}
                     </div>
@@ -89,7 +83,7 @@
 
     <div class="text-end mt-4">
         <a href="{% url 'role-list' %}" class="btn btn-secondary px-4 me-2">Cancel</a>
-        <button type="submit" class="btn btn-primary px-4">Save Role</button>
+        <button type="submit" class="btn btn-primary px-4">Update Role</button>
     </div>
 </form>
 {% endblock %}

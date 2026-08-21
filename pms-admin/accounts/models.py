@@ -21,11 +21,34 @@ class UserProfile(models.Model):
     role = models.CharField(
         max_length=30,
         choices=ROLE_CHOICES,
-        default="receptionist"
+        default="admin"
     )
 
     phone = models.CharField(
         max_length=20,
+        blank=True,
+        null=True
+    )
+
+    address = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    state = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    pincode = models.CharField(
+        max_length=10,
         blank=True,
         null=True
     )

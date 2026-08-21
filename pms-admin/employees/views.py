@@ -1,11 +1,11 @@
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group,Permission
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.db.models import Count
 from hotels.models import Hotel
-from .models import Employee
-
+from .models import Employee,RoleExtension
+from django.core.paginator import Paginator
 
 # =========================================================
 # EMPLOYEE LIST
@@ -16,8 +16,10 @@ def employee_list(request):
     employees = Employee.objects.select_related(
         "hotel",
         "user"
-    ).all()
-
+    ).order_by("first_name","last_name")
+#------------------
+#Filters
+#------------------
     search = request.GET.get("search", "").strip()
     department = request.GET.get("department", "")
     status = request.GET.get("status", "")
@@ -45,9 +47,16 @@ def employee_list(request):
         employees = employees.filter(
             status=status
         )
+    #Pagination(5 employees per page)
+    paginator=Paginator(employees,5)
+    page_number=request.GET.get("page")
+    page_obj=paginator.get_page(page_number)
+    employees=page_obj.object_list
 
     context = {
         "employees": employees,
+        "page_obj":page_obj,
+        "paginator":paginator,
         "search": search,
         "department": department,
         "status": status,
@@ -437,24 +446,176 @@ def delete_employee(request, pk):
 # ROLE LIST
 # =========================================================
 
-def role_list(request):
+# def role_list(request):
 
-    return render(
-        request,
-        "employees/role_list.html"
-    )
+#     return render(
+#         request,
+#         "employees/role_list.html"
+#     )
+
+
+# # =========================================================
+# # ADD ROLE
+# # =========================================================
+
+# def add_role(request):
+
+#     return render(
+#         request,
+#         "employees/add_role.html"
+#     )
+
+
+# =========================================================
+# ROLE LIST
+# =========================================================
+
+def role_list(request):
+    roles = Group.objects.select_related("extension").annotate(
+        employee_count=Count("employees")
+    ).all()
+
+    total_roles = roles.count()
+    active_roles = sum(1 for r in roles if getattr(r, "extension", None) and r.extension.is_active)
+    total_assigned_employees = Employee.objects.filter(role__isnull=False).count()
+
+    context = {
+        "roles": roles,
+        "total_roles": total_roles,
+        "active_roles": active_roles,
+        "total_assigned_employees": total_assigned_employees,
+    }
+    return render(request, "employees/role_list.html", context)
 
 
 # =========================================================
 # ADD ROLE
 # =========================================================
-
+@transaction.atomic
 def add_role(request):
+    permissions = Permission.objects.select_related("content_type").all()
+    employees = Employee.objects.all().order_by("first_name")
 
-    return render(
-        request,
-        "employees/add_role.html"
-    )
+    if request.method == "POST":
+        role_name = request.POST.get("role_name", "").strip()
+        status = request.POST.get("status") == "Active"
+        description = request.POST.get("description", "").strip()
+        selected_permissions = request.POST.getlist("permissions")
+        assigned_employee_ids = request.POST.getlist("assigned_employees")
+
+        if not role_name:
+            messages.error(request, "Role name is required.")
+            return render(request, "employees/add_role.html", {
+                "permissions": permissions,
+                "employees": employees
+            })
+
+        if Group.objects.filter(name=role_name).exists():
+            messages.error(request, "A role with this name already exists.")
+            return render(request, "employees/add_role.html", {
+                "permissions": permissions,
+                "employees": employees
+            })
+
+        group = Group.objects.create(name=role_name)
+        RoleExtension.objects.create(group=group, description=description, is_active=status)
+
+        # Set permissions
+        if selected_permissions:
+            group.permissions.set(selected_permissions)
+
+        # Assign selected employees to this newly created role
+        if assigned_employee_ids:
+            Employee.objects.filter(id__in=assigned_employee_ids).update(role=group)
+
+        messages.success(request, f"Role '{role_name}' created successfully.")
+        return redirect("role-list")
+
+    context = {
+        "permissions": permissions,
+        "employees": employees,
+    }
+    return render(request, "employees/add_role.html", context)
+
+
+# =========================================================
+# EDIT ROLE
+# =========================================================
+@transaction.atomic
+def edit_role(request, pk):
+    role = get_object_or_404(Group, pk=pk)
+    extension, _ = RoleExtension.objects.get_or_create(group=role)
+    permissions = Permission.objects.select_related("content_type").all()
+    employees = Employee.objects.all().order_by("first_name")
+
+    if request.method == "POST":
+        role_name = request.POST.get("role_name", "").strip()
+        status = request.POST.get("status") == "Active"
+        description = request.POST.get("description", "").strip()
+        selected_permissions = request.POST.getlist("permissions")
+        assigned_employee_ids = [int(i) for i in request.POST.getlist("assigned_employees")]
+
+        if not role_name:
+            messages.error(request, "Role name is required.")
+        else:
+            role.name = role_name
+            role.save()
+
+            extension.description = description
+            extension.is_active = status
+            extension.save()
+
+            role.permissions.set(selected_permissions)
+
+            # Clear former role assignments for this group and re-assign
+            Employee.objects.filter(role=role).update(role=None)
+            if assigned_employee_ids:
+                Employee.objects.filter(id__in=assigned_employee_ids).update(role=role)
+
+            messages.success(request, f"Role '{role.name}' updated successfully.")
+            return redirect("role-list")
+
+    assigned_emp_ids = list(role.employees.values_list("id", flat=True))
+    assigned_perm_ids = list(role.permissions.values_list("id", flat=True))
+
+    context = {
+        "role": role,
+        "extension": extension,
+        "permissions": permissions,
+        "employees": employees,
+        "assigned_emp_ids": assigned_emp_ids,
+        "assigned_perm_ids": assigned_perm_ids,
+    }
+    return render(request, "employees/edit_role.html", context)
+
+
+# =========================================================
+# VIEW ROLE DETAILS
+# =========================================================
+def view_role(request, pk):
+    role = get_object_or_404(Group.objects.select_related("extension"), pk=pk)
+    assigned_employees = role.employees.all()
+    permissions = role.permissions.select_related("content_type").all()
+
+    context = {
+        "role": role,
+        "assigned_employees": assigned_employees,
+        "permissions": permissions,
+    }
+    return render(request, "employees/view_role.html", context)
+
+
+# =========================================================
+# DELETE ROLE
+# =========================================================
+@transaction.atomic
+def delete_role(request, pk):
+    role = get_object_or_404(Group, pk=pk)
+    if request.method == "POST":
+        role_name = role.name
+        role.delete()
+        messages.success(request, f"Role '{role_name}' deleted successfully.")
+    return redirect("role-list")
 
 # =========================================================
 # RESET EMPLOYEE PASSWORD

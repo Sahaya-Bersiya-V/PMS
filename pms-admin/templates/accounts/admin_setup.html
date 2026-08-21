@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Admin Setup
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.admin-setup-page {
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.setup-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 8px 30px rgba(15,23,42,.07);
+    border: 1px solid #e5e7eb;
+}
+
+.setup-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.setup-icon {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eaf2ff;
+    color: #1468ff;
+    font-size: 30px;
+}
+
+.setup-header h2 {
+    margin-top: 18px;
+    font-weight: 700;
+}
+
+.setup-header p {
+    color: #6b7280;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.form-control,
+.form-select {
+    min-height: 45px;
+    border-radius: 9px;
+}
+
+.setup-submit {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 20px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="admin-setup-page">
+
+    <div class="setup-card">
+
+        <div class="setup-header">
+
+            <div class="setup-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+
+            <h2>Administrator Setup</h2>
+
+            <p>
+                Create the administrator account for your PMS.
+            </p>
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        First Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="first_name"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Last Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="last_name"
+                        class="form-control"
+                    >
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        class="form-control"
+                    >
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <label class="form-label">
+                        Address
+                    </label>
+
+                    <textarea
+                        name="address"
+                        class="form-control"
+                        rows="3"
+                    ></textarea>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        City
+                    </label>
+
+                    <input
+                        type="text"
+                        name="city"
+                        class="form-control"
+                    >
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        State
+                    </label>
+
+                    <input
+                        type="text"
+                        name="state"
+                        class="form-control"
+                    >
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        PIN Code
+                    </label>
+
+                    <input
+                        type="text"
+                        name="pincode"
+                        class="form-control"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary setup-submit">
+
+                <i class="bi bi-person-plus me-2"></i>
+
+                Create Administrator Account
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

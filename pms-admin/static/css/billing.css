@@ -576,3 +576,191 @@ border-top:2px solid #dee2e6;
     padding: 10px 20px 20px;
 
 }
+
+/* =========================================================
+   BILLING PAGINATION
+========================================================= */
+
+.billing-pagination-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 18px 20px;
+
+    border-top: 1px solid #eef1f5;
+
+    background: #fff;
+
+}
+
+
+/* =========================================================
+   PAGINATION INFO
+========================================================= */
+
+.billing-pagination-info {
+
+    font-size: 14px;
+
+    color: #7b8798;
+
+}
+
+
+.billing-pagination-info strong {
+
+    color: #34445c;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   PAGINATION CONTAINER
+========================================================= */
+
+.billing-pagination {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+
+/* =========================================================
+   ARROWS
+========================================================= */
+
+.billing-page-btn {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #e1e6ed;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #596a82;
+
+    text-decoration: none;
+
+    transition: all .2s ease;
+
+}
+
+
+.billing-page-btn:hover {
+
+    background: #f0f5ff;
+
+    border-color: #bfd3fa;
+
+    color: #0d6efd;
+
+}
+
+
+/* =========================================================
+   PAGE NUMBERS
+========================================================= */
+
+.billing-page-number {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    color: #637289;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+.billing-page-number:hover {
+
+    background: #f0f5ff;
+
+    color: #0d6efd;
+
+}
+
+
+/* =========================================================
+   ACTIVE PAGE
+========================================================= */
+
+.billing-page-number.active {
+
+    background: #0d6efd;
+
+    color: #fff;
+
+    box-shadow:
+        0 5px 14px
+        rgba(13, 110, 253, .20);
+
+}
+
+
+/* =========================================================
+   DISABLED
+========================================================= */
+
+.billing-page-btn.disabled {
+
+    color: #c6ccd5;
+
+    background: #f7f8fa;
+
+    border-color: #edf0f4;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .billing-pagination-footer {
+
+        flex-direction: column;
+
+        gap: 15px;
+
+    }
+
+}

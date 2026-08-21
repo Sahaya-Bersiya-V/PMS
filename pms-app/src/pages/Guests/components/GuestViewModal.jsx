@@ -135,14 +135,14 @@ const GuestViewModal = ({
                             }
                         />
 
-                        <InfoItem
+                        {/* <InfoItem
                             icon={<FaCalendarAlt />}
                             label="Date of Birth"
                             value={
                                 guest.date_of_birth ||
                                 "-"
                             }
-                        />
+                        /> */}
 
                     </div>
 
@@ -198,7 +198,7 @@ const GuestViewModal = ({
 
                     </div>
 
-                    <div className="guest-info-grid">
+                    {/* <div className="guest-info-grid">
 
                         <InfoItem
                             label="City"
@@ -214,14 +214,14 @@ const GuestViewModal = ({
                             }
                         />
 
-                    </div>
+                    </div> */}
 
                 </div>
 
 
                 {/* OTHER DETAILS */}
 
-                <div className="guest-view-section">
+                {/* <div className="guest-view-section">
 
                     <h3>
                         <FaBuilding />
@@ -263,7 +263,7 @@ const GuestViewModal = ({
 
                     </div>
 
-                </div>
+                </div> */}
 
             </div>
 

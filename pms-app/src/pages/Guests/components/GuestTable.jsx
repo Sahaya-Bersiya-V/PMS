@@ -26,7 +26,7 @@ const GuestTable = ({
 
                         <th>Email</th>
 
-                        <th>City</th>
+                        {/* <th>City</th> */}
 
                         <th>Identity Type</th>
 
@@ -85,9 +85,9 @@ const GuestTable = ({
                                     {guest.email || "-"}
                                 </td>
 
-                                <td>
+                                {/* <td>
                                     {guest.city || "-"}
-                                </td>
+                                </td> */}
 
                                 <td>
                                     {guest.identity_type

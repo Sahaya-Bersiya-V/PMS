@@ -1,95 +1,335 @@
-const revenueChart=document.getElementById("revenueChart");
+document.addEventListener("DOMContentLoaded", function () {
 
-if(revenueChart){
+    console.log("Reports JS loaded");
 
-new Chart(revenueChart,{
 
-type:"line",
+    // =====================================================
+    // CHECK CHART.JS
+    // =====================================================
 
-data:{
+    if (typeof Chart === "undefined") {
 
-labels:["Jan","Feb","Mar","Apr","May","Jun"],
+        console.error(
+            "Chart.js is not loaded."
+        );
 
-datasets:[{
+        return;
+    }
 
-label:"Revenue",
 
-data:[120000,180000,150000,220000,260000,300000],
+    // =====================================================
+    // GET DATA
+    // =====================================================
 
-borderColor:"#0d6efd",
+    const revenueLabelsElement =
+        document.getElementById(
+            "revenue-labels"
+        );
 
-backgroundColor:"rgba(13,110,253,.12)",
+    const revenueValuesElement =
+        document.getElementById(
+            "revenue-values"
+        );
 
-fill:true,
+    const sourceCountsElement =
+        document.getElementById(
+            "source-counts"
+        );
 
-tension:.4
 
-}]
+    if (
+        !revenueLabelsElement ||
+        !revenueValuesElement ||
+        !sourceCountsElement
+    ) {
 
-},
+        console.error(
+            "Report chart data elements not found."
+        );
 
-options:{
+        return;
+    }
 
-responsive:true,
 
-plugins:{
+    const revenueLabels =
+        JSON.parse(
+            revenueLabelsElement.textContent
+        );
 
-legend:{display:false}
 
-}
+    const revenueValues =
+        JSON.parse(
+            revenueValuesElement.textContent
+        );
 
-}
+
+    const sourceCounts =
+        JSON.parse(
+            sourceCountsElement.textContent
+        );
+
+
+    console.log(
+        "Revenue Labels:",
+        revenueLabels
+    );
+
+    console.log(
+        "Revenue Values:",
+        revenueValues
+    );
+
+    console.log(
+        "Booking Sources:",
+        sourceCounts
+    );
+
+
+    // =====================================================
+    // REVENUE CHART
+    // =====================================================
+
+    const revenueCanvas =
+        document.getElementById(
+            "revenueReportChart"
+        );
+
+
+    if (revenueCanvas) {
+
+        new Chart(
+            revenueCanvas,
+            {
+                type: "line",
+
+                data: {
+
+                    labels: revenueLabels,
+
+                    datasets: [
+
+                        {
+                            label: "Revenue",
+
+                            data: revenueValues,
+
+                            borderWidth: 3,
+
+                            tension: 0.35,
+
+                            fill: true,
+
+                            pointRadius: 4,
+
+                            pointHoverRadius: 6
+                        }
+
+                    ]
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+
+                        intersect: false,
+
+                        mode: "index"
+                    },
+
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+                        },
+
+
+                        tooltip: {
+
+                            callbacks: {
+
+                                label:
+                                    function (context) {
+
+                                        return (
+                                            " ₹" +
+                                            Number(
+                                                context.raw
+                                            ).toLocaleString(
+                                                "en-IN"
+                                            )
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            grid: {
+
+                                display: false
+                            }
+
+                        },
+
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            grid: {
+
+                                color:
+                                    "#e9edf3"
+                            },
+
+
+                            ticks: {
+
+                                callback:
+                                    function (value) {
+
+                                        return (
+                                            "₹" +
+                                            Number(
+                                                value
+                                            ).toLocaleString(
+                                                "en-IN"
+                                            )
+                                        );
+
+                                    }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // BOOKING SOURCE CHART
+    // =====================================================
+
+    const sourceCanvas =
+        document.getElementById(
+            "bookingSourceChart"
+        );
+
+
+    if (sourceCanvas) {
+
+        const labels =
+            Object.keys(
+                sourceCounts
+            );
+
+
+        const values =
+            Object.values(
+                sourceCounts
+            );
+
+
+        console.log(
+            "Source labels:",
+            labels
+        );
+
+        console.log(
+            "Source values:",
+            values
+        );
+
+
+        if (labels.length === 0) {
+
+            console.warn(
+                "No booking source data available."
+            );
+
+        } else {
+
+            new Chart(
+                sourceCanvas,
+                {
+                    type: "doughnut",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+                                data: values,
+
+                                borderWidth: 2,
+
+                                hoverOffset: 5
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        cutout: "62%",
+
+
+                        plugins: {
+
+                            legend: {
+
+                                position: "bottom",
+
+                                labels: {
+
+                                    padding: 18,
+
+                                    usePointStyle: true,
+
+                                    pointStyle: "circle"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
 
 });
-
-}
-
-
-
-const occupancyChart=document.getElementById("occupancyChart");
-
-if(occupancyChart){
-
-new Chart(occupancyChart,{
-
-type:"doughnut",
-
-data:{
-
-labels:["Occupied","Available","Maintenance"],
-
-datasets:[{
-
-data:[76,18,6],
-
-backgroundColor:[
-
-"#198754",
-
-"#0d6efd",
-
-"#ffc107"
-
-]
-
-}]
-
-},
-
-options:{
-
-plugins:{
-
-legend:{
-
-position:"bottom"
-
-}
-
-}
-
-}
-
-});
-
-}

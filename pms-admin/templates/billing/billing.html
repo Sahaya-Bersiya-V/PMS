@@ -291,7 +291,7 @@
 
                 <li class="nav-item">
 
-                    <button class="nav-link"
+                    <!-- <button class="nav-link"
                             id="refund-tab"
                             data-bs-toggle="pill"
                             data-bs-target="#refund-pane"
@@ -301,7 +301,7 @@
 
                         Refunds
 
-                    </button>
+                    </button> -->
 
                 </li>
 
@@ -516,7 +516,7 @@ Reset Filters
     <!-- TAB CONTENT START -->
     <!-- ========================================= -->
 
-    <div class="tab-content">
+    <div class="tab-content" id="billing-results">
 
         <!-- Invoice Tab -->
 
@@ -537,7 +537,7 @@ Reset Filters
 
                         <span class="badge bg-primary">
 
-                            {{ invoices|length }} Records
+                            {{ invoice_paginator.count }} Records
 
                         </span>
 
@@ -792,9 +792,122 @@ Reset Filters
 
 {% endfor %}
 
-                        </tbody>
+                       </tbody>
+</table>
 
-                    </table>
+<!-- ========================================= -->
+<!-- INVOICE PAGINATION -->
+<!-- ========================================= -->
+
+<!-- ========================================= -->
+<!-- INVOICE PAGINATION -->
+<!-- ========================================= -->
+
+<!-- ========================================= -->
+<!-- INVOICE PAGINATION -->
+<!-- ========================================= -->
+
+<div class="billing-pagination-footer">
+
+    <div class="billing-pagination-info">
+
+        Showing
+
+        {% if invoices_page.paginator.count > 0 %}
+            <strong>{{ invoices_page.start_index }}</strong>
+            -
+            <strong>{{ invoices_page.end_index }}</strong>
+        {% else %}
+            <strong>0</strong>
+        {% endif %}
+
+        of
+
+        <strong>
+            {{ invoices_page.paginator.count }}
+        </strong>
+
+        invoices
+
+    </div>
+
+
+    {% if invoices_page.paginator.num_pages > 1 %}
+
+    <div class="billing-pagination">
+
+        <!-- PREVIOUS -->
+
+        {% if invoices_page.has_previous %}
+
+        <a
+            href="?invoice_page={{ invoices_page.previous_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            class="billing-page-btn"
+        >
+            <i class="bi bi-chevron-left"></i>
+        </a>
+
+        {% else %}
+
+        <span class="billing-page-btn disabled">
+            <i class="bi bi-chevron-left"></i>
+        </span>
+
+        {% endif %}
+
+
+        <!-- PAGE NUMBERS -->
+
+        {% for num in invoice_paginator.page_range %}
+
+            {% if num == invoices_page.number %}
+
+                <span class="billing-page-number active">
+                    {{ num }}
+                </span>
+
+            {% else %}
+
+                <a
+                    href="?invoice_page={{ num }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                    class="billing-page-number"
+                >
+                    {{ num }}
+                </a>
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        <!-- NEXT -->
+
+        {% if invoices_page.has_next %}
+
+        <a
+            href="?invoice_page={{ invoices_page.next_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            class="billing-page-btn"
+        >
+            <i class="bi bi-chevron-right"></i>
+        </a>
+
+        {% else %}
+
+        <span class="billing-page-btn disabled">
+            <i class="bi bi-chevron-right"></i>
+        </span>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</div>
+
+</div>
 
                 </div>
 
@@ -823,7 +936,7 @@ Reset Filters
 
                         <span class="badge bg-success">
 
-                            {{ transactions|length }} Transactions
+                            {{ transaction_paginator.count }} Transactions
 
                         </span>
 
@@ -971,6 +1084,118 @@ Reset Filters
 
                     </table>
 
+                    <!-- ========================================= -->
+<!-- TRANSACTION PAGINATION -->
+<!-- ========================================= -->
+
+<div class="billing-pagination-footer">
+
+    <div class="billing-pagination-info">
+
+        Showing
+
+        {% if transactions_page.paginator.count > 0 %}
+
+            <strong>
+                {{ transactions_page.start_index }}
+            </strong>
+
+            -
+
+            <strong>
+                {{ transactions_page.end_index }}
+            </strong>
+
+        {% else %}
+
+            <strong>0</strong>
+
+        {% endif %}
+
+        of
+
+        <strong>
+            {{ transactions_page.paginator.count }}
+        </strong>
+
+        transactions
+
+    </div>
+
+
+    {% if transactions_page.paginator.num_pages > 1 %}
+
+    <div class="billing-pagination">
+
+        <!-- PREVIOUS -->
+
+        {% if transactions_page.has_previous %}
+
+        <a
+            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.previous_page_number }}&refund_page={{ refunds_page.number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            class="billing-page-btn"
+        >
+            <i class="bi bi-chevron-left"></i>
+        </a>
+
+        {% else %}
+
+        <span class="billing-page-btn disabled">
+            <i class="bi bi-chevron-left"></i>
+        </span>
+
+        {% endif %}
+
+
+        <!-- PAGE NUMBERS -->
+
+        {% for num in transaction_paginator.page_range %}
+
+            {% if num == transactions_page.number %}
+
+            <span class="billing-page-number active">
+                {{ num }}
+            </span>
+
+            {% else %}
+
+            <a
+                href="?invoice_page={{ invoices_page.number }}&transaction_page={{ num }}&refund_page={{ refunds_page.number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                class="billing-page-number"
+            >
+                {{ num }}
+            </a>
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        <!-- NEXT -->
+
+        {% if transactions_page.has_next %}
+
+        <a
+            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.next_page_number }}&refund_page={{ refunds_page.number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            class="billing-page-btn"
+        >
+            <i class="bi bi-chevron-right"></i>
+        </a>
+
+        {% else %}
+
+        <span class="billing-page-btn disabled">
+            <i class="bi bi-chevron-right"></i>
+        </span>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
                 </div>
 
             </div>
@@ -1000,7 +1225,7 @@ Reset Filters
 
                         <span class="badge bg-danger">
 
-                            {{ refunds|length }} Requests
+                            {{ refund_paginator.count }} Requests
 
                         </span>
 
@@ -1154,6 +1379,118 @@ Reset Filters
 
                     </table>
 
+                    <!-- ========================================= -->
+<!-- REFUND PAGINATION -->
+<!-- ========================================= -->
+
+<div class="billing-pagination-footer">
+
+    <div class="billing-pagination-info">
+
+        Showing
+
+        {% if refunds_page.paginator.count > 0 %}
+
+            <strong>
+                {{ refunds_page.start_index }}
+            </strong>
+
+            -
+
+            <strong>
+                {{ refunds_page.end_index }}
+            </strong>
+
+        {% else %}
+
+            <strong>0</strong>
+
+        {% endif %}
+
+        of
+
+        <strong>
+            {{ refunds_page.paginator.count }}
+        </strong>
+
+        refunds
+
+    </div>
+
+
+    {% if refunds_page.paginator.num_pages > 1 %}
+
+    <div class="billing-pagination">
+
+        <!-- PREVIOUS -->
+
+        {% if refunds_page.has_previous %}
+
+        <a
+            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.number }}&refund_page={{ refunds_page.previous_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            class="billing-page-btn"
+        >
+            <i class="bi bi-chevron-left"></i>
+        </a>
+
+        {% else %}
+
+        <span class="billing-page-btn disabled">
+            <i class="bi bi-chevron-left"></i>
+        </span>
+
+        {% endif %}
+
+
+        <!-- PAGE NUMBERS -->
+
+        {% for num in refund_paginator.page_range %}
+
+            {% if num == refunds_page.number %}
+
+            <span class="billing-page-number active">
+                {{ num }}
+            </span>
+
+            {% else %}
+
+            <a
+                href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.number }}&refund_page={{ num }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                class="billing-page-number"
+            >
+                {{ num }}
+            </a>
+
+            {% endif %}
+
+        {% endfor %}
+
+
+        <!-- NEXT -->
+
+        {% if refunds_page.has_next %}
+
+        <a
+            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.number }}&refund_page={{ refunds_page.next_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            class="billing-page-btn"
+        >
+            <i class="bi bi-chevron-right"></i>
+        </a>
+
+        {% else %}
+
+        <span class="billing-page-btn disabled">
+            <i class="bi bi-chevron-right"></i>
+        </span>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
                 </div>
 
             </div>
@@ -1162,81 +1499,6 @@ Reset Filters
 
     </div>
 
-        <!-- ========================================= -->
-    <!-- PAGINATION -->
-    <!-- ========================================= -->
-
-    <div class="d-flex justify-content-between align-items-center mt-4">
-
-        <div>
-
-            <small class="text-muted">
-
-                Showing {{ invoices|length }} records
-
-            </small>
-
-        </div>
-
-        <nav>
-
-            <ul class="pagination mb-0">
-
-                <li class="page-item disabled">
-
-                    <a class="page-link">
-
-                        Previous
-
-                    </a>
-
-                </li>
-
-                <li class="page-item active">
-
-                    <a class="page-link">
-
-                        1
-
-                    </a>
-
-                </li>
-
-                <li class="page-item">
-
-                    <a class="page-link">
-
-                        2
-
-                    </a>
-
-                </li>
-
-                <li class="page-item">
-
-                    <a class="page-link">
-
-                        3
-
-                    </a>
-
-                </li>
-
-                <li class="page-item">
-
-                    <a class="page-link">
-
-                        Next
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </nav>
-
-    </div>
 
 
 
@@ -1442,6 +1704,7 @@ Reset Filters
                         </tbody>
 
                     </table>
+                    
 
                 </div>
 
@@ -1473,29 +1736,109 @@ Reset Filters
 </div>
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    const params = new URLSearchParams(window.location.search);
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
 
-    if (params.toString() !== "") {
 
-        const section = document.getElementById("billing-results");
+        // =================================================
+        // OPEN CORRECT TAB AFTER PAGINATION
+        // =================================================
 
-        if(section){
+        const transactionPage =
+            params.get("transaction_page");
 
-            section.scrollIntoView({
+        const refundPage =
+            params.get("refund_page");
 
-                behavior:"smooth",
 
-                block:"start"
+        // -------------------------------------------------
+        // TRANSACTION TAB
+        // -------------------------------------------------
 
-            });
+        if (transactionPage) {
+
+            const transactionTab =
+                document.getElementById(
+                    "transaction-tab"
+                );
+
+            if (transactionTab) {
+
+                const tab =
+                    new bootstrap.Tab(
+                        transactionTab
+                    );
+
+                tab.show();
+
+            }
+
+        }
+
+
+        // -------------------------------------------------
+        // REFUND TAB
+        // -------------------------------------------------
+
+        else if (refundPage) {
+
+            const refundTab =
+                document.getElementById(
+                    "refund-tab"
+                );
+
+            if (refundTab) {
+
+                const tab =
+                    new bootstrap.Tab(
+                        refundTab
+                    );
+
+                tab.show();
+
+            }
+
+        }
+
+
+        // =================================================
+        // SCROLL TO BILLING RESULTS
+        // =================================================
+
+        if (params.toString() !== "") {
+
+            const section =
+                document.getElementById(
+                    "billing-results"
+                );
+
+            if (section) {
+
+                setTimeout(
+                    function () {
+
+                        section.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start"
+                        });
+
+                    },
+                    100
+                );
+
+            }
 
         }
 
     }
 
-});
+);
 
 </script>
 
