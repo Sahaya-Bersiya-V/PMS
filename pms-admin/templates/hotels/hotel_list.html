@@ -4,269 +4,1077 @@
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<style>
 
-    <div>
-        <h2 class="fw-bold mb-1">Hotels</h2>
-        <p class="text-muted mb-0">
-            Manage all hotel properties in the Property Management System.
-        </p>
-    </div>
+    .hotel-page {
+        padding-bottom: 40px;
+    }
 
-    <div>
-        <a href="{% url 'add-hotel' %}" class="btn btn-primary">
+    /* ================= HEADER ================= */
+
+    .hotel-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .hotel-page-header h2 {
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #172033;
+    }
+
+    .hotel-page-header p {
+        margin-bottom: 0;
+        color: #6c757d;
+    }
+
+
+    /* ================= SUMMARY CARDS ================= */
+
+    .hotel-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .hotel-summary-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e7ebf0;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .summary-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        flex-shrink: 0;
+    }
+
+    .summary-icon.blue {
+        background: #e8f0ff;
+        color: #1769ff;
+    }
+
+    .summary-icon.green {
+        background: #e8f8ef;
+        color: #159957;
+    }
+
+    .summary-icon.gray {
+        background: #f0f1f3;
+        color: #6c757d;
+    }
+
+    .summary-icon.orange {
+        background: #fff3df;
+        color: #f39c12;
+    }
+
+    .summary-icon.purple {
+        background: #f1eaff;
+        color: #7b42d8;
+    }
+
+    .summary-content span {
+        display: block;
+        font-size: 13px;
+        color: #707987;
+        margin-bottom: 5px;
+    }
+
+    .summary-content strong {
+        font-size: 25px;
+        color: #172033;
+        font-weight: 700;
+    }
+
+
+    /* ================= CHARTS ================= */
+
+    .hotel-chart-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 1.5fr;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .hotel-chart-card {
+        background: #ffffff;
+        border: 1px solid #e7ebf0;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .chart-header {
+        margin-bottom: 15px;
+    }
+
+    .chart-header h5 {
+        margin: 0;
+        font-weight: 700;
+        color: #172033;
+    }
+
+    .chart-header p {
+        font-size: 13px;
+        color: #7a8491;
+        margin: 5px 0 0;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 260px;
+    }
+
+
+    /* ================= FILTER ================= */
+
+    .hotel-filter-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e7ebf0;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .hotel-filter-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #172033;
+    }
+
+
+    /* ================= TABLE ================= */
+
+    .hotel-table-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e7ebf0;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .hotel-table-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .hotel-table-header h5 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .hotel-table {
+        margin-bottom: 0;
+    }
+
+    .hotel-table thead th {
+        background: #f8f9fb;
+        color: #445064;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 15px;
+        white-space: nowrap;
+    }
+
+    .hotel-table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+
+    .hotel-name {
+        font-weight: 600;
+        color: #172033;
+    }
+
+    .hotel-code {
+        font-weight: 600;
+        color: #1769ff;
+    }
+
+    .hotel-location {
+        color: #596474;
+    }
+
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 1200px) {
+
+        .hotel-summary-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .hotel-chart-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+    }
+
+    @media (max-width: 768px) {
+
+        .hotel-page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .hotel-summary-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .hotel-chart-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @media (max-width: 576px) {
+
+        .hotel-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+
+<div class="hotel-page">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="hotel-page-header">
+
+        <div>
+
+            <h2>Hotels</h2>
+
+            <p>
+                Manage and monitor all hotel properties in the Property Management System.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'add-hotel' %}"
+            class="btn btn-primary"
+        >
+
             <i class="bi bi-plus-circle me-2"></i>
+
             Add Hotel
+
         </a>
+
     </div>
 
-</div>
+
+    <!-- ================= SUMMARY CARDS ================= -->
+
+    <div class="hotel-summary-grid">
+
+
+        <!-- Total Hotels -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon blue">
+
+                <i class="bi bi-buildings"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <span>Total Hotels</span>
+
+                <strong>{{ total_hotels }}</strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Active Hotels -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon green">
+
+                <i class="bi bi-check-circle"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <span>Active Hotels</span>
+
+                <strong>{{ active_hotels }}</strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Inactive Hotels -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon gray">
+
+                <i class="bi bi-pause-circle"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <span>Inactive Hotels</span>
+
+                <strong>{{ inactive_hotels }}</strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Rooms -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon orange">
+
+                <i class="bi bi-door-open"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <span>Total Rooms</span>
+
+                <strong>{{ total_rooms }}</strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Employees -->
+
+        <div class="hotel-summary-card">
+
+            <div class="summary-icon purple">
+
+                <i class="bi bi-people"></i>
+
+            </div>
+
+            <div class="summary-content">
+
+                <span>Total Employees</span>
+
+                <strong>{{ total_employees }}</strong>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= CHARTS ================= -->
+
+    <div class="hotel-chart-grid">
+
+
+        <!-- HOTEL STATUS -->
+
+        <div class="hotel-chart-card">
+
+            <div class="chart-header">
+
+                <h5>Hotel Status</h5>
+
+                <p>Active and inactive properties</p>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="hotelStatusChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- ROOMS BY HOTEL -->
+
+        <div class="hotel-chart-card">
+
+            <div class="chart-header">
+
+                <h5>Rooms by Hotel</h5>
+
+                <p>Total rooms available in each property</p>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="roomsChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- EMPLOYEES BY HOTEL -->
+
+        <div class="hotel-chart-card">
+
+            <div class="chart-header">
+
+                <h5>Employees by Hotel</h5>
+
+                <p>Employees assigned to each property</p>
+
+            </div>
+
+            <div class="chart-container">
+
+                <canvas id="employeesChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= FILTER ================= -->
 
     <form method="GET">
 
-<div class="card shadow-sm border-0 mb-4">
+        <div class="hotel-filter-card">
 
-<div class="card-body">
+            <div class="hotel-filter-title">
 
-<div class="row g-3">
+                <i class="bi bi-funnel me-2"></i>
 
-<div class="col-md-3">
+                Filter Hotels
 
-<input
-type="text"
-name="search"
-value="{{ search }}"
-class="form-control"
-placeholder="Search Hotel">
+            </div>
 
-</div>
 
-<div class="col-md-2">
+            <div class="row g-3">
 
-<select name="status" class="form-select">
 
-    <option value="">
-        All Status
-    </option>
+                <!-- Search -->
 
-    <option
-        value="active"
-        {% if status == "active" %}selected{% endif %}
-    >
-        Active
-    </option>
+                <div class="col-lg-4 col-md-6">
 
-    <option
-        value="inactive"
-        {% if status == "inactive" %}selected{% endif %}
-    >
-        Inactive
-    </option>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        class="form-control"
+                        placeholder="Search by hotel name, code or phone"
+                    >
 
-</select>
+                </div>
 
-</div>
 
-<div class="col-md-2">
+                <!-- Status -->
 
-<select
-name="type"
-class="form-select">
+                <div class="col-lg-2 col-md-6">
 
-<option value="">All Types</option>
+                    <select
+                        name="status"
+                        class="form-select"
+                    >
 
-<option value="Hotel"
-{% if hotel_type == "Hotel" %}selected{% endif %}>
-Hotel
-</option>
+                        <option value="">
+                            All Status
+                        </option>
 
-<option value="Resort"
-{% if hotel_type == "Resort" %}selected{% endif %}>
-Resort
-</option>
+                        <option
+                            value="active"
+                            {% if status == "active" %}selected{% endif %}
+                        >
+                            Active
+                        </option>
 
-<option value="Villa"
-{% if hotel_type == "Villa" %}selected{% endif %}>
-Villa
-</option>
+                        <option
+                            value="inactive"
+                            {% if status == "inactive" %}selected{% endif %}
+                        >
+                            Inactive
+                        </option>
 
-</select>
+                    </select>
 
-</div>
+                </div>
 
-<div class="col-md-2">
 
-<select
-name="state"
-class="form-select">
+                <!-- State -->
 
-<option value="">All States</option>
+                <div class="col-lg-3 col-md-6">
 
-<option value="Tamil Nadu"
-{% if state == "Tamil Nadu" %}selected{% endif %}>
-Tamil Nadu
-</option>
+                    <select
+                        name="state"
+                        class="form-select"
+                    >
 
-<option value="Goa"
-{% if state == "Goa" %}selected{% endif %}>
-Goa
-</option>
+                        <option value="">
+                            All States
+                        </option>
 
-</select>
+                        {% for item in states %}
 
-</div>
+                            <option
+                                value="{{ item }}"
+                                {% if state == item %}selected{% endif %}
+                            >
+                                {{ item }}
+                            </option>
 
-<div class="col-md-3 d-flex gap-2">
+                        {% endfor %}
 
-<button
-type="submit"
-class="btn btn-primary w-100">
+                    </select>
 
-Filter
+                </div>
 
-</button>
 
-<a
-href="{% url 'hotel-list' %}"
-class="btn btn-outline-secondary">
+                <!-- Buttons -->
 
-Reset
+                <div class="col-lg-3 col-md-6 d-flex gap-2">
 
-</a>
+                    <button
+                        type="submit"
+                        class="btn btn-primary flex-grow-1"
+                    >
 
-</div>
+                        <i class="bi bi-funnel me-1"></i>
 
-</div>
+                        Filter
 
-</div>
+                    </button>
 
-</div>
 
-</form>
+                    <a
+                        href="{% url 'hotel-list' %}"
+                        class="btn btn-outline-secondary"
+                    >
 
-    
+                        Reset
 
+                    </a>
 
+                </div>
 
 
+            </div>
 
-<!-- Table -->
+        </div>
 
-<div class="card shadow-sm border-0">
+    </form>
 
-<div class="table-responsive">
 
-<table class="table table-hover align-middle mb-0">
+    <!-- ================= HOTEL TABLE ================= -->
 
-<thead class="table-light">
+    <div class="hotel-table-card">
 
-<tr>
 
-    <th>Hotel Code</th>
+        <div class="hotel-table-header">
 
-    <th>Hotel Name</th>
+            <div>
 
-    <th>City</th>
+                <h5>
 
-    <th>State</th>
+                    <i class="bi bi-buildings me-2"></i>
 
-    <th>Total Rooms</th>
+                    Hotel Properties
 
-    <th>Employees</th>
+                </h5>
 
-    <th>Status</th>
+            </div>
 
-    <th width="170">Actions</th>
+            <span class="text-muted small">
 
-</tr>
+                {{ hotels|length }} result{{ hotels|length|pluralize }}
 
-</thead>
-<tbody>
-
-{% for hotel in hotels %}
-
-<tr>
-
-    <td>{{ hotel.code }}</td>
-
-    <td>{{ hotel.name }}</td>
-
-    <td>{{ hotel.city }}</td>
-
-    <td>{{ hotel.state }}</td>
-    
-
-    <td>
-        {{ hotel.rooms.count }}
-    </td>
-    <td>{{ hotel.employees.count }}</td>
-
-    <td>
-
-        {% if hotel.status == "active" %}
-
-            <span class="badge bg-success">
-                Active
             </span>
 
-        {% elif hotel.status == "inactive" %}
-
-            <span class="badge bg-secondary">
-                Inactive
-            </span>
-
-        {% endif %}
-
-    </td>
-
-    <td>
-
-        <a href="{% url 'hotel-detail' hotel.id %}"
-   class="btn btn-info btn-sm text-white"
-   title="View">
-
-    <i class="bi bi-eye"></i>
-
-</a>
+        </div>
 
 
-<a href="{% url 'edit-hotel' hotel.id %}"
-   class="btn btn-warning btn-sm text-white"
-   title="Edit">
+        <div class="table-responsive">
 
-    <i class="bi bi-pencil"></i>
-
-</a>
+            <table class="table table-hover hotel-table">
 
 
-<a href="{% url 'toggle-hotel-status' hotel.id %}"
-   class="btn btn-secondary btn-sm"
-   title="Change Status">
+                <thead>
 
-    <i class="bi bi-arrow-repeat"></i>
+                    <tr>
 
-</a>
+                        <th>Hotel Code</th>
 
-    </td>
+                        <th>Hotel Name</th>
 
-</tr>
+                        <th>City</th>
 
-{% empty %}
+                        <th>State</th>
 
-<tr>
-    <td colspan="7" class="text-center py-4">
-        No hotels found.
-    </td>
-</tr>
+                        <th>Total Rooms</th>
 
-{% endfor %}
+                        <th>Employees</th>
 
-</tbody>
+                        <th>Status</th>
 
-</table>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for hotel in hotels %}
+
+                    <tr>
+
+
+                        <!-- Code -->
+
+                        <td>
+
+                            <span class="hotel-code">
+
+                                {{ hotel.code }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Name -->
+
+                        <td>
+
+                            <div class="hotel-name">
+
+                                {{ hotel.name }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- City -->
+
+                        <td>
+
+                            <span class="hotel-location">
+
+                                {{ hotel.city }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- State -->
+
+                        <td>
+
+                            {{ hotel.state }}
+
+                        </td>
+
+
+                        <!-- Rooms -->
+
+                        <td>
+
+                            <span class="fw-semibold">
+
+                                {{ hotel.room_count }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Employees -->
+
+                        <td>
+
+                            <span class="fw-semibold">
+
+                                {{ hotel.employee_count }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if hotel.status == "active" %}
+
+                                <span class="badge bg-success">
+
+                                    <i class="bi bi-check-circle me-1"></i>
+
+                                    Active
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    <i class="bi bi-pause-circle me-1"></i>
+
+                                    Inactive
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Actions -->
+
+                        <td>
+
+                            <div class="d-flex gap-1">
+
+
+                                <!-- View -->
+
+                                <a
+                                    href="{% url 'hotel-detail' hotel.id %}"
+                                    class="btn btn-info btn-sm text-white"
+                                    title="View Hotel"
+                                >
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+
+                                <!-- Edit -->
+
+                                <a
+                                    href="{% url 'edit-hotel' hotel.id %}"
+                                    class="btn btn-warning btn-sm text-white"
+                                    title="Edit Hotel"
+                                >
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+
+                                <!-- Status -->
+
+                                <a
+                                    href="{% url 'toggle-hotel-status' hotel.id %}"
+                                    class="btn btn-secondary btn-sm"
+                                    title="Change Status"
+                                >
+
+                                    <i class="bi bi-arrow-repeat"></i>
+
+                                </a>
+
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="text-center py-5"
+                        >
+
+                            <div class="text-muted">
+
+                                <i
+                                    class="bi bi-building-x"
+                                    style="font-size: 40px;"
+                                ></i>
+
+                                <p class="mt-2 mb-0">
+
+                                    No hotels found.
+
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
 
 </div>
 
-</div>
+
+<!-- ================= CHART.JS ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+    // ------------------------------------------------
+    // DATA FROM DJANGO
+    // ------------------------------------------------
+
+    const hotelNames = {{ hotel_names|safe }};
+    const roomCounts = {{ room_counts|safe }};
+    const employeeCounts = {{ employee_counts|safe }};
+
+
+    // ------------------------------------------------
+    // HOTEL STATUS CHART
+    // ------------------------------------------------
+
+    const statusChart = document
+        .getElementById("hotelStatusChart");
+
+    new Chart(statusChart, {
+
+        type: "doughnut",
+
+        data: {
+
+            labels: [
+                "Active",
+                "Inactive"
+            ],
+
+            datasets: [{
+
+                data: [
+                    {{ active_hotels }},
+                    {{ inactive_hotels }}
+                ],
+
+                backgroundColor: [
+                    "#198754",
+                    "#adb5bd"
+                ],
+
+                borderWidth: 0
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            cutout: "65%",
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                }
+
+            }
+
+        }
+
+    });
+
+
+    // ------------------------------------------------
+    // ROOMS BY HOTEL
+    // ------------------------------------------------
+
+    const roomsChart = document
+        .getElementById("roomsChart");
+
+    new Chart(roomsChart, {
+
+        type: "bar",
+
+        data: {
+
+            labels: hotelNames,
+
+            datasets: [{
+
+                label: "Rooms",
+
+                data: roomCounts,
+
+                backgroundColor: "#1769ff",
+
+                borderRadius: 6
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        precision: 0
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+
+    // ------------------------------------------------
+    // EMPLOYEES BY HOTEL
+    // ------------------------------------------------
+
+    const employeesChart = document
+        .getElementById("employeesChart");
+
+    new Chart(employeesChart, {
+
+        type: "bar",
+
+        data: {
+
+            labels: hotelNames,
+
+            datasets: [{
+
+                label: "Employees",
+
+                data: employeeCounts,
+
+                backgroundColor: "#7b42d8",
+
+                borderRadius: 6
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        precision: 0
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+</script>
+
 
 {% endblock %}

@@ -1,17 +1,23 @@
 
 from django.shortcuts import render, redirect,get_object_or_404
 from .models import Hotel
-
+from django.db.models import Count
 
 def hotel_list(request):
 
-    hotels = Hotel.objects.all()
+    hotels = Hotel.objects.all().annotate(
+        room_count=Count("rooms", distinct=True),
+        employee_count=Count("employees", distinct=True)
+    )
 
     search = request.GET.get("search", "").strip()
-    status = request.GET.get("status", "")
+    hotel_status = request.GET.get("status", "")
     state = request.GET.get("state", "")
 
-    # Search
+    # -----------------------------
+    # SEARCH
+    # -----------------------------
+
     if search:
         hotels = hotels.filter(
             name__icontains=search
@@ -21,19 +27,117 @@ def hotel_list(request):
             phone__icontains=search
         )
 
-    # Status filter
-    if status:
-        hotels = hotels.filter(status=status)
+        # Re-apply annotations after OR query
+        hotels = hotels.annotate(
+            room_count=Count("rooms", distinct=True),
+            employee_count=Count("employees", distinct=True)
+        )
 
-    # State filter
+    # -----------------------------
+    # STATUS FILTER
+    # -----------------------------
+
+    if hotel_status:
+        hotels = hotels.filter(status=hotel_status)
+
+    # -----------------------------
+    # STATE FILTER
+    # -----------------------------
+
     if state:
         hotels = hotels.filter(state=state)
 
+    # -----------------------------
+    # SUMMARY CARDS
+    # -----------------------------
+
+    total_hotels = Hotel.objects.count()
+
+    active_hotels = Hotel.objects.filter(
+        status="active"
+    ).count()
+
+    inactive_hotels = Hotel.objects.filter(
+        status="inactive"
+    ).count()
+
+    # -----------------------------
+    # TOTAL ROOMS
+    # -----------------------------
+
+    total_rooms = sum(
+        hotel.room_count
+        for hotel in Hotel.objects.annotate(
+            room_count=Count("rooms", distinct=True)
+        )
+    )
+
+    # -----------------------------
+    # TOTAL EMPLOYEES
+    # -----------------------------
+
+    total_employees = sum(
+        hotel.employee_count
+        for hotel in Hotel.objects.annotate(
+            employee_count=Count("employees", distinct=True)
+        )
+    )
+
+    # -----------------------------
+    # CHART DATA
+    # -----------------------------
+
+    chart_hotels = Hotel.objects.annotate(
+        room_count=Count("rooms", distinct=True),
+        employee_count=Count("employees", distinct=True)
+    ).order_by("name")
+
+    hotel_names = [
+        hotel.name
+        for hotel in chart_hotels
+    ]
+
+    room_counts = [
+        hotel.room_count
+        for hotel in chart_hotels
+    ]
+
+    employee_counts = [
+        hotel.employee_count
+        for hotel in chart_hotels
+    ]
+
+    # -----------------------------
+    # STATES
+    # -----------------------------
+
+    states = Hotel.objects.values_list(
+        "state",
+        flat=True
+    ).distinct().order_by("state")
+
     context = {
+
+        # Table
         "hotels": hotels,
+
+        # Filters
         "search": search,
-        "status": status,
+        "status": hotel_status,
         "state": state,
+        "states": states,
+
+        # Summary cards
+        "total_hotels": total_hotels,
+        "active_hotels": active_hotels,
+        "inactive_hotels": inactive_hotels,
+        "total_rooms": total_rooms,
+        "total_employees": total_employees,
+
+        # Chart data
+        "hotel_names": hotel_names,
+        "room_counts": room_counts,
+        "employee_counts": employee_counts,
     }
 
     return render(

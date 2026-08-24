@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from accounts.decorators import admin_required
 from django.db.models import Sum, Count, Q
 from django.shortcuts import render
 from django.utils import timezone
@@ -10,6 +11,7 @@ from employees.models import Employee
 
 
 @login_required(login_url="accounts:login")
+@admin_required
 def dashboard(request):
 
     # =====================================================

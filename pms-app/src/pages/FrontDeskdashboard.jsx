@@ -5,7 +5,7 @@ import React, {
 } from "react";
 
 import "../styles/FrontDeskDashboard.css";
-
+import { useNavigate } from "react-router-dom";
 
 const RESERVATION_API =
     "http://127.0.0.1:8000/api/reservations/";
@@ -45,7 +45,45 @@ const FrontDeskDashboard = () => {
     const [selectedFloor, setSelectedFloor] =
         useState(null);
 
+    const navigate = useNavigate();
 
+    const handleLogout = async () => {
+
+    try {
+
+        await fetch(
+            "http://127.0.0.1:8000/accounts/frontdesk/logout/",
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    } finally {
+
+        localStorage.removeItem(
+            "frontdesk_employee"
+        );
+
+        localStorage.removeItem(
+            "frontdesk_hotel"
+        );
+
+        navigate(
+            "/frontdesk/login",
+            {
+                replace: true
+            }
+        );
+    }
+};
     const [currentDateTime, setCurrentDateTime] =
         useState(new Date());
 
@@ -85,7 +123,9 @@ const FrontDeskDashboard = () => {
         try {
 
             const response =
-                await fetch(ROOM_API);
+                await fetch(ROOM_API,{
+                    credentials:"include"
+                });
 
             if (!response.ok) {
 
@@ -164,7 +204,9 @@ const FrontDeskDashboard = () => {
 
             const response =
                 await fetch(
-                    RESERVATION_API
+                    RESERVATION_API,{
+                        credentials:"include"
+                    }
                 );
 
             if (!response.ok) {
@@ -556,6 +598,7 @@ const FrontDeskDashboard = () => {
                         `${RESERVATION_API}${reservationId}/check-out/`,
                         {
                             method: "POST",
+                            credentials: "include",
                             headers: {
                                 "Content-Type":
                                     "application/json"
@@ -771,6 +814,15 @@ const FrontDeskDashboard = () => {
                         <i className="bi bi-bell"></i>
 
                     </button>
+
+                    <button
+        className="logout-btn"
+        onClick={handleLogout}
+        title="Logout"
+    >
+        <i className="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+    </button>
 
                 </div>
 

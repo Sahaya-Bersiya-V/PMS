@@ -19,6 +19,7 @@ def frontdesk_api_login(request):
     import json
 
     try:
+
         data = json.loads(request.body)
 
     except json.JSONDecodeError:
@@ -31,8 +32,15 @@ def frontdesk_api_login(request):
             status=400
         )
 
-    username = data.get("username", "").strip()
-    password = data.get("password", "")
+    username = data.get(
+        "username",
+        ""
+    ).strip()
+
+    password = data.get(
+        "password",
+        ""
+    )
 
     if not username or not password:
 
@@ -43,6 +51,10 @@ def frontdesk_api_login(request):
             },
             status=400
         )
+
+    # ==========================================
+    # AUTHENTICATE
+    # ==========================================
 
     user = authenticate(
         request,
@@ -60,25 +72,25 @@ def frontdesk_api_login(request):
             status=401
         )
 
-    # -----------------------------------------
-    # Check Employee account
-    # -----------------------------------------
+    # ==========================================
+    # MUST BE EMPLOYEE
+    # ==========================================
 
     if not hasattr(user, "employee"):
 
         return JsonResponse(
             {
                 "success": False,
-                "message": "This account is not an employee account."
+                "message": "This account is not a Front Desk employee account."
             },
             status=403
         )
 
     employee = user.employee
 
-    # -----------------------------------------
-    # Check Employee status
-    # -----------------------------------------
+    # ==========================================
+    # EMPLOYEE STATUS
+    # ==========================================
 
     if employee.status != "active":
 
@@ -90,11 +102,52 @@ def frontdesk_api_login(request):
             status=403
         )
 
-    # -----------------------------------------
-    # Login user
-    # -----------------------------------------
+    # ==========================================
+    # CHECK ROLE
+    # ==========================================
 
-    login(request, user)
+    if not employee.role:
+
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "No role has been assigned to this employee."
+            },
+            status=403
+        )
+
+    role_name = employee.role.name.strip().lower()
+
+    # Accept:
+    # Frontdesk
+    # Front Desk
+    # front_desk
+
+    normalized_role = (
+        role_name
+        .replace("_", "")
+        .replace("-", "")
+        .replace(" ", "")
+    )
+
+    if normalized_role != "frontdesk":
+
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "This employee is not authorized to access the Front Desk."
+            },
+            status=403
+        )
+
+    # ==========================================
+    # LOGIN
+    # ==========================================
+
+    login(
+        request,
+        user
+    )
 
     hotel = employee.hotel
 
@@ -116,6 +169,7 @@ def frontdesk_api_login(request):
                 "username": user.username,
                 "designation": employee.designation,
                 "department": employee.get_department_display(),
+                "role": employee.role.name,
             },
 
             "hotel": {
@@ -130,12 +184,31 @@ def frontdesk_api_login(request):
 def admin_login(request):
 
     if request.user.is_authenticated:
-        return redirect("dashboard")
+
+        # Already logged-in employee
+        if hasattr(request.user, "employee"):
+            return redirect("accounts:frontdesk-login")
+
+        # Already logged-in admin
+        if (
+            hasattr(request.user, "profile")
+            and request.user.profile.role == "admin"
+        ):
+            return redirect("dashboard")
+
+        logout(request)
 
     if request.method == "POST":
 
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        username = request.POST.get(
+            "username",
+            ""
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            ""
+        )
 
         user = authenticate(
             request,
@@ -143,17 +216,78 @@ def admin_login(request):
             password=password
         )
 
-        if user is not None:
+        if user is None:
 
-            login(request, user)
+            messages.error(
+                request,
+                "Invalid username or password."
+            )
 
-            return redirect("dashboard")
+            return render(
+                request,
+                "registration/login.html"
+            )
 
-        else:
+        # ==========================================
+        # BLOCK EMPLOYEE ACCOUNTS
+        # ==========================================
 
-            messages.error(request, "Invalid username or password")
+        if hasattr(user, "employee"):
 
-    return render(request, "registration/login.html")
+            messages.error(
+                request,
+                "Employee accounts cannot access the PMS Admin."
+            )
+
+            return render(
+                request,
+                "registration/login.html"
+            )
+
+        # ==========================================
+        # CHECK ADMIN PROFILE
+        # ==========================================
+
+        if not hasattr(user, "profile"):
+
+            messages.error(
+                request,
+                "This account is not authorized to access the PMS Admin."
+            )
+
+            return render(
+                request,
+                "registration/login.html"
+            )
+
+        # ==========================================
+        # ADMIN ONLY
+        # ==========================================
+
+        if user.profile.role != "admin":
+
+            messages.error(
+                request,
+                "You do not have administrator access."
+            )
+
+            return render(
+                request,
+                "registration/login.html"
+            )
+
+        # ==========================================
+        # LOGIN ADMIN
+        # ==========================================
+
+        login(request, user)
+
+        return redirect("dashboard")
+
+    return render(
+        request,
+        "registration/login.html"
+    )
 
 
 def admin_logout(request):

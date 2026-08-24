@@ -4,7 +4,7 @@ import "./FrontDeskLogin.css";
 
 
 const API_URL =
-    "http://127.0.0.1:8000/frontdesk/api/login/";
+    "http://127.0.0.1:8000/accounts/frontdesk/api/login/";
 
 
 const FrontDeskLogin = () => {
