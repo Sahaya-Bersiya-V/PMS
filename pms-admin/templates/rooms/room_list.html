@@ -21,73 +21,6 @@
 
 </div>
 
-<!-- Filters -->
-
-<!-- <div class="card shadow-sm border-0 mb-4">
-
-    <div class="card-body">
-
-        <div class="row g-3">
-
-            <div class="col-md-4">
-
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Search room..."
-                >
-
-            </div>
-
-            <div class="col-md-3">
-
-                <select class="form-select">
-
-                    <option>All Room Types</option>
-
-                    <option>Standard</option>
-
-                    <option>Deluxe</option>
-
-                    <option>Suite</option>
-
-                </select>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <select class="form-select">
-
-                    <option>All Status</option>
-
-                    <option>Available</option>
-
-                    <option>Occupied</option>
-
-                    <option>Maintenance</option>
-
-                </select>
-
-            </div>
-
-            <div class="col-md-2">
-
-                <button class="btn btn-outline-primary w-100">
-
-                    <i class="bi bi-funnel"></i>
-
-                    Filter
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div> -->
 <div class="card-body">
 
     <form method="GET">
@@ -171,38 +104,82 @@
         </div>
 
 
-        <!-- Status -->
+<!-- Status -->
 
-        <div class="col-md-2">
+<div class="col-md-2">
 
-            <select
-                name="status"
-                class="form-select"
-            >
+    <select
+        name="status"
+        class="form-select"
+    >
 
-                <option value="">
-                    All Status
-                </option>
+        <option value="">
+            All Status
+        </option>
 
-                <option value="available">
-                    Available
-                </option>
 
-                <option value="occupied">
-                    Occupied
-                </option>
+        <option
+            value="available"
+            {% if selected_status == "available" %}
+                selected
+            {% endif %}
+        >
+            Available
+        </option>
 
-                <option value="reserved">
-                    Reserved
-                </option>
 
-                <option value="maintenance">
-                    Maintenance
-                </option>
+        <option
+            value="occupied"
+            {% if selected_status == "occupied" %}
+                selected
+            {% endif %}
+        >
+            Occupied
+        </option>
 
-            </select>
 
-        </div>
+        <option
+            value="reserved"
+            {% if selected_status == "reserved" %}
+                selected
+            {% endif %}
+        >
+            Reserved
+        </option>
+
+
+        <option
+            value="cleaning"
+            {% if selected_status == "cleaning" %}
+                selected
+            {% endif %}
+        >
+            Cleaning
+        </option>
+
+
+        <option
+            value="maintenance"
+            {% if selected_status == "maintenance" %}
+                selected
+            {% endif %}
+        >
+            Maintenance
+        </option>
+
+
+        <option
+            value="out_of_order"
+            {% if selected_status == "out_of_order" %}
+                selected
+            {% endif %}
+        >
+            Out of Order
+        </option>
+
+    </select>
+
+</div>
 
 
         <!-- Filter -->
@@ -244,6 +221,379 @@
 
 </div>
 
+<!-- =====================================================
+     ROOM SUMMARY
+===================================================== -->
+
+<div class="room-summary-grid mb-4">
+
+
+    <!-- TOTAL -->
+
+    <div class="room-stat-card">
+
+        <div class="room-stat-icon total">
+            <i class="bi bi-door-open"></i>
+        </div>
+
+        <div class="room-stat-content">
+
+            <span>Total Rooms</span>
+
+            <strong>
+                {{ total_rooms }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- AVAILABLE -->
+
+    <div class="room-stat-card">
+
+        <div class="room-stat-icon available">
+            <i class="bi bi-check-circle"></i>
+        </div>
+
+        <div class="room-stat-content">
+
+            <span>Available</span>
+
+            <strong>
+                {{ available_rooms }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- OCCUPIED -->
+
+    <div class="room-stat-card">
+
+        <div class="room-stat-icon occupied">
+            <i class="bi bi-person-fill"></i>
+        </div>
+
+        <div class="room-stat-content">
+
+            <span>Occupied</span>
+
+            <strong>
+                {{ occupied_rooms }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESERVED -->
+
+    <div class="room-stat-card">
+
+        <div class="room-stat-icon reserved">
+            <i class="bi bi-calendar-check"></i>
+        </div>
+
+        <div class="room-stat-content">
+
+            <span>Reserved</span>
+
+            <strong>
+                {{ reserved_rooms }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- CLEANING -->
+
+    <div class="room-stat-card">
+
+        <div class="room-stat-icon cleaning">
+            <i class="bi bi-stars"></i>
+        </div>
+
+        <div class="room-stat-content">
+
+            <span>Cleaning</span>
+
+            <strong>
+                {{ cleaning_rooms }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAINTENANCE -->
+
+    <div class="room-stat-card">
+
+        <div class="room-stat-icon maintenance">
+            <i class="bi bi-tools"></i>
+        </div>
+
+        <div class="room-stat-content">
+
+            <span>Maintenance</span>
+
+            <strong>
+                {{ maintenance_rooms }}
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     ROOM ANALYTICS
+===================================================== -->
+
+<div class="row g-4 mb-4">
+
+
+    <!-- ROOM STATUS -->
+
+    <div class="col-lg-5">
+
+        <div class="analytics-card">
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <h5>
+                        Room Status Overview
+                    </h5>
+
+                    <p>
+                        Current room availability
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas
+                    id="roomStatusChart">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ROOMS BY FLOOR -->
+
+    <div class="col-lg-7">
+
+        <div class="analytics-card">
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <h5>
+                        Rooms by Floor
+                    </h5>
+
+                    <p>
+                        Room distribution across floors
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas
+                    id="roomsFloorChart">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row g-4 mb-4">
+
+
+    <!-- ROOM TYPES -->
+
+    <div class="col-lg-6">
+
+        <div class="analytics-card">
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <h5>
+                        Room Type Distribution
+                    </h5>
+
+                    <p>
+                        Number of rooms by type
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas
+                    id="roomTypeChart">
+                </canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- OPERATIONAL SUMMARY -->
+
+    <div class="col-lg-6">
+
+        <div class="analytics-card">
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <h5>
+                        Operational Summary
+                    </h5>
+
+                    <p>
+                        Current room conditions
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="operation-list">
+
+
+                <div class="operation-row">
+
+                    <span>
+                        <i class="bi bi-check-circle"></i>
+                        Available
+                    </span>
+
+                    <strong>
+                        {{ available_rooms }}
+                    </strong>
+
+                </div>
+
+
+                <div class="operation-row">
+
+                    <span>
+                        <i class="bi bi-person-fill"></i>
+                        Occupied
+                    </span>
+
+                    <strong>
+                        {{ occupied_rooms }}
+                    </strong>
+
+                </div>
+
+
+                <div class="operation-row">
+
+                    <span>
+                        <i class="bi bi-calendar-check"></i>
+                        Reserved
+                    </span>
+
+                    <strong>
+                        {{ reserved_rooms }}
+                    </strong>
+
+                </div>
+
+
+                <div class="operation-row">
+
+                    <span>
+                        <i class="bi bi-stars"></i>
+                        Cleaning
+                    </span>
+
+                    <strong>
+                        {{ cleaning_rooms }}
+                    </strong>
+
+                </div>
+
+
+                <div class="operation-row">
+
+                    <span>
+                        <i class="bi bi-tools"></i>
+                        Maintenance
+                    </span>
+
+                    <strong>
+                        {{ maintenance_rooms }}
+                    </strong>
+
+                </div>
+
+
+                <div class="operation-row">
+
+                    <span>
+                        <i class="bi bi-exclamation-circle"></i>
+                        Out of Order
+                    </span>
+
+                    <strong>
+                        {{ out_of_order_rooms }}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <!-- Table -->
 
 <div class="card shadow-sm border-0">
@@ -252,169 +602,7 @@
 
         <div class="table-responsive">
 
-            <!-- <table class="table table-hover align-middle mb-0">
-
-                <thead class="table-light">
-
-                    <tr>
-
-                        <th>Room No</th>
-
-                        <th>Room Type</th>
-
-                        <th>Floor</th>
-
-                        <th>Capacity</th>
-
-                        <th>Price/Night</th>
-
-                        <th>Status</th>
-
-                        <th width="170">Actions</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-
-                        <td>101</td>
-
-                        <td>Standard</td>
-
-                        <td>1</td>
-
-                        <td>2 Guests</td>
-
-                        <td>₹2,500</td>
-
-                        <td>
-                            <span class="badge bg-success">
-                                Available
-                            </span>
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-info text-white">
-
-                                <i class="bi bi-eye"></i>
-
-                            </button>
-
-                            <button class="btn btn-sm btn-warning text-white">
-
-                                <i class="bi bi-pencil"></i>
-
-                            </button>
-
-                            <button class="btn btn-sm btn-danger">
-
-                                <i class="bi bi-trash"></i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>102</td>
-
-                        <td>Deluxe</td>
-
-                        <td>1</td>
-
-                        <td>2 Guests</td>
-
-                        <td>₹3,500</td>
-
-                        <td>
-
-                            <span class="badge bg-danger">
-
-                                Occupied
-
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-info text-white">
-
-                                <i class="bi bi-eye"></i>
-
-                            </button>
-
-                            <button class="btn btn-sm btn-warning text-white">
-
-                                <i class="bi bi-pencil"></i>
-
-                            </button>
-
-                            <button class="btn btn-sm btn-danger">
-
-                                <i class="bi bi-trash"></i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td>201</td>
-
-                        <td>Suite</td>
-
-                        <td>2</td>
-
-                        <td>4 Guests</td>
-
-                        <td>₹7,000</td>
-
-                        <td>
-
-                            <span class="badge bg-secondary">
-
-                                Maintenance
-
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <button class="btn btn-sm btn-info text-white">
-
-                                <i class="bi bi-eye"></i>
-
-                            </button>
-
-                            <button class="btn btn-sm btn-warning text-white">
-
-                                <i class="bi bi-pencil"></i>
-
-                            </button>
-
-                            <button class="btn btn-sm btn-danger">
-
-                                <i class="bi bi-trash"></i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table> -->
+           
             <table class="table table-hover align-middle mb-0">
 
     <thead>
@@ -728,4 +916,255 @@
 
 {% endif %}
 
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* =================================================
+           ROOM STATUS CHART
+        ================================================= */
+
+        new Chart(
+
+            document.getElementById(
+                "roomStatusChart"
+            ),
+
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+
+                        "Available",
+
+                        "Occupied",
+
+                        "Reserved",
+
+                        "Cleaning",
+
+                        "Maintenance",
+
+                        "Out of Order"
+
+                    ],
+
+                    datasets: [{
+
+                        data: [
+
+                            {{ available_rooms }},
+
+                            {{ occupied_rooms }},
+
+                            {{ reserved_rooms }},
+
+                            {{ cleaning_rooms }},
+
+                            {{ maintenance_rooms }},
+
+                            {{ out_of_order_rooms }}
+
+                        ]
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "bottom"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+
+        /* =================================================
+           ROOMS BY FLOOR
+        ================================================= */
+
+        const floorLabels = [
+
+            {% for item in rooms_by_floor %}
+
+                "Floor {{ item.floor }}",
+
+            {% endfor %}
+
+        ];
+
+
+        const floorValues = [
+
+            {% for item in rooms_by_floor %}
+
+                {{ item.total }},
+
+            {% endfor %}
+
+        ];
+
+
+        new Chart(
+
+            document.getElementById(
+                "roomsFloorChart"
+            ),
+
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels: floorLabels,
+
+                    datasets: [{
+
+                        label: "Rooms",
+
+                        data: floorValues
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                precision: 0
+
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+
+        /* =================================================
+           ROOM TYPE DISTRIBUTION
+        ================================================= */
+
+        const roomTypeLabels = [
+
+            {% for item in rooms_by_type %}
+
+                "{{ item.room_type__name|escapejs }}",
+
+            {% endfor %}
+
+        ];
+
+
+        const roomTypeValues = [
+
+            {% for item in rooms_by_type %}
+
+                {{ item.total }},
+
+            {% endfor %}
+
+        ];
+
+
+        new Chart(
+
+            document.getElementById(
+                "roomTypeChart"
+            ),
+
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: roomTypeLabels,
+
+                    datasets: [{
+
+                        data: roomTypeValues
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "right"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+
+    }
+
+);
+
+</script>
+
 {% endblock %}
+

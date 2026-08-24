@@ -1,28 +1,402 @@
 from django.contrib import messages
-from django.contrib.auth.models import User,Group,Permission
+from django.contrib.auth.models import User, Group, Permission
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Count
-from hotels.models import Hotel
-from .models import Employee,RoleExtension
 from django.core.paginator import Paginator
+from django.utils import timezone
 
+from hotels.models import Hotel
+from .models import Employee, RoleExtension
+
+@transaction.atomic
+def edit_employee(request, employee_id):
+
+    employee = get_object_or_404(
+        Employee.objects.select_related(
+            "user",
+            "hotel",
+            "role"
+        ),
+        id=employee_id
+    )
+
+    hotels = Hotel.objects.filter(
+        status="active"
+    ).order_by("name")
+
+    department_choices = Employee.DEPARTMENT_CHOICES
+    status_choices = Employee.EMPLOYMENT_STATUS_CHOICES
+
+    if request.method == "POST":
+
+        # =====================================================
+        # PERSONAL INFORMATION
+        # =====================================================
+
+        employee.first_name = request.POST.get(
+            "first_name",
+            ""
+        ).strip()
+
+        employee.last_name = request.POST.get(
+            "last_name",
+            ""
+        ).strip()
+
+        employee.phone = request.POST.get(
+            "phone",
+            ""
+        ).strip()
+
+        employee.email = request.POST.get(
+            "email",
+            ""
+        ).strip()
+
+        employee.address = request.POST.get(
+            "address",
+            ""
+        ).strip()
+
+
+        # =====================================================
+        # EMPLOYMENT INFORMATION
+        # =====================================================
+
+        hotel_id = request.POST.get("hotel")
+
+        if hotel_id:
+            employee.hotel = get_object_or_404(
+                Hotel,
+                id=hotel_id,
+                status="active"
+            )
+
+        employee.department = request.POST.get(
+            "department",
+            employee.department
+        )
+
+        employee.designation = request.POST.get(
+            "designation",
+            employee.designation
+        )
+
+        # -----------------------------------------------------
+        # JOINING DATE
+        # Keep existing date if nothing is submitted
+        # -----------------------------------------------------
+
+        joining_date = request.POST.get(
+            "joining_date",
+            ""
+        ).strip()
+
+        if joining_date:
+            employee.joining_date = joining_date
+
+        # If joining_date is empty:
+        # DO NOT overwrite the existing date.
+
+
+        # =====================================================
+        # SALARY
+        # =====================================================
+
+        salary = request.POST.get(
+            "salary",
+            ""
+        ).strip()
+
+        employee.salary = salary if salary else None
+
+
+        # =====================================================
+        # STATUS
+        # =====================================================
+
+        status = request.POST.get("status")
+
+        if status:
+            employee.status = status
+
+
+        # =====================================================
+        # USER ACCOUNT
+        # =====================================================
+
+        if employee.user:
+
+            username = request.POST.get(
+                "username",
+                ""
+            ).strip()
+
+            if not username:
+
+                messages.error(
+                    request,
+                    "Username is required."
+                )
+
+                return render(
+                    request,
+                    "employees/add_employee.html",
+                    {
+                        "employee": employee,
+                        "hotels": hotels,
+                        "department_choices":
+                            department_choices,
+                        "status_choices":
+                            status_choices,
+                        "is_edit": True,
+                    }
+                )
+
+
+            # -------------------------------------------------
+            # USERNAME DUPLICATE CHECK
+            # -------------------------------------------------
+
+            username_exists = User.objects.filter(
+                username=username
+            ).exclude(
+                id=employee.user.id
+            ).exists()
+
+            if username_exists:
+
+                messages.error(
+                    request,
+                    "This username is already in use."
+                )
+
+                return render(
+                    request,
+                    "employees/add_employee.html",
+                    {
+                        "employee": employee,
+                        "hotels": hotels,
+                        "department_choices":
+                            department_choices,
+                        "status_choices":
+                            status_choices,
+                        "is_edit": True,
+                    }
+                )
+
+
+            # -------------------------------------------------
+            # UPDATE USER INFORMATION
+            # -------------------------------------------------
+
+            employee.user.username = username
+
+            employee.user.email = employee.email
+
+            employee.user.first_name = employee.first_name
+
+            employee.user.last_name = employee.last_name
+
+
+            # =================================================
+            # PASSWORD
+            # =================================================
+
+            password = request.POST.get(
+                "password",
+                ""
+            ).strip()
+
+            confirm_password = request.POST.get(
+                "confirm_password",
+                ""
+            ).strip()
+
+
+            # -------------------------------------------------
+            # BOTH EMPTY = KEEP CURRENT PASSWORD
+            # -------------------------------------------------
+
+            if not password and not confirm_password:
+
+                # Do absolutely nothing.
+                # Existing password remains unchanged.
+
+                pass
+
+
+            # -------------------------------------------------
+            # ONLY ONE FIELD FILLED
+            # -------------------------------------------------
+
+            elif not password or not confirm_password:
+
+                messages.error(
+                    request,
+                    "Please enter and confirm the new password."
+                )
+
+                return render(
+                    request,
+                    "employees/add_employee.html",
+                    {
+                        "employee": employee,
+                        "hotels": hotels,
+                        "department_choices":
+                            department_choices,
+                        "status_choices":
+                            status_choices,
+                        "is_edit": True,
+                    }
+                )
+
+
+            # -------------------------------------------------
+            # BOTH FILLED BUT DIFFERENT
+            # -------------------------------------------------
+
+            elif password != confirm_password:
+
+                messages.error(
+                    request,
+                    "Password and confirm password do not match."
+                )
+
+                return render(
+                    request,
+                    "employees/add_employee.html",
+                    {
+                        "employee": employee,
+                        "hotels": hotels,
+                        "department_choices":
+                            department_choices,
+                        "status_choices":
+                            status_choices,
+                        "is_edit": True,
+                    }
+                )
+
+
+            # -------------------------------------------------
+            # NEW PASSWORD
+            # -------------------------------------------------
+
+            else:
+
+                if len(password) < 8:
+
+                    messages.error(
+                        request,
+                        "Password must contain at least 8 characters."
+                    )
+
+                    return render(
+                        request,
+                        "employees/add_employee.html",
+                        {
+                            "employee": employee,
+                            "hotels": hotels,
+                            "department_choices":
+                                department_choices,
+                            "status_choices":
+                                status_choices,
+                            "is_edit": True,
+                        }
+                    )
+
+                employee.user.set_password(
+                    password
+                )
+
+
+            employee.user.save()
+
+
+        # =====================================================
+        # SAVE EMPLOYEE
+        # =====================================================
+
+        employee.save()
+
+
+        messages.success(
+            request,
+            f"{employee.first_name} {employee.last_name} "
+            "updated successfully."
+        )
+
+        return redirect(
+            "employee-list"
+        )
+
+
+    # =========================================================
+    # GET REQUEST
+    # =========================================================
+
+    return render(
+        request,
+        "employees/add_employee.html",
+        {
+            "employee": employee,
+            "hotels": hotels,
+            "department_choices":
+                department_choices,
+            "status_choices":
+                status_choices,
+            "is_edit": True,
+        }
+    )
 # =========================================================
 # EMPLOYEE LIST
 # =========================================================
 
 def employee_list(request):
 
+    # =====================================================
+    # BASE QUERY
+    # =====================================================
+
     employees = Employee.objects.select_related(
         "hotel",
-        "user"
-    ).order_by("first_name","last_name")
-#------------------
-#Filters
-#------------------
-    search = request.GET.get("search", "").strip()
-    department = request.GET.get("department", "")
-    status = request.GET.get("status", "")
+        "user",
+        "role"
+    ).order_by(
+        "first_name",
+        "last_name"
+    )
+
+
+    # =====================================================
+    # FILTERS
+    # =====================================================
+
+    search = request.GET.get(
+        "search",
+        ""
+    ).strip()
+
+    department = request.GET.get(
+        "department",
+        ""
+    )
+
+    status = request.GET.get(
+        "status",
+        ""
+    )
+
+    selected_hotel = request.GET.get(
+        "hotel",
+        ""
+    )
+
+
+    # =====================================================
+    # SEARCH
+    # =====================================================
 
     if search:
 
@@ -38,31 +412,288 @@ def employee_list(request):
             email__icontains=search
         )
 
+
+    # =====================================================
+    # DEPARTMENT
+    # =====================================================
+
     if department:
+
         employees = employees.filter(
             department=department
         )
 
+
+    # =====================================================
+    # STATUS
+    # =====================================================
+
     if status:
+
         employees = employees.filter(
             status=status
         )
-    #Pagination(5 employees per page)
-    paginator=Paginator(employees,5)
-    page_number=request.GET.get("page")
-    page_obj=paginator.get_page(page_number)
-    employees=page_obj.object_list
+
+
+    # =====================================================
+    # HOTEL
+    # =====================================================
+
+    if selected_hotel:
+
+        employees = employees.filter(
+            hotel_id=selected_hotel
+        )
+
+
+    # =====================================================
+    # SUMMARY CARDS
+    # =====================================================
+
+    total_employees = employees.count()
+
+    active_employees = employees.filter(
+        status="active"
+    ).count()
+
+    inactive_employees = employees.filter(
+        status="inactive"
+    ).count()
+
+    on_leave_employees = employees.filter(
+        status="on_leave"
+    ).count()
+
+
+    total_departments = employees.values(
+        "department"
+    ).distinct().count()
+
+    total_hotels = employees.values(
+        "hotel"
+    ).distinct().count()
+
+
+    # =====================================================
+    # NEW EMPLOYEES THIS MONTH
+    # =====================================================
+
+    today = timezone.localdate()
+
+    month_start = today.replace(
+        day=1
+    )
+
+    new_this_month = employees.filter(
+        joining_date__gte=month_start,
+        joining_date__lte=today
+    ).count()
+
+
+    # =====================================================
+    # DEPARTMENT CHART
+    # =====================================================
+
+    department_data = list(
+        employees
+        .values(
+            "department"
+        )
+        .annotate(
+            total=Count("id")
+        )
+        .order_by(
+            "-total"
+        )
+    )
+
+
+    department_labels = []
+
+    department_values = []
+
+
+    department_dict = dict(
+        Employee.DEPARTMENT_CHOICES
+    )
+
+
+    for item in department_data:
+
+        department_labels.append(
+            department_dict.get(
+                item["department"],
+                item["department"]
+            )
+        )
+
+        department_values.append(
+            item["total"]
+        )
+
+
+    # =====================================================
+    # STATUS CHART
+    # =====================================================
+
+    status_data = list(
+        employees
+        .values(
+            "status"
+        )
+        .annotate(
+            total=Count("id")
+        )
+        .order_by(
+            "-total"
+        )
+    )
+
+
+    status_labels = []
+
+    status_values = []
+
+
+    status_dict = dict(
+        Employee.EMPLOYMENT_STATUS_CHOICES
+    )
+
+
+    for item in status_data:
+
+        status_labels.append(
+            status_dict.get(
+                item["status"],
+                item["status"]
+            )
+        )
+
+        status_values.append(
+            item["total"]
+        )
+
+
+    # =====================================================
+    # HOTEL CHART
+    # =====================================================
+
+    hotel_data = list(
+        employees
+        .values(
+            "hotel__name"
+        )
+        .annotate(
+            total=Count("id")
+        )
+        .order_by(
+            "-total"
+        )
+    )
+
+
+    hotel_labels = [
+        item["hotel__name"]
+        for item in hotel_data
+    ]
+
+
+    hotel_values = [
+        item["total"]
+        for item in hotel_data
+    ]
+
+
+    # =====================================================
+    # PAGINATION
+    # =====================================================
+
+    paginator = Paginator(
+        employees,
+        5
+    )
+
+    page_number = request.GET.get(
+        "page"
+    )
+
+    page_obj = paginator.get_page(
+        page_number
+    )
+
+    employees = page_obj.object_list
+
+
+    # =====================================================
+    # CONTEXT
+    # =====================================================
 
     context = {
+
+        # Employees
         "employees": employees,
-        "page_obj":page_obj,
-        "paginator":paginator,
+
+        # Pagination
+        "page_obj": page_obj,
+        "paginator": paginator,
+
+        # Filters
         "search": search,
         "department": department,
         "status": status,
-        "department_choices": Employee.DEPARTMENT_CHOICES,
-        "status_choices": Employee.EMPLOYMENT_STATUS_CHOICES,
+        "selected_hotel": selected_hotel,
+
+        "department_choices":
+            Employee.DEPARTMENT_CHOICES,
+
+        "status_choices":
+            Employee.EMPLOYMENT_STATUS_CHOICES,
+
+        "hotels":
+            Hotel.objects.all().order_by("name"),
+
+        # Cards
+        "total_employees":
+            total_employees,
+
+        "active_employees":
+            active_employees,
+
+        "inactive_employees":
+            inactive_employees,
+
+        "on_leave_employees":
+            on_leave_employees,
+
+        "total_departments":
+            total_departments,
+
+        "total_hotels":
+            total_hotels,
+
+        "new_this_month":
+            new_this_month,
+
+        # Charts
+        "department_labels":
+            department_labels,
+
+        "department_values":
+            department_values,
+
+        "status_labels":
+            status_labels,
+
+        "status_values":
+            status_values,
+
+        "hotel_labels":
+            hotel_labels,
+
+        "hotel_values":
+            hotel_values,
     }
+
 
     return render(
         request,

@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Employee{% endblock %}
+{% block title %}
+
+{% if is_edit %}
+    Edit Employee
+{% else %}
+    Add Employee
+{% endif %}
+
+{% endblock %}
 
 {% block content %}
 
@@ -14,13 +22,29 @@
 
         <div>
             <h2>
-                Add Employee
-            </h2>
+
+    {% if is_edit %}
+        Edit Employee
+    {% else %}
+        Add Employee
+    {% endif %}
+
+</h2>
 
             <p>
-                Create a new employee account and assign
-                access to the hotel.
-            </p>
+
+    {% if is_edit %}
+
+        Update employee information and account access.
+
+    {% else %}
+
+        Create a new employee account and assign
+        access to the hotel.
+
+    {% endif %}
+
+</p>
         </div>
 
         <a
@@ -114,6 +138,7 @@
                             name="first_name"
                             class="employee-input"
                             placeholder="Enter first name"
+                            value="{{ employee.first_name|default:'' }}"
                             required
                         >
 
@@ -133,6 +158,7 @@
                             name="last_name"
                             class="employee-input"
                             placeholder="Enter last name"
+                            value="{{ employee.last_name|default:'' }}"
                         >
 
                     </div>
@@ -152,6 +178,7 @@
                             name="phone"
                             class="employee-input"
                             placeholder="Enter phone number"
+                            value="{{ employee.phone|default:'' }}"
                             required
                         >
 
@@ -171,6 +198,7 @@
                             name="email"
                             class="employee-input"
                             placeholder="Enter email address"
+                            value="{{ employee.email|default:'' }}"
                         >
 
                     </div>
@@ -189,7 +217,7 @@
                             class="employee-input employee-textarea"
                             placeholder="Enter employee address"
                             rows="3"
-                        ></textarea>
+                        >{{ employee.address|default:'' }}</textarea>
 
                     </div>
 
@@ -252,13 +280,16 @@
 
                             {% for hotel in hotels %}
 
-                                <option
-                                    value="{{ hotel.id }}"
-                                >
-                                    {{ hotel.name }}
-                                </option>
+    <option
+        value="{{ hotel.id }}"
+        {% if employee.hotel_id == hotel.id %}
+            selected
+        {% endif %}
+    >
+        {{ hotel.name }}
+    </option>
 
-                            {% endfor %}
+{% endfor %}
 
                         </select>
 
@@ -307,15 +338,18 @@
                                 Select Department
                             </option>
 
-                            {% for value, label in department_choices %}
+                           {% for value, label in department_choices %}
 
-                                <option
-                                    value="{{ value }}"
-                                >
-                                    {{ label }}
-                                </option>
+    <option
+        value="{{ value }}"
+        {% if employee.department == value %}
+            selected
+        {% endif %}
+    >
+        {{ label }}
+    </option>
 
-                            {% endfor %}
+{% endfor %}
 
                         </select>
 
@@ -337,33 +371,59 @@
                             required
                         >
 
-                            <option value="">
-                                Select Designation
-                            </option>
+                            <option
+    value="Frontdesk"
+    {% if employee.designation == "Frontdesk" %}
+        selected
+    {% endif %}
+>
+    Frontdesk
+</option>
 
-                            <option value="Frontdesk">
-                                Frontdesk
-                            </option>
+<option
+    value="Receptionist"
+    {% if employee.designation == "Receptionist" %}
+        selected
+    {% endif %}
+>
+    Receptionist
+</option>
 
-                            <option value="Receptionist">
-                                Receptionist
-                            </option>
+<option
+    value="Manager"
+    {% if employee.designation == "Manager" %}
+        selected
+    {% endif %}
+>
+    Manager
+</option>
 
-                            <option value="Manager">
-                                Manager
-                            </option>
+<option
+    value="Accountant"
+    {% if employee.designation == "Accountant" %}
+        selected
+    {% endif %}
+>
+    Accountant
+</option>
 
-                            <option value="Accountant">
-                                Accountant
-                            </option>
+<option
+    value="Housekeeping"
+    {% if employee.designation == "Housekeeping" %}
+        selected
+    {% endif %}
+>
+    Housekeeping
+</option>
 
-                            <option value="Housekeeping">
-                                Housekeeping
-                            </option>
-
-                            <option value="Admin">
-                                Admin
-                            </option>
+<option
+    value="Admin"
+    {% if employee.designation == "Admin" %}
+        selected
+    {% endif %}
+>
+    Admin
+</option>
 
                         </select>
 
@@ -383,6 +443,7 @@
                             type="date"
                             name="joining_date"
                             class="employee-input"
+                            value="{{ employee.joining_date|date:'Y-m-d' }}"
                             required
                         >
 
@@ -407,6 +468,7 @@
                                 min="0"
                                 step="0.01"
                                 placeholder="0.00"
+                                value="{{ employee.salary|default:'' }}"
                             >
 
                         </div>
@@ -424,25 +486,27 @@
                         </label>
 
                         <select
-                            name="status"
-                            class="employee-input"
-                            required
-                        >
+    name="status"
+    class="employee-input"
+    required
+>
 
-                            {% for value, label in status_choices %}
+    {% for value, label in status_choices %}
 
-                                <option
-                                    value="{{ value }}"
-                                    {% if value == "active" %}
-                                        selected
-                                    {% endif %}
-                                >
-                                    {{ label }}
-                                </option>
+        <option
+            value="{{ value }}"
+            {% if employee.status == value %}
+                selected
+            {% elif not employee and value == "active" %}
+                selected
+            {% endif %}
+        >
+            {{ label }}
+        </option>
 
-                            {% endfor %}
+    {% endfor %}
 
-                        </select>
+</select>
 
                     </div>
 
@@ -502,6 +566,7 @@
                                 name="username"
                                 class="employee-input"
                                 placeholder="Enter username"
+                                value="{{ employee.user.username|default:'' }}"
                                 required
                             >
 
@@ -522,13 +587,14 @@
                         <div class="password-wrapper">
 
                             <input
-                                type="password"
-                                name="password"
-                                id="employeePassword"
-                                class="employee-input"
-                                placeholder="Enter password"
-                                required
-                            >
+    type="password"
+    name="password"
+    id="employeePassword"
+    class="employee-input"
+    placeholder="{% if is_edit %}Leave blank to keep current password{% else %}Enter password{% endif %}"
+    autocomplete="new-password"
+    {% if not is_edit %}required{% endif %}
+>
 
                             <button
                                 type="button"
@@ -562,14 +628,15 @@
 
                         <div class="password-wrapper">
 
-                            <input
-                                type="password"
-                                name="confirm_password"
-                                id="confirmPassword"
-                                class="employee-input"
-                                placeholder="Confirm password"
-                                required
-                            >
+                           <input
+    type="password"
+    name="confirm_password"
+    id="confirmPassword"
+    class="employee-input"
+    placeholder="{% if is_edit %}Leave blank to keep current password{% else %}Confirm password{% endif %}"
+    autocomplete="new-password"
+    {% if not is_edit %}required{% endif %}
+>
 
                             <button
                                 type="button"
@@ -623,16 +690,26 @@
                 Cancel
             </a>
 
-            <button
-                type="submit"
-                class="save-employee-btn"
-            >
+           <button
+    type="submit"
+    class="save-employee-btn"
+>
 
-                <i class="bi bi-person-plus"></i>
+    {% if is_edit %}
 
-                Create Employee
+        <i class="bi bi-check-lg"></i>
 
-            </button>
+        Update Employee
+
+    {% else %}
+
+        <i class="bi bi-person-plus"></i>
+
+        Create Employee
+
+    {% endif %}
+
+</button>
 
         </div>
 

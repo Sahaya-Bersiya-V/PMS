@@ -2,30 +2,414 @@
 
 {% block title %}Room Types{% endblock %}
 
+
+{% block extra_css %}
+
+<style>
+
+/* =====================================================
+   SUMMARY CARDS
+===================================================== */
+
+.room-type-stat-card {
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    height: 100%;
+
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+
+    transition: all 0.2s ease;
+}
+
+
+.room-type-stat-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+
+.stat-icon {
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    margin-bottom: 15px;
+}
+
+
+.stat-icon.blue {
+
+    background: #e8f1ff;
+
+    color: #1468ff;
+}
+
+
+.stat-icon.green {
+
+    background: #e8f8ef;
+
+    color: #16a34a;
+}
+
+
+.stat-icon.orange {
+
+    background: #fff4df;
+
+    color: #ea8a00;
+}
+
+
+.stat-icon.purple {
+
+    background: #f1eaff;
+
+    color: #7c3aed;
+}
+
+
+.stat-label {
+
+    font-size: 13px;
+
+    color: #64748b;
+
+    margin-bottom: 5px;
+}
+
+
+.stat-value {
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+    color: #111827;
+}
+
+
+/* =====================================================
+   CHART CARDS
+===================================================== */
+
+.analytics-card {
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    height: 100%;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.05);
+}
+
+
+.analytics-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 15px;
+}
+
+
+.analytics-header h5 {
+
+    margin: 0;
+
+    font-weight: 700;
+
+    color: #172033;
+}
+
+
+.analytics-header p {
+
+    margin: 3px 0 0;
+
+    font-size: 13px;
+
+    color: #64748b;
+}
+
+
+.chart-container {
+
+    position: relative;
+
+    height: 260px;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.room-type-table {
+
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    border: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.05);
+}
+
+
+.room-type-table th {
+
+    background: #f8fafc;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    padding: 15px;
+}
+
+
+.room-type-table td {
+
+    padding: 16px 15px;
+
+    vertical-align: middle;
+}
+
+
+.room-type-name {
+
+    font-weight: 700;
+
+    color: #172033;
+}
+
+
+.capacity-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    background: #eef4ff;
+
+    color: #2563eb;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.rooms-badge {
+
+    background: #eefbf3;
+
+    color: #16803c;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.amenities-text {
+
+    max-width: 360px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    color: #475569;
+}
+
+
+.price-value {
+
+    font-weight: 700;
+
+    color: #172033;
+}
+
+
+/* =====================================================
+   PAGINATION
+===================================================== */
+
+.room-type-pagination {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 20px;
+}
+
+
+.pagination-info {
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+.pagination-controls {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.pagination-pages {
+
+    display: flex;
+
+    gap: 5px;
+}
+
+
+.pagination-page,
+.pagination-arrow {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    color: #475569;
+
+    background: #ffffff;
+}
+
+
+.pagination-page.active {
+
+    background: #1468ff;
+
+    color: #ffffff;
+
+    border-color: #1468ff;
+}
+
+
+.pagination-arrow.disabled {
+
+    opacity: 0.4;
+
+    pointer-events: none;
+}
+
+
+@media (max-width: 768px) {
+
+    .room-type-pagination {
+
+        flex-direction: column;
+
+        gap: 15px;
+
+        align-items: flex-start;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
 {% block content %}
+
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
 
 <div class="d-flex justify-content-between align-items-center mb-4">
 
     <div>
+
         <h2 class="fw-bold mb-1">
-
             Room Types
-
         </h2>
 
-        <p class="text-muted">
-
-            Manage room categories available in your hotel.
-
+        <p class="text-muted mb-0">
+            Manage room categories available in your hotels.
         </p>
 
     </div>
 
-    <a href="{% url 'add-room-type' %}"
 
-       class="btn btn-primary">
+    <a
+        href="{% url 'add-room-type' %}"
+        class="btn btn-primary"
+    >
 
-        <i class="bi bi-plus-circle"></i>
+        <i class="bi bi-plus-circle me-1"></i>
 
         Add Room Type
 
@@ -33,175 +417,261 @@
 
 </div>
 
+<!-- =====================================================
+     FILTERS
+===================================================== -->
 
-<div class="card shadow-sm border-0">
+<form method="GET">
 
-    <div class="card-body p-0">
+    <div class="card shadow-sm border-0 mb-4">
 
-        <div class="table-responsive">
+        <div class="card-body">
 
-            <table class="table table-hover mb-0">
-
-                <thead class="table-light">
-
-                    <tr>
-
-                        <th>Hotel</th>
-
-                        <th>Name</th>
-
-                        <th>Max Occupancy</th>
-
-                        <th>Amenities</th>
-
-                        <th>Base Price</th>
-
-                        <th width="170">
-                            Actions
-                        </th>
-
-                    </tr>
-
-                </thead>
+            <div class="row g-3 align-items-end">
 
 
-                <tbody>
+                <!-- SEARCH -->
 
-                    {% for room_type in room_types %}
+                <div class="col-lg-4 col-md-6">
 
-                    <tr>
+                    <label class="form-label fw-semibold">
+                        Search Room Type
+                    </label>
 
-                        <!-- HOTEL -->
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        class="form-control"
+                        placeholder="Search room type or hotel..."
+                    >
 
-                        <td>
-                            {{ room_type.hotel.name }}
-                        </td>
-
-
-                        <!-- NAME -->
-
-                        <td>
-
-                            <strong>
-                                {{ room_type.name }}
-                            </strong>
-
-                        </td>
+                </div>
 
 
-                        <!-- CAPACITY -->
+                <!-- HOTEL -->
 
-                        <td>
-                            {{ room_type.capacity }} Guests
-                        </td>
+                <div class="col-lg-3 col-md-6">
 
+                    <label class="form-label fw-semibold">
+                        Hotel
+                    </label>
 
-                        <!-- AMENITIES -->
+                    <select
+                        name="hotel"
+                        class="form-select"
+                    >
 
-                        <td>
+                        <option value="">
+                            All Hotels
+                        </option>
 
-                            {% if room_type.amenities %}
+                        {% for hotel in hotels %}
 
-                                {{ room_type.amenities }}
-
-                            {% else %}
-
-                                <span class="text-muted">
-                                    No amenities added
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- PRICE -->
-
-                        <td>
-
-                            ₹{{ room_type.base_price|floatformat:2 }}
-
-                        </td>
-
-
-                        <!-- ACTIONS -->
-
-                        <td>
-
-                            <!-- VIEW -->
-
-                            <a
-                                href="{% url 'room-type-detail' room_type.id %}"
-                                class="btn btn-sm btn-info text-white"
-                                title="View"
+                            <option
+                                value="{{ hotel.id }}"
+                                {% if selected_hotel == hotel.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
                             >
 
-                                <i class="bi bi-eye"></i>
+                                {{ hotel.name }}
 
-                            </a>
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
 
 
-                            <!-- EDIT -->
+                <!-- CAPACITY -->
 
-                            <a
-                                href="{% url 'edit-room-type' room_type.id %}"
-                                class="btn btn-sm btn-warning text-white"
-                                title="Edit"
+                <div class="col-lg-2 col-md-6">
+
+                    <label class="form-label fw-semibold">
+                        Capacity
+                    </label>
+
+                    <select
+                        name="capacity"
+                        class="form-select"
+                    >
+
+                        <option value="">
+                            All Capacities
+                        </option>
+
+                        {% for capacity in capacities %}
+
+                            <option
+                                value="{{ capacity }}"
+                                {% if selected_capacity == capacity|stringformat:"s" %}
+                                    selected
+                                {% endif %}
                             >
 
-                                <i class="bi bi-pencil"></i>
+                                {{ capacity }} Guests
 
-                            </a>
+                            </option>
 
+                        {% endfor %}
 
-                            <!-- DELETE -->
+                    </select>
 
-                            <form
-                                method="POST"
-                                action="{% url 'delete-room-type' room_type.id %}"
-                                style="display:inline;"
-                                onsubmit="return confirm('Are you sure you want to delete this room type?');"
-                            >
-
-                                {% csrf_token %}
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-sm btn-danger"
-                                    title="Delete"
-                                >
-
-                                    <i class="bi bi-trash"></i>
-
-                                </button>
-
-                            </form>
-
-                        </td>
-
-                    </tr>
+                </div>
 
 
-                    {% empty %}
+                <!-- FILTER -->
 
-                    <tr>
+                <div class="col-lg-2 col-md-3">
 
-                        <td
-                            colspan="6"
-                            class="text-center py-4"
-                        >
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                    >
 
-                            No room types found.
+                        <i class="bi bi-funnel me-1"></i>
 
-                        </td>
+                        Filter
 
-                    </tr>
+                    </button>
 
-                    {% endfor %}
+                </div>
 
-                </tbody>
 
-            </table>
+                <!-- RESET -->
+
+                <div class="col-lg-1 col-md-3">
+
+                    <a
+                        href="{% url 'room-type-list' %}"
+                        class="btn btn-outline-secondary w-100"
+                        title="Reset filters"
+                    >
+
+                        <i class="bi bi-arrow-counterclockwise"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+
+<!-- =====================================================
+     SUMMARY CARDS
+===================================================== -->
+
+<div class="row g-3 mb-4">
+
+
+    <!-- TOTAL ROOM TYPES -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="room-type-stat-card">
+
+            <div class="stat-icon blue">
+
+                <i class="bi bi-grid-3x3-gap"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Total Room Types
+            </div>
+
+            <div class="stat-value">
+                {{ total_types }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTAL ROOMS -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="room-type-stat-card">
+
+            <div class="stat-icon green">
+
+                <i class="bi bi-door-open"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Total Rooms
+            </div>
+
+            <div class="stat-value">
+                {{ total_rooms }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AVERAGE PRICE -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="room-type-stat-card">
+
+            <div class="stat-icon orange">
+
+                <i class="bi bi-currency-rupee"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Average Base Price
+            </div>
+
+            <div class="stat-value">
+
+                ₹{{ average_price|floatformat:0 }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAX CAPACITY -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="room-type-stat-card">
+
+            <div class="stat-icon purple">
+
+                <i class="bi bi-people"></i>
+
+            </div>
+
+            <div class="stat-label">
+                Highest Capacity
+            </div>
+
+            <div class="stat-value">
+
+                {{ max_capacity }} Guests
+
+            </div>
 
         </div>
 
@@ -209,15 +679,342 @@
 
 </div>
 
+
+
 <!-- =====================================================
-     ROOM TYPE PAGINATION
+     ANALYTICS
+===================================================== -->
+
+<div class="row g-4 mb-4">
+
+
+    <!-- ROOM TYPES BY HOTEL -->
+
+    <div class="col-lg-6">
+
+        <div class="analytics-card">
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <h5>
+                        Room Types by Hotel
+                    </h5>
+
+                    <p>
+                        Number of categories configured per hotel
+                    </p>
+
+                </div>
+
+                <i class="bi bi-bar-chart text-primary fs-4"></i>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="roomTypesHotelChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ROOMS BY ROOM TYPE -->
+
+    <div class="col-lg-6">
+
+        <div class="analytics-card">
+
+            <div class="analytics-header">
+
+                <div>
+
+                    <h5>
+                        Rooms by Room Type
+                    </h5>
+
+                    <p>
+                        Number of rooms assigned to each category
+                    </p>
+
+                </div>
+
+                <i class="bi bi-bar-chart-fill text-primary fs-4"></i>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="roomsByTypeChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ROOM TYPE TABLE
+===================================================== -->
+
+<div class="room-type-table">
+
+    <div class="table-responsive">
+
+        <table class="table table-hover mb-0">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Hotel
+                    </th>
+
+                    <th>
+                        Room Type
+                    </th>
+
+                    <th>
+                        Capacity
+                    </th>
+
+                    <th>
+                        Rooms
+                    </th>
+
+                    <th>
+                        Amenities
+                    </th>
+
+                    <th>
+                        Base Price
+                    </th>
+
+                    <th width="170">
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for room_type in room_types %}
+
+                <tr>
+
+
+                    <!-- HOTEL -->
+
+                    <td>
+
+                        <strong>
+                            {{ room_type.hotel.name }}
+                        </strong>
+
+                    </td>
+
+
+                    <!-- ROOM TYPE -->
+
+                    <td>
+
+                        <span class="room-type-name">
+
+                            {{ room_type.name }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- CAPACITY -->
+
+                    <td>
+
+                        <span class="capacity-badge">
+
+                            <i class="bi bi-people"></i>
+
+                            {{ room_type.capacity }}
+
+                            Guests
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- TOTAL ROOMS -->
+
+                    <td>
+
+                        <span class="rooms-badge">
+
+                            {{ room_type.total_rooms }}
+
+                            Rooms
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- AMENITIES -->
+
+                    <td>
+
+                        {% if room_type.amenities %}
+
+                            <div
+                                class="amenities-text"
+                                title="{{ room_type.amenities }}"
+                            >
+
+                                {{ room_type.amenities }}
+
+                            </div>
+
+                        {% else %}
+
+                            <span class="text-muted">
+
+                                No amenities added
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- PRICE -->
+
+                    <td>
+
+                        <span class="price-value">
+
+                            ₹{{ room_type.base_price|floatformat:2 }}
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- ACTIONS -->
+
+                    <td>
+
+
+                        <!-- VIEW -->
+
+                        <a
+                            href="{% url 'room-type-detail' room_type.id %}"
+                            class="btn btn-sm btn-info text-white"
+                            title="View"
+                        >
+
+                            <i class="bi bi-eye"></i>
+
+                        </a>
+
+
+                        <!-- EDIT -->
+
+                        <a
+                            href="{% url 'edit-room-type' room_type.id %}"
+                            class="btn btn-sm btn-warning text-white"
+                            title="Edit"
+                        >
+
+                            <i class="bi bi-pencil"></i>
+
+                        </a>
+
+
+                        <!-- DELETE -->
+
+                        <form
+                            method="POST"
+                            action="{% url 'delete-room-type' room_type.id %}"
+                            style="display:inline;"
+                            onsubmit="return confirm('Are you sure you want to delete this room type?');"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-sm btn-danger"
+                                title="Delete"
+                            >
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="text-center py-5"
+                    >
+
+                        <i class="bi bi-grid-3x3-gap fs-2 text-muted"></i>
+
+                        <p class="text-muted mt-2 mb-0">
+
+                            No room types found.
+
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     PAGINATION
 ===================================================== -->
 
 {% if page_obj.paginator.count > 0 %}
 
 <div class="room-type-pagination">
 
-    <!-- RESULT COUNT -->
 
     <div class="pagination-info">
 
@@ -244,8 +1041,6 @@
     </div>
 
 
-    <!-- PAGINATION CONTROLS -->
-
     <div class="pagination-controls">
 
 
@@ -256,7 +1051,6 @@
             <a
                 href="?page={{ page_obj.previous_page_number }}"
                 class="pagination-arrow"
-                title="Previous page"
             >
 
                 <i class="bi bi-chevron-left"></i>
@@ -265,9 +1059,7 @@
 
         {% else %}
 
-            <span
-                class="pagination-arrow disabled"
-            >
+            <span class="pagination-arrow disabled">
 
                 <i class="bi bi-chevron-left"></i>
 
@@ -285,10 +1077,10 @@
 
                 {% if num == page_obj.number %}
 
-                    <span
-                        class="pagination-page active"
-                    >
+                    <span class="pagination-page active">
+
                         {{ num }}
+
                     </span>
 
                 {% else %}
@@ -297,7 +1089,9 @@
                         href="?page={{ num }}"
                         class="pagination-page"
                     >
+
                         {{ num }}
+
                     </a>
 
                 {% endif %}
@@ -315,7 +1109,6 @@
             <a
                 href="?page={{ page_obj.next_page_number }}"
                 class="pagination-arrow"
-                title="Next page"
             >
 
                 <i class="bi bi-chevron-right"></i>
@@ -324,9 +1117,7 @@
 
         {% else %}
 
-            <span
-                class="pagination-arrow disabled"
-            >
+            <span class="pagination-arrow disabled">
 
                 <i class="bi bi-chevron-right"></i>
 
@@ -339,4 +1130,231 @@
 </div>
 
 {% endif %}
+
+
+
+<!-- =====================================================
+     CHART DATA
+===================================================== -->
+
+{{ hotel_labels|json_script:"hotel-labels-data" }}
+
+{{ hotel_values|json_script:"hotel-values-data" }}
+
+{{ room_type_labels|json_script:"room-type-labels-data" }}
+
+{{ room_type_values|json_script:"room-type-values-data" }}
+
+
+
+<!-- =====================================================
+     CHART.JS
+===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        /* ==========================================
+           GET DATA
+        ========================================== */
+
+        const hotelLabels =
+            JSON.parse(
+                document.getElementById(
+                    "hotel-labels-data"
+                ).textContent
+            );
+
+
+        const hotelValues =
+            JSON.parse(
+                document.getElementById(
+                    "hotel-values-data"
+                ).textContent
+            );
+
+
+        const roomTypeLabels =
+            JSON.parse(
+                document.getElementById(
+                    "room-type-labels-data"
+                ).textContent
+            );
+
+
+        const roomTypeValues =
+            JSON.parse(
+                document.getElementById(
+                    "room-type-values-data"
+                ).textContent
+            );
+
+
+
+        /* ==========================================
+           ROOM TYPES BY HOTEL
+        ========================================== */
+
+        new Chart(
+
+            document.getElementById(
+                "roomTypesHotelChart"
+            ),
+
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels: hotelLabels,
+
+                    datasets: [
+
+                        {
+
+                            label: "Room Types",
+
+                            data: hotelValues,
+
+                            borderWidth: 1,
+
+                            borderRadius: 6
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                precision: 0
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+
+
+        /* ==========================================
+           ROOMS BY ROOM TYPE
+        ========================================== */
+
+        new Chart(
+
+            document.getElementById(
+                "roomsByTypeChart"
+            ),
+
+            {
+
+                type: "bar",
+
+                data: {
+
+                    labels: roomTypeLabels,
+
+                    datasets: [
+
+                        {
+
+                            label: "Rooms",
+
+                            data: roomTypeValues,
+
+                            borderWidth: 1,
+
+                            borderRadius: 6
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    indexAxis: "y",
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                precision: 0
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+    }
+
+);
+
+</script>
+
+
 {% endblock %}
