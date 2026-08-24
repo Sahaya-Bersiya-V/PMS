@@ -8,7 +8,7 @@ const Sidebar = () => {
     <aside className="sidebar">
 
       <div className="sidebar-logo">
-        <img src="/vite.svg" alt="Logo" />
+        <img src="/logo.jpg" alt="Logo" />
         <div>
           <h2>PMS</h2>
           <p>Hotel Management</p>

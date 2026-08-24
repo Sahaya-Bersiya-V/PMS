@@ -2,119 +2,148 @@
 
     <!-- Logo -->
     <div class="logo">
+        <div class="logo-icon">
+            <i class="bi bi-building"></i>
+        </div>
         <h3>PMS Admin</h3>
     </div>
-<div class="sidebar-menu">
-    <!-- Navigation -->
-    <ul class="menu">
 
-        <!-- Dashboard -->
-        <li>
-            <a href="{% url 'dashboard' %}">
-                <i class="bi bi-speedometer2"></i>
-                Dashboard
-            </a>
-        </li>
+    <div class="sidebar-menu">
 
-        <li class="menu-title">
-            Hotel Management
-        </li>
+        <ul class="menu">
 
-         <li>
-    <a href="{% url 'hotel-list' %}">
-        <i class="bi bi-buildings"></i>
-        Hotels
-    </a>
-</li>
+            <!-- Dashboard -->
+            <li>
+                <a href="{% url 'dashboard' %}"
+                   class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
 
 
-        <!-- Room Management -->
-        <li class="menu-title">Room Management</li>
+            <!-- Hotel Management -->
+            <li class="menu-title">
+                <span>Hotel Management</span>
+            </li>
 
-        <li>
-            <a href="{% url 'room-list' %}">
-                <i class="bi bi-door-open"></i>
-                Rooms
-            </a>
-        </li>
+            <li>
+                <a href="{% url 'hotel-list' %}"
+                   class="{% if request.resolver_match.url_name == 'hotel-list' %}active{% endif %}">
+                    <i class="bi bi-buildings"></i>
+                    <span>Hotels</span>
+                </a>
+            </li>
 
-        <li>
-    <a href="{% url 'room-type-list' %}">
-        <i class="bi bi-grid-3x3-gap"></i>
-        Room Types
-    </a>
-</li>
 
-        <!-- User Management -->
-        <li class="menu-title">User Management</li>
+            <!-- Room Management -->
+            <li class="menu-title">
+                <span>Room Management</span>
+            </li>
 
-       
+            <li>
+                <a href="{% url 'room-list' %}"
+                   class="{% if request.resolver_match.url_name == 'room-list' %}active{% endif %}">
+                    <i class="bi bi-door-open"></i>
+                    <span>Rooms</span>
+                </a>
+            </li>
 
-<li>
-    <a href="{% url 'employee-list' %}">
-        <i class="bi bi-people"></i>
-        Employees
-    </a>
-</li>
+            <li>
+                <a href="{% url 'room-type-list' %}"
+                   class="{% if request.resolver_match.url_name == 'room-type-list' %}active{% endif %}">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    <span>Room Types</span>
+                </a>
+            </li>
 
-<li>
-    <a href="{% url 'role-list' %}">
-        <i class="bi bi-shield-lock"></i>
-        Roles & Permissions
-    </a>
-</li>
 
-        <!-- Reservation -->
-        <li class="menu-title">Reservation</li>
+            <!-- User Management -->
+            <li class="menu-title">
+                <span>User Management</span>
+            </li>
 
-        <li>
-            <a href="{% url 'reservation-list' %}">
-                <i class="bi bi-calendar-check"></i>
-                Reservations
-            </a>
-        </li>
+            <li>
+                <a href="{% url 'employee-list' %}"
+                   class="{% if request.resolver_match.url_name == 'employee-list' %}active{% endif %}">
+                    <i class="bi bi-people"></i>
+                    <span>Employees</span>
+                </a>
+            </li>
 
-        <!-- Billing -->
-        <li>
-    <a href="{% url 'billing:billing_dashboard' %}">
-        <i class="bi bi-receipt"></i>
-        Billing & Payments
-    </a>
-</li>
+            <li>
+                <a href="{% url 'role-list' %}"
+                   class="{% if request.resolver_match.url_name == 'role-list' %}active{% endif %}">
+                    <i class="bi bi-shield-lock"></i>
+                    <span>Roles & Permissions</span>
+                </a>
+            </li>
 
-        <!-- Reports -->
-        <li>
-            <a href="{% url 'reports:reports_dashboard' %}">
-                <i class="bi bi-bar-chart-line"></i>
-                Reports
-            </a>
-        </li>
 
-        <!-- Settings -->
-        <li>
-            <a href="{% url 'settingsapp:settings_page' %}">
-                <i class="bi bi-gear"></i>
-                Settings
-            </a>
-        </li>
+            <!-- Reservation -->
+            <li class="menu-title">
+                <span>Reservation</span>
+            </li>
 
-        <!-- Profile -->
-        <li>
-            <a href="{% url 'accounts:profile' %}">
-                <i class="bi bi-person-circle"></i>
-                Profile
-            </a>
-        </li>
+            <li>
+                <a href="{% url 'reservation-list' %}"
+                   class="{% if request.resolver_match.url_name == 'reservation-list' %}active{% endif %}">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Reservations</span>
+                </a>
+            </li>
 
-        <!-- Logout -->
-        <li>
-            <a href="{% url 'accounts:logout' %}">
-                <i class="bi bi-box-arrow-right"></i>
-                Logout
-            </a>
-        </li>
 
-    </ul>
+            <!-- Billing -->
+            <li>
+                <a href="{% url 'billing:billing_dashboard' %}"
+                   class="{% if request.resolver_match.url_name == 'billing_dashboard' %}active{% endif %}">
+                    <i class="bi bi-receipt"></i>
+                    <span>Billing & Payments</span>
+                </a>
+            </li>
+
+
+            <!-- Reports -->
+            <li>
+                <a href="{% url 'reports:reports_dashboard' %}"
+                   class="{% if request.resolver_match.url_name == 'reports_dashboard' %}active{% endif %}">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+
+
+            <!-- Settings -->
+            <li>
+                <a href="{% url 'settingsapp:settings_page' %}"
+                   class="{% if request.resolver_match.url_name == 'settings_page' %}active{% endif %}">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+
+
+            <!-- Profile -->
+            <li>
+                <a href="{% url 'accounts:profile' %}"
+                   class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+
+
+            <!-- Logout -->
+            <li>
+                <a href="{% url 'accounts:logout' %}">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+
+        </ul>
+
     </div>
 
 </aside>

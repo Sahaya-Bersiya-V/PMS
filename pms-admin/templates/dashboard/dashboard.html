@@ -74,11 +74,6 @@
     </div>
 
 
-    <!-- Your existing cards/table/quick actions go here -->
-
-</div>
-
-
 <!-- =====================================================
      SUMMARY CARDS
 ===================================================== -->
@@ -90,25 +85,29 @@
 
     <div class="col-md-3">
 
-<div class="card dashboard-card">
+        <div class="card dashboard-card">
 
-    <div class="stat-icon blue">
-        <i class="bi bi-people"></i>
-    </div>
+            <div class="stat-icon blue">
+                <i class="bi bi-people"></i>
+            </div>
 
-    <h6>
-        Total Guests
-    </h6>
+            <h6>
+                Total Guests
+            </h6>
 
-    <h2 >
-        {{ total_guests }}
-    </h2>
+            <h2>
+                {{ total_guests }}
+            </h2>
 
-    <small class="text-muted">
-            Registered guests
-        </small>
+            <small class="text-muted">
+                Registered guests
+            </small>
 
-</div>
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
+
+        </div>
 
     </div>
 
@@ -120,9 +119,9 @@
         <div class="card dashboard-card">
 
             <!-- Occupied -->
-<div class="stat-icon red">
-    <i class="bi bi-door-closed"></i>
-</div>
+            <div class="stat-icon red">
+                <i class="bi bi-door-closed"></i>
+            </div>
 
             <h6>
                 Occupied Rooms
@@ -136,6 +135,10 @@
                 Currently occupied
             </small>
 
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
+
         </div>
 
     </div>
@@ -146,22 +149,27 @@
     <div class="col-md-3">
 
         <div class="card dashboard-card">
+
             <!-- Revenue -->
-<div class="stat-icon green">
-    <i class="bi bi-currency-rupee"></i>
-</div>
+            <div class="stat-icon green">
+                <i class="bi bi-currency-rupee"></i>
+            </div>
 
             <h6>
                 Today's Revenue
             </h6>
 
             <h2>
-                ₹{{ todays_revenue|floatformat:0 }}
+                &#8377;{{ todays_revenue|floatformat:0 }}
             </h2>
 
             <small class="text-muted">
                 Reservations created today
             </small>
+
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
 
         </div>
 
@@ -173,10 +181,11 @@
     <div class="col-md-3">
 
         <div class="card dashboard-card">
+
             <!-- Check-ins -->
-<div class="stat-icon purple">
-    <i class="bi bi-box-arrow-in-right"></i>
-</div>
+            <div class="stat-icon purple">
+                <i class="bi bi-box-arrow-in-right"></i>
+            </div>
 
             <h6>
                 Today's Check-ins
@@ -189,6 +198,10 @@
             <small class="text-muted">
                 Expected today
             </small>
+
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
 
         </div>
 
@@ -210,6 +223,10 @@
 
         <div class="card dashboard-card">
 
+            <div class="stat-icon blue">
+                <i class="bi bi-door-open"></i>
+            </div>
+
             <h6>
                 Available Rooms
             </h6>
@@ -222,6 +239,10 @@
                 Ready for booking
             </small>
 
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
+
         </div>
 
     </div>
@@ -232,6 +253,10 @@
     <div class="col-md-3">
 
         <div class="card dashboard-card">
+
+            <div class="stat-icon red">
+                <i class="bi bi-box-arrow-right"></i>
+            </div>
 
             <h6>
                 Today's Check-outs
@@ -245,6 +270,10 @@
                 Expected departures
             </small>
 
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
+
         </div>
 
     </div>
@@ -255,6 +284,10 @@
     <div class="col-md-3">
 
         <div class="card dashboard-card">
+
+            <div class="stat-icon green">
+                <i class="bi bi-person-badge"></i>
+            </div>
 
             <h6>
                 Employees
@@ -268,6 +301,10 @@
                 Active employees
             </small>
 
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
+
         </div>
 
     </div>
@@ -278,6 +315,10 @@
     <div class="col-md-3">
 
         <div class="card dashboard-card">
+
+            <div class="stat-icon purple">
+                <i class="bi bi-briefcase"></i>
+            </div>
 
             <h6>
                 Bookings
@@ -291,6 +332,10 @@
                 Total reservations
             </small>
 
+            <svg class="card-wave" viewBox="0 0 160 40" preserveAspectRatio="none">
+                <path d="M0,28 C20,10 40,38 60,22 C80,8 100,34 120,18 C135,8 148,20 160,12" />
+            </svg>
+
         </div>
 
     </div>
@@ -302,13 +347,18 @@
      RECENT RESERVATIONS
 ===================================================== -->
 
-<div class="card mt-5 shadow-sm border-0">
+<div class="card mt-5 dashboard-panel">
 
-    <div class="card-header bg-white">
+    <div class="card-header dashboard-panel-header">
 
         <h5 class="mb-0">
             Recent Reservations
         </h5>
+
+        <a href="{% url 'reservation-list' %}" class="view-all-link">
+            View all
+            <i class="bi bi-arrow-right"></i>
+        </a>
 
     </div>
 
@@ -317,7 +367,7 @@
 
         <div class="table-responsive">
 
-            <table class="table align-middle">
+            <table class="table dashboard-table align-middle">
 
                 <thead>
 
@@ -373,8 +423,11 @@
 
                         <td>
 
-                            {{ reservation.guest.first_name }}
-                            {{ reservation.guest.last_name }}
+                            <div class="guest-cell">
+                                <span class="guest-avatar">{{ reservation.guest.first_name|slice:":1"|upper }}</span>
+                                {{ reservation.guest.first_name }}
+                                {{ reservation.guest.last_name }}
+                            </div>
 
                         </td>
 
@@ -405,37 +458,37 @@
 
                             {% if reservation.status == "confirmed" %}
 
-                                <span class="badge bg-info text-dark">
+                                <span class="badge status-badge status-confirmed">
                                     Confirmed
                                 </span>
 
                             {% elif reservation.status == "checked_in" %}
 
-                                <span class="badge bg-success">
+                                <span class="badge status-badge status-checked-in">
                                     Checked In
                                 </span>
 
                             {% elif reservation.status == "checked_out" %}
 
-                                <span class="badge bg-primary">
+                                <span class="badge status-badge status-checked-out">
                                     Checked Out
                                 </span>
 
                             {% elif reservation.status == "pending" %}
 
-                                <span class="badge bg-warning text-dark">
+                                <span class="badge status-badge status-pending">
                                     Pending
                                 </span>
 
                             {% elif reservation.status == "cancelled" %}
 
-                                <span class="badge bg-danger">
+                                <span class="badge status-badge status-cancelled">
                                     Cancelled
                                 </span>
 
                             {% else %}
 
-                                <span class="badge bg-secondary">
+                                <span class="badge status-badge status-default">
                                     {{ reservation.get_status_display }}
                                 </span>
 
@@ -447,7 +500,7 @@
                         <td>
 
                             <strong>
-                                ₹{{ reservation.total_amount|floatformat:0 }}
+                                &#8377;{{ reservation.total_amount|floatformat:0 }}
                             </strong>
 
                         </td>
@@ -494,27 +547,32 @@
 
     <div class="col-md-6">
 
-        <div class="card p-4 shadow-sm border-0">
+        <div class="card dashboard-panel qa-panel">
 
             <h5>
                 Quick Actions
             </h5>
 
 
-            <div class="d-grid gap-2 mt-3">
+            <div class="qa-list mt-3">
 
 
                 <!-- ADD ROOM -->
 
                 <a
                     href="{% url 'add-room' %}"
-                    class="btn btn-primary"
+                    class="quick-action-btn qa-blue"
                 >
+                    <span class="qa-icon">
+                        <i class="bi bi-door-open"></i>
+                    </span>
 
-                    <i class="bi bi-door-open me-2"></i>
+                    <span class="qa-text">
+                        <span class="qa-title">Add Room</span>
+                        <span class="qa-sub">Create new room</span>
+                    </span>
 
-                    Add Room
-
+                    <i class="bi bi-arrow-right qa-arrow"></i>
                 </a>
 
 
@@ -522,13 +580,18 @@
 
                 <a
                     href="{% url 'add-room-type' %}"
-                    class="btn btn-success"
+                    class="quick-action-btn qa-green"
                 >
+                    <span class="qa-icon">
+                        <i class="bi bi-grid"></i>
+                    </span>
 
-                    <i class="bi bi-grid me-2"></i>
+                    <span class="qa-text">
+                        <span class="qa-title">Add Room Category</span>
+                        <span class="qa-sub">Create new category</span>
+                    </span>
 
-                    Add Room Category
-
+                    <i class="bi bi-arrow-right qa-arrow"></i>
                 </a>
 
 
@@ -536,13 +599,18 @@
 
                 <a
                     href="{% url 'add-employee' %}"
-                    class="btn btn-warning"
+                    class="quick-action-btn qa-orange"
                 >
+                    <span class="qa-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </span>
 
-                    <i class="bi bi-person-plus me-2"></i>
+                    <span class="qa-text">
+                        <span class="qa-title">Add Employee</span>
+                        <span class="qa-sub">Create new employee</span>
+                    </span>
 
-                    Add Employee
-
+                    <i class="bi bi-arrow-right qa-arrow"></i>
                 </a>
 
 
@@ -550,13 +618,18 @@
 
                 <a
                     href="{% url 'add-role' %}"
-                    class="btn btn-info"
+                    class="quick-action-btn qa-cyan"
                 >
+                    <span class="qa-icon">
+                        <i class="bi bi-shield-lock"></i>
+                    </span>
 
-                    <i class="bi bi-shield-lock me-2"></i>
+                    <span class="qa-text">
+                        <span class="qa-title">Add Role</span>
+                        <span class="qa-sub">Create new role</span>
+                    </span>
 
-                    Add Role
-
+                    <i class="bi bi-arrow-right qa-arrow"></i>
                 </a>
 
             </div>
@@ -570,82 +643,202 @@
 
     <div class="col-md-6">
 
-        <div class="card p-4 shadow-sm border-0">
+        <div class="card dashboard-panel room-status-panel">
 
             <h5>
-                Room Status
+                Room Status Overview
             </h5>
 
+            <div class="room-status-body">
 
-            <ul class="list-group mt-3">
+                <div class="donut-wrap">
 
+                    <div
+                        class="donut-chart"
+                        id="roomStatusDonut"
+                        data-available="{{ available_rooms|default_if_none:0 }}"
+                        data-occupied="{{ occupied_rooms|default_if_none:0 }}"
+                        data-cleaning="{{ cleaning_rooms|default_if_none:0 }}"
+                        data-maintenance="{{ maintenance_rooms|default_if_none:0 }}"
+                    >
+                        <div class="donut-center">
+                            <span class="donut-total" id="donutTotal">0</span>
+                            <span class="donut-total-label">Total Rooms</span>
+                        </div>
+                    </div>
 
-                <!-- AVAILABLE -->
+                </div>
 
-                <li class="list-group-item d-flex justify-content-between">
+                <ul class="legend-list">
 
-                    Available
+                    <!-- AVAILABLE -->
 
-                    <span class="badge bg-success">
+                    <li class="legend-row">
 
-                        {{ available_rooms }}
+                        <div class="legend-top">
+                            <span class="legend-label">
+                                <span class="legend-dot dot-available"></span>
+                                Available
+                            </span>
 
-                    </span>
+                            <span class="legend-value">
+                                {{ available_rooms }}
+                                <span class="legend-pct" id="pctAvailable"></span>
+                            </span>
+                        </div>
 
-                </li>
+                        <div class="legend-bar">
+                            <div class="legend-bar-fill bar-available" id="barAvailable"></div>
+                        </div>
 
-
-                <!-- OCCUPIED -->
-
-                <li class="list-group-item d-flex justify-content-between">
-
-                    Occupied
-
-                    <span class="badge bg-danger">
-
-                        {{ occupied_rooms }}
-
-                    </span>
-
-                </li>
-
-
-                <!-- CLEANING -->
-
-                <li class="list-group-item d-flex justify-content-between">
-
-                    Cleaning
-
-                    <span class="badge bg-warning text-dark">
-
-                        {{ cleaning_rooms }}
-
-                    </span>
-
-                </li>
+                    </li>
 
 
-                <!-- MAINTENANCE -->
+                    <!-- OCCUPIED -->
 
-                <li class="list-group-item d-flex justify-content-between">
+                    <li class="legend-row">
 
-                    Maintenance
+                        <div class="legend-top">
+                            <span class="legend-label">
+                                <span class="legend-dot dot-occupied"></span>
+                                Occupied
+                            </span>
 
-                    <span class="badge bg-secondary">
+                            <span class="legend-value">
+                                {{ occupied_rooms }}
+                                <span class="legend-pct" id="pctOccupied"></span>
+                            </span>
+                        </div>
 
-                        {{ maintenance_rooms }}
+                        <div class="legend-bar">
+                            <div class="legend-bar-fill bar-occupied" id="barOccupied"></div>
+                        </div>
 
-                    </span>
-
-                </li>
+                    </li>
 
 
-            </ul>
+                    <!-- CLEANING -->
+
+                    <li class="legend-row">
+
+                        <div class="legend-top">
+                            <span class="legend-label">
+                                <span class="legend-dot dot-cleaning"></span>
+                                Cleaning
+                            </span>
+
+                            <span class="legend-value">
+                                {{ cleaning_rooms }}
+                                <span class="legend-pct" id="pctCleaning"></span>
+                            </span>
+                        </div>
+
+                        <div class="legend-bar">
+                            <div class="legend-bar-fill bar-cleaning" id="barCleaning"></div>
+                        </div>
+
+                    </li>
+
+
+                    <!-- MAINTENANCE -->
+
+                    <li class="legend-row">
+
+                        <div class="legend-top">
+                            <span class="legend-label">
+                                <span class="legend-dot dot-maintenance"></span>
+                                Maintenance
+                            </span>
+
+                            <span class="legend-value">
+                                {{ maintenance_rooms }}
+                                <span class="legend-pct" id="pctMaintenance"></span>
+                            </span>
+                        </div>
+
+                        <div class="legend-bar">
+                            <div class="legend-bar-fill bar-maintenance" id="barMaintenance"></div>
+                        </div>
+
+                    </li>
+
+                </ul>
+
+            </div>
 
         </div>
 
     </div>
 
 </div>
+
+</div>
+
+
+<script>
+(function () {
+    // Purely presentational: derives the donut chart / percentages / bar
+    // widths from the same room-status numbers already rendered above.
+    // No data or view logic is changed — this only reads values already
+    // present in the DOM via data attributes.
+    var donut = document.getElementById('roomStatusDonut');
+    if (!donut) return;
+
+    var available = parseFloat(donut.dataset.available) || 0;
+    var occupied = parseFloat(donut.dataset.occupied) || 0;
+    var cleaning = parseFloat(donut.dataset.cleaning) || 0;
+    var maintenance = parseFloat(donut.dataset.maintenance) || 0;
+    var total = available + occupied + cleaning + maintenance;
+
+    document.getElementById('donutTotal').textContent = total;
+
+    function pct(n) {
+        return total > 0 ? (n / total) * 100 : 0;
+    }
+
+    var segments = [
+        { pct: pct(available), color: 'var(--rs-available)' },
+        { pct: pct(occupied), color: 'var(--rs-occupied)' },
+        { pct: pct(cleaning), color: 'var(--rs-cleaning)' },
+        { pct: pct(maintenance), color: 'var(--rs-maintenance)' }
+    ];
+
+    var gradientParts = [];
+    var cursor = 0;
+
+    segments.forEach(function (seg) {
+        if (seg.pct <= 0) return;
+        var start = cursor;
+        var end = cursor + seg.pct;
+        gradientParts.push(seg.color + ' ' + start + '% ' + end + '%');
+        cursor = end;
+    });
+
+    if (gradientParts.length === 0) {
+        donut.style.background = 'var(--rs-empty)';
+    } else {
+        donut.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
+    }
+
+    function fmt(n) {
+        return (Math.round(n * 10) / 10) + '%';
+    }
+
+    var rows = [
+        { value: available, pctEl: 'pctAvailable', barEl: 'barAvailable' },
+        { value: occupied, pctEl: 'pctOccupied', barEl: 'barOccupied' },
+        { value: cleaning, pctEl: 'pctCleaning', barEl: 'barCleaning' },
+        { value: maintenance, pctEl: 'pctMaintenance', barEl: 'barMaintenance' }
+    ];
+
+    rows.forEach(function (row) {
+        var p = pct(row.value);
+        var pctNode = document.getElementById(row.pctEl);
+        var barNode = document.getElementById(row.barEl);
+        if (pctNode) pctNode.textContent = fmt(p);
+        if (barNode) barNode.style.width = p + '%';
+    });
+})();
+</script>
 
 {% endblock %}

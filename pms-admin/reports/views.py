@@ -73,19 +73,19 @@ def reports_dashboard(request):
     # -----------------------------------------------------
 
     reservations = Reservation.objects.select_related(
-        "guest",
-        "room",
-        "room__room_type",
-        "hotel",
-    ).filter(
-        check_in__date__lte=end_date,
-        check_out__date__gte=start_date,
-    ).exclude(
-        status__in=[
-            "cancelled",
-            "no_show",
-        ]
-    )
+    "guest",
+    "room",
+    "room__room_type",
+    "hotel",
+).filter(
+    check_in__lt=end_date + timedelta(days=1),
+    check_out__gte=start_date,
+).exclude(
+    status__in=[
+        "cancelled",
+        "no_show",
+    ]
+)
 
 
     if selected_hotel:
@@ -100,13 +100,12 @@ def reports_dashboard(request):
     # -----------------------------------------------------
 
     invoices = Invoice.objects.select_related(
-        "guest",
-        "reservation",
-        "reservation__hotel",
-    ).filter(
-        issued_at__date__gte=start_date,
-        issued_at__date__lte=end_date,
-    )
+    "guest",
+    "reservation",
+    "reservation__hotel",
+).filter(
+    issued_at__date__range=(start_date, end_date)
+)
 
 
     if selected_hotel:
@@ -121,14 +120,14 @@ def reports_dashboard(request):
     # -----------------------------------------------------
 
     payments = Payment.objects.select_related(
-        "invoice",
-        "invoice__reservation",
-        "invoice__reservation__hotel",
-    ).filter(
-        payment_date__date__gte=start_date,
-        payment_date__date__lte=end_date,
-        status="successful",
-    )
+    "invoice",
+    "invoice__reservation",
+    "invoice__reservation__hotel",
+).filter(
+    payment_date__gte=start_date,
+    payment_date__lt=end_date + timedelta(days=1),
+    status="successful",
+)
 
 
     if selected_hotel:
@@ -143,13 +142,13 @@ def reports_dashboard(request):
     # -----------------------------------------------------
 
     refunds = Refund.objects.select_related(
-        "invoice",
-        "invoice__reservation",
-        "invoice__reservation__hotel",
-    ).filter(
-        created_at__date__gte=start_date,
-        created_at__date__lte=end_date,
-    )
+    "invoice",
+    "invoice__reservation",
+    "invoice__reservation__hotel",
+).filter(
+    created_at__gte=start_date,
+    created_at__lt=end_date + timedelta(days=1),
+)
 
 
     if selected_hotel:
@@ -351,6 +350,10 @@ def reports_dashboard(request):
     # REVENUE CHART
     # =====================================================
 
+    # =====================================================
+# REVENUE CHART
+# =====================================================
+
     revenue_labels = []
     revenue_values = []
 
@@ -358,7 +361,7 @@ def reports_dashboard(request):
 
     while current_date <= end_date:
 
-        amount = (
+        daily_invoice_total = (
             invoices.filter(
                 issued_at__date=current_date
             ).aggregate(
@@ -371,7 +374,7 @@ def reports_dashboard(request):
         )
 
         revenue_values.append(
-            float(amount)
+            float(daily_invoice_total)
         )
 
         current_date += timedelta(days=1)
@@ -584,8 +587,8 @@ def reports_dashboard(request):
 
 
     # =====================================================
-    # DAILY PERFORMANCE
-    # =====================================================
+# DAILY PERFORMANCE
+# =====================================================
 
     daily_performance = []
 
@@ -593,40 +596,80 @@ def reports_dashboard(request):
 
     while current_date >= start_date:
 
+        # Reservations active on this date
         daily_reservations = Reservation.objects.filter(
-            created_at__date=current_date
+            check_in__date__lte=current_date,
+            check_out__date__gte=current_date,
+        ).exclude(
+            status__in=[
+                "cancelled",
+                "no_show",
+            ]
         )
 
-
         if selected_hotel:
-
             daily_reservations = daily_reservations.filter(
                 hotel_id=selected_hotel
             )
 
+        # ---------------------------------------------
+        # BOOKINGS
+        # ---------------------------------------------
 
         bookings = daily_reservations.count()
 
+        # ---------------------------------------------
+        # CHECK-INS
+        # ---------------------------------------------
 
         check_ins = daily_reservations.filter(
-            status__in=[
-                "checked_in",
-                "checked_out"
-            ]
+            check_in__date=current_date
         ).count()
 
+        # ---------------------------------------------
+        # CHECK-OUTS
+        # ---------------------------------------------
 
         check_outs = daily_reservations.filter(
             check_out__date=current_date
-        ).exclude(
-            status="cancelled"
         ).count()
 
+        # ---------------------------------------------
+        # OCCUPIED ROOMS
+        # ---------------------------------------------
+
+        occupied_rooms = 0
+
+        for reservation in daily_reservations:
+            occupied_rooms += reservation.number_of_rooms
+
+        # ---------------------------------------------
+        # AVAILABLE ROOMS
+        # ---------------------------------------------
+
+        daily_rooms = rooms.count()
+
+        # ---------------------------------------------
+        # DAILY OCCUPANCY
+        # ---------------------------------------------
+
+        if daily_rooms > 0:
+
+            daily_occupancy = (
+                occupied_rooms / daily_rooms
+            ) * 100
+
+        else:
+
+            daily_occupancy = 0
+
+        # ---------------------------------------------
+        # DAILY REVENUE
+        # ---------------------------------------------
 
         daily_invoices = invoices.filter(
             issued_at__date=current_date
         )
-
 
         daily_revenue = (
             daily_invoices.aggregate(
@@ -634,9 +677,35 @@ def reports_dashboard(request):
             )["total"] or 0
         )
 
+        # ---------------------------------------------
+        # DAILY ADR
+        # ---------------------------------------------
 
-        daily_occupancy = occupancy_rate
+        if occupied_rooms > 0:
 
+            daily_adr = (
+                daily_revenue /
+                occupied_rooms
+            )
+
+        else:
+
+            daily_adr = 0
+
+        # ---------------------------------------------
+        # DAILY REVPAR
+        # ---------------------------------------------
+
+        if daily_rooms > 0:
+
+            daily_revpar = (
+                daily_revenue /
+                daily_rooms
+            )
+
+        else:
+
+            daily_revpar = 0
 
         daily_performance.append({
 
@@ -659,16 +728,15 @@ def reports_dashboard(request):
                 ),
 
             "adr":
-                float(adr),
+                float(daily_adr),
 
             "revpar":
-                float(revpar),
+                float(daily_revpar),
 
             "revenue":
                 float(daily_revenue),
 
         })
-
 
         current_date -= timedelta(days=1)
 
@@ -697,6 +765,8 @@ def reports_dashboard(request):
         "total_revenue":
             total_revenue,
 
+           
+        
         "total_bookings":
             total_bookings,
 
@@ -720,7 +790,7 @@ def reports_dashboard(request):
 
         "source_counts":
             source_counts,
-        "source_counts_json": source_counts_json,
+      
         "source_counts_json":
         json.dumps(source_counts),
 

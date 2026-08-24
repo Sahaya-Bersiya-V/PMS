@@ -353,9 +353,9 @@ def billing_dashboard(request):
 
         "status_counts": status_counts,
 
-        "monthly_revenue": json.dumps(
+        "monthly_revenue": 
             monthly_revenue
-        ),
+        ,
     }
 
     return render(

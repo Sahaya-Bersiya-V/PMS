@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     JSON.parse(
                         revenueDataElement.textContent
                     );
+                console.log("Revenue element:", revenueDataElement);
+                console.log("Revenue Data:", revenueData);
 
             } catch (error) {
 

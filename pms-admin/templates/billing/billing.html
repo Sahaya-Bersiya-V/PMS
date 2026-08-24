@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="billing-page">
 
 <div class="container-fluid">
 
@@ -286,22 +287,6 @@
                         Transactions
 
                     </button>
-
-                </li>
-
-                <li class="nav-item">
-
-                    <!-- <button class="nav-link"
-                            id="refund-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#refund-pane"
-                            type="button">
-
-                        <i class="bi bi-arrow-counterclockwise me-2"></i>
-
-                        Refunds
-
-                    </button> -->
 
                 </li>
 
@@ -1132,7 +1117,7 @@ Reset Filters
         {% if transactions_page.has_previous %}
 
         <a
-            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.previous_page_number }}&refund_page={{ refunds_page.number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.previous_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
             class="billing-page-btn"
         >
             <i class="bi bi-chevron-left"></i>
@@ -1160,7 +1145,7 @@ Reset Filters
             {% else %}
 
             <a
-                href="?invoice_page={{ invoices_page.number }}&transaction_page={{ num }}&refund_page={{ refunds_page.number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                href="?invoice_page={{ invoices_page.number }}&transaction_page={{ num }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
                 class="billing-page-number"
             >
                 {{ num }}
@@ -1176,302 +1161,7 @@ Reset Filters
         {% if transactions_page.has_next %}
 
         <a
-            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.next_page_number }}&refund_page={{ refunds_page.number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-            class="billing-page-btn"
-        >
-            <i class="bi bi-chevron-right"></i>
-        </a>
-
-        {% else %}
-
-        <span class="billing-page-btn disabled">
-            <i class="bi bi-chevron-right"></i>
-        </span>
-
-        {% endif %}
-
-    </div>
-
-    {% endif %}
-
-</div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- ========================================= -->
-        <!-- REFUND TAB -->
-        <!-- ========================================= -->
-
-        <div class="tab-pane fade"
-             id="refund-pane">
-
-            <div class="card border-0 shadow-sm rounded-4">
-
-                <div class="card-header bg-white border-0 py-3">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <h5 class="fw-bold mb-0">
-
-                            Refund Requests
-
-                        </h5>
-
-                        <span class="badge bg-danger">
-
-                            {{ refund_paginator.count }} Requests
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="table-responsive">
-
-                    <table class="table table-hover align-middle mb-0">
-
-                        <thead class="table-light">
-
-                            <tr>
-    <th>Refund ID</th>
-    <th>Guest</th>
-    <th>Reservation</th>
-    <th>Room</th>
-    <th>Invoice</th>
-    <th>Refund Amount</th>
-    <th>Reason</th>
-    <th>Status</th>
-    <th>Date</th>
-    <th class="text-center">Action</th>
-</tr>
-
-                        </thead>
-
-                        <tbody>
-
-                       {% for refund in refunds %}
-
-<tr>
-
-    <!-- Refund ID -->
-    <td>
-        <strong>
-            {{ refund.refund_number }}
-        </strong>
-    </td>
-
-    <!-- Guest -->
-    <td>
-        <i class="bi bi-person-circle text-primary me-1"></i>
-
-        {{ refund.invoice.guest.first_name }}
-        {{ refund.invoice.guest.last_name }}
-    </td>
-
-    <!-- Reservation -->
-    <td>
-        <strong>
-            {{ refund.invoice.reservation.reservation_number }}
-        </strong>
-    </td>
-
-    <!-- Room -->
-    <td>
-        {{ refund.invoice.reservation.room.room_number }}
-    </td>
-
-    <!-- Invoice -->
-    <td>
-        {{ refund.invoice.invoice_number }}
-    </td>
-
-    <!-- Refund Amount -->
-    <td>
-        <strong class="text-danger">
-            ₹{{ refund.amount }}
-        </strong>
-    </td>
-
-    <!-- Reason -->
-    <td>
-        {{ refund.reason }}
-    </td>
-
-    <!-- Status -->
-    <td>
-
-        {% if refund.status == "approved" %}
-
-            <span class="badge bg-success">
-                Approved
-            </span>
-
-        {% elif refund.status == "pending" %}
-
-            <span class="badge bg-warning text-dark">
-                Pending
-            </span>
-
-        {% elif refund.status == "rejected" %}
-
-            <span class="badge bg-danger">
-                Rejected
-            </span>
-
-        {% endif %}
-
-    </td>
-
-    <!-- Date -->
-    <td>
-        {{ refund.created_at|date:"d M Y, h:i A" }}
-    </td>
-
-    <!-- Action -->
-    <td class="text-center">
-
-        <button
-            class="btn btn-sm btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#billingModal">
-
-            <i class="bi bi-eye"></i>
-
-        </button>
-
-    </td>
-
-</tr>
-
-{% empty %}
-
-<tr>
-
-    <td colspan="10">
-
-        <div class="text-center py-5">
-
-            <i
-                class="bi bi-arrow-counterclockwise"
-                style="font-size:60px;color:#bcbcbc;"
-            ></i>
-
-            <h5 class="mt-3">
-                No Refund Requests
-            </h5>
-
-        </div>
-
-    </td>
-
-</tr>
-
-{% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                    <!-- ========================================= -->
-<!-- REFUND PAGINATION -->
-<!-- ========================================= -->
-
-<div class="billing-pagination-footer">
-
-    <div class="billing-pagination-info">
-
-        Showing
-
-        {% if refunds_page.paginator.count > 0 %}
-
-            <strong>
-                {{ refunds_page.start_index }}
-            </strong>
-
-            -
-
-            <strong>
-                {{ refunds_page.end_index }}
-            </strong>
-
-        {% else %}
-
-            <strong>0</strong>
-
-        {% endif %}
-
-        of
-
-        <strong>
-            {{ refunds_page.paginator.count }}
-        </strong>
-
-        refunds
-
-    </div>
-
-
-    {% if refunds_page.paginator.num_pages > 1 %}
-
-    <div class="billing-pagination">
-
-        <!-- PREVIOUS -->
-
-        {% if refunds_page.has_previous %}
-
-        <a
-            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.number }}&refund_page={{ refunds_page.previous_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-            class="billing-page-btn"
-        >
-            <i class="bi bi-chevron-left"></i>
-        </a>
-
-        {% else %}
-
-        <span class="billing-page-btn disabled">
-            <i class="bi bi-chevron-left"></i>
-        </span>
-
-        {% endif %}
-
-
-        <!-- PAGE NUMBERS -->
-
-        {% for num in refund_paginator.page_range %}
-
-            {% if num == refunds_page.number %}
-
-            <span class="billing-page-number active">
-                {{ num }}
-            </span>
-
-            {% else %}
-
-            <a
-                href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.number }}&refund_page={{ num }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-                class="billing-page-number"
-            >
-                {{ num }}
-            </a>
-
-            {% endif %}
-
-        {% endfor %}
-
-
-        <!-- NEXT -->
-
-        {% if refunds_page.has_next %}
-
-        <a
-            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.number }}&refund_page={{ refunds_page.next_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.next_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
             class="billing-page-btn"
         >
             <i class="bi bi-chevron-right"></i>
@@ -1704,8 +1394,6 @@ Reset Filters
                         </tbody>
 
                     </table>
-                    
-
                 </div>
 
                 <div class="modal-footer">
@@ -1753,9 +1441,6 @@ document.addEventListener(
         const transactionPage =
             params.get("transaction_page");
 
-        const refundPage =
-            params.get("refund_page");
-
 
         // -------------------------------------------------
         // TRANSACTION TAB
@@ -1773,31 +1458,6 @@ document.addEventListener(
                 const tab =
                     new bootstrap.Tab(
                         transactionTab
-                    );
-
-                tab.show();
-
-            }
-
-        }
-
-
-        // -------------------------------------------------
-        // REFUND TAB
-        // -------------------------------------------------
-
-        else if (refundPage) {
-
-            const refundTab =
-                document.getElementById(
-                    "refund-tab"
-                );
-
-            if (refundTab) {
-
-                const tab =
-                    new bootstrap.Tab(
-                        refundTab
                     );
 
                 tab.show();
@@ -1835,12 +1495,10 @@ document.addEventListener(
             }
 
         }
-
     }
-
 );
 
 </script>
+</div>
 
 {% endblock %}
-

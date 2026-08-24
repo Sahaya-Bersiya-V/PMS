@@ -260,7 +260,7 @@ border-top:2px solid #dee2e6;
 
     position: relative;
 
-    min-height: 165px;
+    min-height: auto;
 
     padding: 25px;
 
@@ -764,3 +764,27 @@ border-top:2px solid #dee2e6;
     }
 
 }
+
+
+/* =========================================================
+   BILLING - REMOVE EXTRA VERTICAL SPACE
+========================================================= */
+
+.billing-page {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+.billing-page .container-fluid {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+.main-content:has(.billing-page) {
+    min-height: 0 !important;
+}
+
+.main-content:has(.billing-page) .content {
+    flex: 0 0 auto !important;
+}
+
