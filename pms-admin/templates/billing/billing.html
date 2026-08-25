@@ -407,43 +407,12 @@
             {% if status == "cancelled" %}selected{% endif %}>
                 Cancelled
             </option>
-<!-- 
-            <option value="Overdue"
-            {% if status == "Overdue" %}selected{% endif %}>
-                Overdue
-            </option> -->
+
 
         </select>
 
     </div>
 
-    <!-- Payment
-
-    <div class="col-lg-2">
-
-        <label class="form-label fw-semibold">
-
-            Payment
-
-        </label>
-
-        <select
-            name="method"
-            class="form-select">
-
-            <option value="">All</option>
-
-            <option value="UPI">UPI</option>
-
-            <option value="Card">Card</option>
-
-            <option value="Cash">Cash</option>
-
-            <option value="Net Banking">Net Banking</option>
-
-        </select>
-
-    </div> -->
 
     <!-- Date -->
 
@@ -780,13 +749,7 @@ Reset Filters
                        </tbody>
 </table>
 
-<!-- ========================================= -->
-<!-- INVOICE PAGINATION -->
-<!-- ========================================= -->
 
-<!-- ========================================= -->
-<!-- INVOICE PAGINATION -->
-<!-- ========================================= -->
 
 <!-- ========================================= -->
 <!-- INVOICE PAGINATION -->
@@ -1433,10 +1396,6 @@ document.addEventListener(
                 window.location.search
             );
 
-
-        // =================================================
-        // OPEN CORRECT TAB AFTER PAGINATION
-        // =================================================
 
         const transactionPage =
             params.get("transaction_page");

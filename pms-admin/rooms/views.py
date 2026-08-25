@@ -84,17 +84,6 @@ def room_list(request):
             room_number__icontains=search
         )
 
-
-    # =========================================================
-    # ROOM ANALYTICS
-    #
-    # IMPORTANT:
-    # These are calculated BEFORE pagination.
-    #
-    # Therefore the cards/charts represent ALL filtered
-    # rooms, not just the 5 rooms visible on the page.
-    # =========================================================
-
     total_rooms = rooms.count()
 
 
@@ -127,16 +116,6 @@ def room_list(request):
         status="out_of_order"
     ).count()
 
-
-    # =========================================================
-    # ROOMS BY FLOOR
-    #
-    # Completely dynamic.
-    #
-    # If you add Floor 3, 4, 5, 6...
-    # the chart automatically gets them.
-    # =========================================================
-
     rooms_by_floor = list(
         rooms
         .values("floor")
@@ -145,16 +124,6 @@ def room_list(request):
         )
         .order_by("floor")
     )
-
-
-    # =========================================================
-    # ROOMS BY ROOM TYPE
-    #
-    # Completely dynamic.
-    #
-    # If you add Deluxe, Suite, Family,
-    # Presidential etc., they automatically appear.
-    # =========================================================
 
     rooms_by_type = list(
         rooms
@@ -488,11 +457,6 @@ def room_type_list(request):
     # =========================================================
 
     total_types = room_types.count()
-
-
-    # Important:
-    # Count actual rooms belonging to the
-    # filtered room types.
 
     filtered_room_type_ids = room_types.values_list(
         "id",

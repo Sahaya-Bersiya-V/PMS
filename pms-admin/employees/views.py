@@ -1072,35 +1072,6 @@ def delete_employee(request, pk):
         "employee-list"
     )
 
-
-# =========================================================
-# ROLE LIST
-# =========================================================
-
-# def role_list(request):
-
-#     return render(
-#         request,
-#         "employees/role_list.html"
-#     )
-
-
-# # =========================================================
-# # ADD ROLE
-# # =========================================================
-
-# def add_role(request):
-
-#     return render(
-#         request,
-#         "employees/add_role.html"
-#     )
-
-
-# =========================================================
-# ROLE LIST
-# =========================================================
-
 def role_list(request):
     roles = Group.objects.select_related("extension").annotate(
         employee_count=Count("employees")

@@ -578,9 +578,7 @@ select.employee-input {
 
 
 
-/* =========================================
-   EMPLOYEE INFORMATION
-========================================= */
+
 
 /* =========================================
    EMPLOYEE INFORMATION
@@ -620,18 +618,9 @@ select.employee-input {
     word-break: break-word;
     overflow-wrap: anywhere;
 }
-/* 
-.employee-info-label {
-    display: block;
-    margin-bottom: 7px;
-}
-
-.employee-info-value {
-    display: block;
-} */
 
 .custom-multi-select {
-    height: 140px !important; /* Ensures all visible items fit comfortably */
+    height: 140px !important; 
     padding: 0.5rem 0.75rem;
 }
 
