@@ -788,3 +788,16 @@ border-top:2px solid #dee2e6;
     flex: 0 0 auto !important;
 }
 
+/* =========================================================
+   BILLING TAB - PREVENT HIDDEN CONTENT FROM TAKING SPACE
+========================================================= */
+
+/* Hide inactive billing tab completely */
+#billing-results > .tab-pane:not(.show) {
+    display: none !important;
+}
+
+/* Show only the active tab */
+#billing-results > .tab-pane.show {
+    display: block !important;
+}

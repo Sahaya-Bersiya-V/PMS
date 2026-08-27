@@ -302,167 +302,333 @@
 
 
 
+<!-- ========================================= -->
+<!-- BILLING FILTERS -->
+<!-- ========================================= -->
+
+<div id="billingFilters">
+
     <!-- ========================================= -->
-    <!-- FILTERS -->
+    <!-- INVOICE FILTERS -->
     <!-- ========================================= -->
 
-    <form method="GET">
-
-<div class="card shadow-sm border-0 rounded-4 mb-4">
-
-<div class="card-body">
-
-<div class="row g-3 align-items-end">
-
-    <!-- Hotel -->
-
-    <div class="col-lg-2">
-
-        <label class="form-label fw-semibold">
-
-            Hotel
-
-        </label>
-
-        <select
-            name="hotel"
-            class="form-select">
-
-            <option value="">All Hotels</option>
-
-            {% for hotel in hotels %}
-
-            <option value="{{ hotel.id }}"
-                {% if selected_hotel == hotel.id|stringformat:"s" %}
-                    selected
-                {% endif %}
-            >
-
-                {{ hotel.name }}
-
-            </option>
-
-            {% endfor %}
-
-        </select>
-
-    </div>
-
-    <!-- Search -->
-
-    <div class="col-lg-3">
-
-        <label class="form-label fw-semibold">
-
-            Search
-
-        </label>
+    <form
+        method="GET"
+        id="invoiceFilterForm"
+        class="billing-filter-form"
+    >
 
         <input
-            type="text"
-            name="search"
-            class="form-control"
-            value="{{ search }}"
-            placeholder="Invoice / Guest">
+            type="hidden"
+            name="tab"
+            value="invoice"
+        >
 
-    </div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
 
-    <!-- Status -->
+            <div class="card-body">
 
-    <div class="col-lg-2">
+                <div class="row g-3 align-items-end">
 
-        <label class="form-label fw-semibold">
+                    <!-- HOTEL -->
 
-            Status
+                    <div class="col-lg-2">
 
-        </label>
+                        <label class="form-label fw-semibold">
+                            Hotel
+                        </label>
 
-        <select
-            name="status"
-            class="form-select">
+                        <select
+                            name="hotel"
+                            class="form-select"
+                        >
 
-            <option value="">All</option>
+                            <option value="">
+                                All Hotels
+                            </option>
 
-            <option value="paid"
-            {% if status == "paid" %}selected{% endif %}>
-                Paid
-            </option>
+                            {% for hotel in hotels %}
 
-            <option value="unpaid"
-            {% if status == "unpaid" %}selected{% endif %}>
-                Unpaid
-            </option>
+                            <option
+                                value="{{ hotel.id }}"
+                                {% if selected_hotel == hotel.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ hotel.name }}
+                            </option>
 
-            <option value="partially_paid"
-            {% if status == "partially_paid" %}selected{% endif %}>
-                Partially Paid
-            </option>
+                            {% endfor %}
 
-            <option value="draft"
-            {% if status == "draft" %}selected{% endif %}>
-                Draft
-            </option>
+                        </select>
 
-            <option value="cancelled"
-            {% if status == "cancelled" %}selected{% endif %}>
-                Cancelled
-            </option>
+                    </div>
 
 
-        </select>
+                    <!-- SEARCH -->
 
-    </div>
+                    <div class="col-lg-3">
+
+                        <label class="form-label fw-semibold">
+                            Search
+                        </label>
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            value="{{ search }}"
+                            placeholder="Invoice / Guest"
+                        >
+
+                    </div>
 
 
-    <!-- Date -->
+                    <!-- STATUS -->
 
-    <div class="col-lg-2">
+                    <div class="col-lg-2">
 
-        <label class="form-label fw-semibold">
+                        <label class="form-label fw-semibold">
+                            Status
+                        </label>
 
-            From Date
+                        <select
+                            name="status"
+                            class="form-select"
+                        >
 
-        </label>
+                            <option value="">
+                                All
+                            </option>
+
+                            <option
+                                value="paid"
+                                {% if status == "paid" %}selected{% endif %}
+                            >
+                                Paid
+                            </option>
+
+                            <option
+                                value="unpaid"
+                                {% if status == "unpaid" %}selected{% endif %}
+                            >
+                                Unpaid
+                            </option>
+
+                            <option
+                                value="partially_paid"
+                                {% if status == "partially_paid" %}selected{% endif %}
+                            >
+                                Partially Paid
+                            </option>
+
+                            <option
+                                value="draft"
+                                {% if status == "draft" %}selected{% endif %}
+                            >
+                                Draft
+                            </option>
+
+                            <option
+                                value="cancelled"
+                                {% if status == "cancelled" %}selected{% endif %}
+                            >
+                                Cancelled
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATE -->
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label fw-semibold">
+                            Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="from_date"
+                            class="form-control"
+                            value="{{ from_date }}"
+                        >
+
+                    </div>
+
+
+                    <!-- SEARCH BUTTON -->
+
+                    <div class="col-lg-1 d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="bi bi-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESET -->
+
+                <div class="mt-3">
+
+                    <a
+                        href="{% url 'billing:billing_dashboard' %}?tab=invoice"
+                        class="btn btn-outline-secondary"
+                    >
+                        Reset Filters
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <!-- ========================================= -->
+    <!-- TRANSACTION FILTERS -->
+    <!-- ========================================= -->
+
+    <form
+        method="GET"
+        id="transactionFilterForm"
+        class="billing-filter-form d-none"
+    >
 
         <input
-            type="date"
-            class="form-control"
-            name="from_date"
-            value="{{ from_date }}">
+            type="hidden"
+            name="tab"
+            value="transaction"
+        >
 
-    </div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
 
-    <!-- Button -->
+            <div class="card-body">
 
-    <div class="col-lg-1 d-grid">
+                <div class="row g-3 align-items-end">
 
-        <button class="btn btn-primary">
+                    <!-- HOTEL -->
 
-            <i class="bi bi-search"></i>
+                    <div class="col-lg-3">
 
-        </button>
+                        <label class="form-label fw-semibold">
+                            Hotel
+                        </label>
 
-    </div>
+                        <select
+                            name="transaction_hotel"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Hotels
+                            </option>
+
+                            {% for hotel in hotels %}
+
+                            <option
+                                value="{{ hotel.id }}"
+                                {% if transaction_hotel == hotel.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ hotel.name }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- TRANSACTION SEARCH -->
+
+                    <div class="col-lg-4">
+
+                        <label class="form-label fw-semibold">
+                            Search
+                        </label>
+
+                        <input
+                            type="text"
+                            name="transaction_search"
+                            class="form-control"
+                            value="{{ transaction_search }}"
+                            placeholder="Transaction ID / Invoice ID / Guest"
+                        >
+
+                    </div>
+
+
+                    <!-- DATE -->
+
+                    <div class="col-lg-3">
+
+                        <label class="form-label fw-semibold">
+                            Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="transaction_from_date"
+                            class="form-control"
+                            value="{{ transaction_from_date }}"
+                        >
+
+                    </div>
+
+
+                    <!-- SEARCH BUTTON -->
+
+                    <div class="col-lg-1 d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="bi bi-search"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESET -->
+
+                <div class="mt-3">
+
+                    <a
+                        href="{% url 'billing:billing_dashboard' %}?tab=transaction"
+                        class="btn btn-outline-secondary"
+                    >
+                        Reset Filters
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
 
 </div>
-
-<div class="mt-3">
-
-<a href="{% url 'billing:billing_dashboard' %}"
-
-class="btn btn-outline-secondary">
-
-Reset Filters
-
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-</form>
 
 
 
@@ -751,117 +917,121 @@ Reset Filters
 
 
 
-<!-- ========================================= -->
-<!-- INVOICE PAGINATION -->
-<!-- ========================================= -->
+        <!-- ========================================= -->
+        <!-- INVOICE PAGINATION -->
+        <!-- ========================================= -->
 
-<div class="billing-pagination-footer">
+        <div class="billing-pagination-footer">
 
-    <div class="billing-pagination-info">
+            <div class="billing-pagination-info">
 
-        Showing
+                Showing
 
-        {% if invoices_page.paginator.count > 0 %}
-            <strong>{{ invoices_page.start_index }}</strong>
-            -
-            <strong>{{ invoices_page.end_index }}</strong>
-        {% else %}
-            <strong>0</strong>
-        {% endif %}
+                {% if invoices_page.paginator.count > 0 %}
+                    <strong>{{ invoices_page.start_index }}</strong>
+                    -
+                    <strong>{{ invoices_page.end_index }}</strong>
+                {% else %}
+                    <strong>0</strong>
+                {% endif %}
 
-        of
+                of
 
-        <strong>
-            {{ invoices_page.paginator.count }}
-        </strong>
+                <strong>
+                    {{ invoices_page.paginator.count }}
+                </strong>
 
-        invoices
-
-    </div>
-
-
-    {% if invoices_page.paginator.num_pages > 1 %}
-
-    <div class="billing-pagination">
-
-        <!-- PREVIOUS -->
-
-        {% if invoices_page.has_previous %}
-
-        <a
-            href="?invoice_page={{ invoices_page.previous_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-            class="billing-page-btn"
-        >
-            <i class="bi bi-chevron-left"></i>
-        </a>
-
-        {% else %}
-
-        <span class="billing-page-btn disabled">
-            <i class="bi bi-chevron-left"></i>
-        </span>
-
-        {% endif %}
-
-
-        <!-- PAGE NUMBERS -->
-
-        {% for num in invoice_paginator.page_range %}
-
-            {% if num == invoices_page.number %}
-
-                <span class="billing-page-number active">
-                    {{ num }}
-                </span>
-
-            {% else %}
-
-                <a
-                    href="?invoice_page={{ num }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-                    class="billing-page-number"
-                >
-                    {{ num }}
-                </a>
-
-            {% endif %}
-
-        {% endfor %}
-
-
-        <!-- NEXT -->
-
-        {% if invoices_page.has_next %}
-
-        <a
-            href="?invoice_page={{ invoices_page.next_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-            class="billing-page-btn"
-        >
-            <i class="bi bi-chevron-right"></i>
-        </a>
-
-        {% else %}
-
-        <span class="billing-page-btn disabled">
-            <i class="bi bi-chevron-right"></i>
-        </span>
-
-        {% endif %}
-
-    </div>
-
-    {% endif %}
-
-</div>
-
-</div>
-
-</div>
-
-                </div>
+                invoices
 
             </div>
 
+
+            {% if invoices_page.paginator.num_pages > 1 %}
+
+            <div class="billing-pagination">
+
+                <!-- PREVIOUS -->
+
+                {% if invoices_page.has_previous %}
+
+                <a
+                    href="?invoice_page={{ invoices_page.previous_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                    class="billing-page-btn"
+                >
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+
+                {% else %}
+
+                <span class="billing-page-btn disabled">
+                    <i class="bi bi-chevron-left"></i>
+                </span>
+
+                {% endif %}
+
+
+                <!-- PAGE NUMBERS -->
+
+                {% for num in invoice_paginator.page_range %}
+
+                    {% if num == invoices_page.number %}
+
+                    <span class="billing-page-number active">
+                        {{ num }}
+                    </span>
+
+                    {% else %}
+
+                    <a
+                        href="?invoice_page={{ num }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                        class="billing-page-number"
+                    >
+                        {{ num }}
+                    </a>
+
+                    {% endif %}
+
+                {% endfor %}
+
+
+                <!-- NEXT -->
+
+                {% if invoices_page.has_next %}
+
+                <a
+                    href="?invoice_page={{ invoices_page.next_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
+                    class="billing-page-btn"
+                >
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+                {% else %}
+
+                <span class="billing-page-btn disabled">
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
         </div>
+
+    </div>   <!-- table-responsive -->
+
+</div>       <!-- invoice card -->
+
+</div>       <!-- invoice-pane -->
+
+
+<!-- ========================================= -->
+<!-- TRANSACTION TAB -->
+<!-- ========================================= -->
+
+
+        <!-- transaction content continues here -->
 
                 <!-- ========================================= -->
         <!-- TRANSACTION TAB -->
@@ -993,13 +1163,43 @@ Reset Filters
     <td class="text-center">
 
         <button
-            class="btn btn-sm btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#billingModal">
+    type="button"
+    class="btn btn-sm btn-outline-primary"
+    title="View Transaction"
 
-            <i class="bi bi-eye"></i>
+    data-bs-toggle="modal"
+    data-bs-target="#billingModal"
 
-        </button>
+    data-invoice-number="{{ transaction.invoice.invoice_number }}"
+
+    data-guest="{{ transaction.invoice.guest.first_name }} {{ transaction.invoice.guest.last_name }}"
+
+    data-reservation="{{ transaction.invoice.reservation.reservation_number }}"
+
+    data-room="{{ transaction.invoice.reservation.room.room_type.name }} - {{ transaction.invoice.reservation.room.room_number }}"
+
+    data-payment-method="{{ transaction.get_payment_method_display }}"
+
+    data-status="{{ transaction.invoice.get_status_display }}"
+
+    data-subtotal="{{ transaction.invoice.subtotal|default:0 }}"
+
+    data-tax="{{ transaction.invoice.tax_amount|default:0 }}"
+
+    data-discount="{{ transaction.invoice.discount_amount|default:0 }}"
+
+    data-total="{{ transaction.invoice.total_amount|default:0 }}"
+
+    data-paid="{{ transaction.invoice.paid_amount|default:0 }}"
+
+    data-balance="{{ transaction.invoice.balance_amount|default:0 }}"
+
+    data-print-url="{% url 'billing:invoice_detail' transaction.invoice.id %}?print=1"
+>
+
+    <i class="bi bi-eye"></i>
+
+</button>
 
     </td>
 
@@ -1080,8 +1280,7 @@ Reset Filters
         {% if transactions_page.has_previous %}
 
         <a
-            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.previous_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-            class="billing-page-btn"
+href="?tab=transaction&invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.previous_page_number }}{% if transaction_hotel %}&transaction_hotel={{ transaction_hotel }}{% endif %}{% if transaction_search %}&transaction_search={{ transaction_search|urlencode }}{% endif %}{% if transaction_from_date %}&transaction_from_date={{ transaction_from_date }}{% endif %}{% if transaction_to_date %}&transaction_to_date={{ transaction_to_date }}{% endif %}"            class="billing-page-btn"
         >
             <i class="bi bi-chevron-left"></i>
         </a>
@@ -1108,8 +1307,7 @@ Reset Filters
             {% else %}
 
             <a
-                href="?invoice_page={{ invoices_page.number }}&transaction_page={{ num }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-                class="billing-page-number"
+href="?tab=transaction&invoice_page={{ invoices_page.number }}&transaction_page={{ num }}{% if transaction_hotel %}&transaction_hotel={{ transaction_hotel }}{% endif %}{% if transaction_search %}&transaction_search={{ transaction_search|urlencode }}{% endif %}{% if transaction_from_date %}&transaction_from_date={{ transaction_from_date }}{% endif %}{% if transaction_to_date %}&transaction_to_date={{ transaction_to_date }}{% endif %}"                class="billing-page-number"
             >
                 {{ num }}
             </a>
@@ -1124,8 +1322,7 @@ Reset Filters
         {% if transactions_page.has_next %}
 
         <a
-            href="?invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.next_page_number }}{% if selected_hotel %}&hotel={{ selected_hotel }}{% endif %}{% if search %}&search={{ search|urlencode }}{% endif %}{% if status %}&status={{ status|urlencode }}{% endif %}{% if from_date %}&from_date={{ from_date }}{% endif %}{% if to_date %}&to_date={{ to_date }}{% endif %}"
-            class="billing-page-btn"
+href="?tab=transaction&invoice_page={{ invoices_page.number }}&transaction_page={{ transactions_page.next_page_number }}{% if transaction_hotel %}&transaction_hotel={{ transaction_hotel }}{% endif %}{% if transaction_search %}&transaction_search={{ transaction_search|urlencode }}{% endif %}{% if transaction_from_date %}&transaction_from_date={{ transaction_from_date }}{% endif %}{% if transaction_to_date %}&transaction_to_date={{ transaction_to_date }}{% endif %}"            class="billing-page-btn"
         >
             <i class="bi bi-chevron-right"></i>
         </a>
@@ -1159,197 +1356,274 @@ Reset Filters
     <!-- VIEW DETAILS MODAL -->
     <!-- ========================================= -->
 
-    <div class="modal fade"
-         id="billingModal"
-         tabindex="-1">
+<!-- ========================================= -->
+<!-- BILLING DETAILS MODAL -->
+<!-- ========================================= -->
 
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal fade"
+     id="billingModal"
+     tabindex="-1"
+     aria-labelledby="billingModalLabel"
+     aria-hidden="true">
 
-            <div class="modal-content border-0 rounded-4">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
 
-                <div class="modal-header">
+        <div class="modal-content border-0 rounded-4">
 
-                    <h5 class="modal-title">
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h5 class="modal-title fw-bold"
+                        id="billingModalLabel">
 
                         Billing Details
 
                     </h5>
 
-                    <button class="btn-close"
-                            data-bs-dismiss="modal">
-
-                    </button>
+                    <small class="text-muted">
+                        Invoice information
+                    </small>
 
                 </div>
 
-                <div class="modal-body">
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
+                </button>
 
-                    <div class="row">
+            </div>
 
-                        <div class="col-md-6 mb-3">
 
-                            <label class="text-muted">
+            <!-- BODY -->
 
-                                Invoice Number
+            <div class="modal-body">
 
-                            </label>
+                <!-- INVOICE INFORMATION -->
 
-                            <h6>
+                <div class="row">
 
-                                INV001
+                    <!-- Invoice Number -->
 
-                            </h6>
+                    <div class="col-md-6 mb-3">
 
-                        </div>
+                        <label class="text-muted small">
+                            Invoice Number
+                        </label>
 
-                        <div class="col-md-6 mb-3">
-
-                            <label class="text-muted">
-
-                                Guest
-
-                            </label>
-
-                            <h6>
-
-                                John Smith
-
-                            </h6>
-
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="text-muted">
-
-                                Reservation
-
-                            </label>
-
-                            <h6>
-
-                                RSV001
-
-                            </h6>
-
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="text-muted">
-
-                                Room
-
-                            </label>
-
-                            <h6>
-
-                                Deluxe Room - 101
-
-                            </h6>
-
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="text-muted">
-
-                                Payment Method
-
-                            </label>
-
-                            <h6>
-
-                                UPI
-
-                            </h6>
-
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-
-                            <label class="text-muted">
-
-                                Status
-
-                            </label>
-
-                            <span class="badge bg-success">
-
-                                Paid
-
-                            </span>
-
-                        </div>
+                        <h6
+                            class="fw-semibold mb-0"
+                            id="modalInvoiceNumber">
+                            —
+                        </h6>
 
                     </div>
 
-                    <hr>
 
-                    <table class="table">
+                    <!-- Guest -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="text-muted small">
+                            Guest
+                        </label>
+
+                        <h6
+                            class="fw-semibold mb-0"
+                            id="modalGuest">
+                            —
+                        </h6>
+
+                    </div>
+
+
+                    <!-- Reservation -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="text-muted small">
+                            Reservation
+                        </label>
+
+                        <h6
+                            class="fw-semibold mb-0"
+                            id="modalReservation">
+                            —
+                        </h6>
+
+                    </div>
+
+
+                    <!-- Room -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="text-muted small">
+                            Room
+                        </label>
+
+                        <h6
+                            class="fw-semibold mb-0"
+                            id="modalRoom">
+                            —
+                        </h6>
+
+                    </div>
+
+
+                    <!-- Payment Method -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="text-muted small">
+                            Payment Method
+                        </label>
+
+                        <h6
+                            class="fw-semibold mb-0"
+                            id="modalPaymentMethod">
+                            —
+                        </h6>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="text-muted small d-block">
+                            Status
+                        </label>
+
+                        <span
+                            id="modalStatus"
+                            class="badge bg-secondary">
+                            —
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- PAYMENT SUMMARY -->
+
+                <h6 class="fw-bold mb-3">
+                    Payment Summary
+                </h6>
+
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle mb-0">
 
                         <tbody>
 
+                            <!-- Room Charges -->
+
                             <tr>
 
                                 <td>
-
                                     Room Charges
-
                                 </td>
 
-                                <td class="text-end">
-
-                                    ₹7000
-
-                                </td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td>
-
-                                    GST
-
-                                </td>
-
-                                <td class="text-end">
-
-                                    ₹1260
-
+                                <td
+                                    class="text-end fw-semibold"
+                                    id="modalSubtotal">
+                                    ₹0
                                 </td>
 
                             </tr>
 
+
+                            <!-- Tax -->
+
                             <tr>
 
                                 <td>
+                                    GST / Tax
+                                </td>
 
+                                <td
+                                    class="text-end"
+                                    id="modalTax">
+                                    ₹0
+                                </td>
+
+                            </tr>
+
+
+                            <!-- Discount -->
+
+                            <tr>
+
+                                <td>
                                     Discount
-
                                 </td>
 
-                                <td class="text-end">
-
-                                    ₹500
-
+                                <td
+                                    class="text-end text-danger"
+                                    id="modalDiscount">
+                                    ₹0
                                 </td>
 
                             </tr>
 
-                            <tr class="fw-bold">
+
+                            <!-- Grand Total -->
+
+                            <tr class="fw-bold border-top">
 
                                 <td>
-
                                     Grand Total
-
                                 </td>
 
-                                <td class="text-end text-success">
+                                <td
+                                    class="text-end text-success fs-5"
+                                    id="modalTotal">
+                                    ₹0
+                                </td>
 
-                                    ₹7760
+                            </tr>
 
+
+                            <!-- Paid -->
+
+                            <tr>
+
+                                <td>
+                                    Paid Amount
+                                </td>
+
+                                <td
+                                    class="text-end text-success fw-semibold"
+                                    id="modalPaid">
+                                    ₹0
+                                </td>
+
+                            </tr>
+
+
+                            <!-- Balance -->
+
+                            <tr>
+
+                                <td>
+                                    Balance
+                                </td>
+
+                                <td
+                                    class="text-end fw-semibold"
+                                    id="modalBalance">
+                                    ₹0
                                 </td>
 
                             </tr>
@@ -1357,26 +1631,37 @@ Reset Filters
                         </tbody>
 
                     </table>
-                </div>
-
-                <div class="modal-footer">
-
-                    <button class="btn btn-secondary"
-                            data-bs-dismiss="modal">
-
-                        Close
-
-                    </button>
-
-                    <button class="btn btn-primary">
-
-                        <i class="bi bi-printer me-2"></i>
-
-                        Print Invoice
-
-                    </button>
 
                 </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+
+                <a
+                    href="#"
+                    id="modalPrintInvoice"
+                    target="_blank"
+                    class="btn btn-primary">
+
+                    <i class="bi bi-printer me-2"></i>
+
+                    Print Invoice
+
+                </a>
 
             </div>
 
@@ -1384,6 +1669,7 @@ Reset Filters
 
     </div>
 
+</div>
 </div>
 <script>
 
@@ -1396,21 +1682,68 @@ document.addEventListener(
                 window.location.search
             );
 
+        const activeTab =
+            params.get("tab") || "invoice";
 
-        const transactionPage =
-            params.get("transaction_page");
+        const invoiceTab =
+            document.getElementById(
+                "invoice-tab"
+            );
+
+        const transactionTab =
+            document.getElementById(
+                "transaction-tab"
+            );
+
+        const invoiceFilterForm =
+            document.getElementById(
+                "invoiceFilterForm"
+            );
+
+        const transactionFilterForm =
+            document.getElementById(
+                "transactionFilterForm"
+            );
 
 
-        // -------------------------------------------------
-        // TRANSACTION TAB
-        // -------------------------------------------------
+        // =====================================================
+        // SHOW CORRECT FILTER
+        // =====================================================
 
-        if (transactionPage) {
+        function showFilter(tab) {
 
-            const transactionTab =
-                document.getElementById(
-                    "transaction-tab"
+            if (tab === "transaction") {
+
+                invoiceFilterForm.classList.add(
+                    "d-none"
                 );
+
+                transactionFilterForm.classList.remove(
+                    "d-none"
+                );
+
+            } else {
+
+                transactionFilterForm.classList.add(
+                    "d-none"
+                );
+
+                invoiceFilterForm.classList.remove(
+                    "d-none"
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // INITIAL TAB
+        // =====================================================
+
+        if (activeTab === "transaction") {
+
+            showFilter("transaction");
 
             if (transactionTab) {
 
@@ -1423,12 +1756,63 @@ document.addEventListener(
 
             }
 
+        } else {
+
+            showFilter("invoice");
+
+            if (invoiceTab) {
+
+                const tab =
+                    new bootstrap.Tab(
+                        invoiceTab
+                    );
+
+                tab.show();
+
+            }
+
         }
 
 
-        // =================================================
-        // SCROLL TO BILLING RESULTS
-        // =================================================
+        // =====================================================
+        // INVOICE TAB CLICK
+        // =====================================================
+
+        if (invoiceTab) {
+
+            invoiceTab.addEventListener(
+                "shown.bs.tab",
+                function () {
+
+                    showFilter("invoice");
+
+                }
+            );
+
+        }
+
+
+        // =====================================================
+        // TRANSACTION TAB CLICK
+        // =====================================================
+
+        if (transactionTab) {
+
+            transactionTab.addEventListener(
+                "shown.bs.tab",
+                function () {
+
+                    showFilter("transaction");
+
+                }
+            );
+
+        }
+
+
+        // =====================================================
+        // SCROLL TO RESULTS WHEN FILTER IS USED
+        // =====================================================
 
         if (params.toString() !== "") {
 
@@ -1454,6 +1838,283 @@ document.addEventListener(
             }
 
         }
+
+    
+        // =========================================================
+// BILLING DETAILS MODAL
+// =========================================================
+
+const billingModal =
+    document.getElementById("billingModal");
+
+
+if (billingModal) {
+
+    billingModal.addEventListener(
+        "show.bs.modal",
+        function (event) {
+
+            const button =
+                event.relatedTarget;
+
+
+            if (!button) {
+                return;
+            }
+
+
+            // ---------------------------------------------
+            // GET BACKEND DATA
+            // ---------------------------------------------
+
+            const invoiceNumber =
+                button.dataset.invoiceNumber || "—";
+
+
+            const guest =
+                button.dataset.guest || "—";
+
+
+            const reservation =
+                button.dataset.reservation || "—";
+
+
+            const room =
+                button.dataset.room || "—";
+
+
+            const paymentMethod =
+                button.dataset.paymentMethod || "—";
+
+
+            const status =
+                button.dataset.status || "—";
+
+
+            const subtotal =
+                parseFloat(
+                    button.dataset.subtotal || 0
+                );
+
+
+            const tax =
+                parseFloat(
+                    button.dataset.tax || 0
+                );
+
+
+            const discount =
+                parseFloat(
+                    button.dataset.discount || 0
+                );
+
+
+            const total =
+                parseFloat(
+                    button.dataset.total || 0
+                );
+
+
+            const paid =
+                parseFloat(
+                    button.dataset.paid || 0
+                );
+
+
+            const balance =
+                parseFloat(
+                    button.dataset.balance || 0
+                );
+
+
+            const printUrl =
+                button.dataset.printUrl || "#";
+
+
+            // ---------------------------------------------
+            // FORMAT CURRENCY
+            // ---------------------------------------------
+
+            function formatCurrency(amount) {
+
+                return "₹" + Number(amount || 0)
+                    .toLocaleString("en-IN", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2
+                    });
+
+            }
+
+
+            // ---------------------------------------------
+            // BASIC INFORMATION
+            // ---------------------------------------------
+
+            document.getElementById(
+                "modalInvoiceNumber"
+            ).textContent = invoiceNumber;
+
+
+            document.getElementById(
+                "modalGuest"
+            ).textContent = guest;
+
+
+            document.getElementById(
+                "modalReservation"
+            ).textContent = reservation;
+
+
+            document.getElementById(
+                "modalRoom"
+            ).textContent = room;
+
+
+            document.getElementById(
+                "modalPaymentMethod"
+            ).textContent = paymentMethod;
+
+
+            // ---------------------------------------------
+            // STATUS
+            // ---------------------------------------------
+
+            const statusElement =
+                document.getElementById(
+                    "modalStatus"
+                );
+
+
+            statusElement.textContent = status;
+
+
+            statusElement.className =
+                "badge";
+
+
+            const normalizedStatus =
+                status.toLowerCase().trim();
+
+
+            if (normalizedStatus === "paid") {
+
+                statusElement.classList.add(
+                    "bg-success"
+                );
+
+            }
+            else if (
+                normalizedStatus === "partially paid"
+            ) {
+
+                statusElement.classList.add(
+                    "bg-warning",
+                    "text-dark"
+                );
+
+            }
+            else if (
+                normalizedStatus === "unpaid"
+            ) {
+
+                statusElement.classList.add(
+                    "bg-danger"
+                );
+
+            }
+            else if (
+                normalizedStatus === "draft"
+            ) {
+
+                statusElement.classList.add(
+                    "bg-secondary"
+                );
+
+            }
+            else {
+
+                statusElement.classList.add(
+                    "bg-dark"
+                );
+
+            }
+
+
+            // ---------------------------------------------
+            // PAYMENT SUMMARY
+            // ---------------------------------------------
+
+            document.getElementById(
+                "modalSubtotal"
+            ).textContent =
+                formatCurrency(subtotal);
+
+
+            document.getElementById(
+                "modalTax"
+            ).textContent =
+                formatCurrency(tax);
+
+
+            document.getElementById(
+                "modalDiscount"
+            ).textContent =
+                formatCurrency(discount);
+
+
+            document.getElementById(
+                "modalTotal"
+            ).textContent =
+                formatCurrency(total);
+
+
+            document.getElementById(
+                "modalPaid"
+            ).textContent =
+                formatCurrency(paid);
+
+
+            document.getElementById(
+                "modalBalance"
+            ).textContent =
+                formatCurrency(balance);
+
+
+            // ---------------------------------------------
+            // PRINT INVOICE
+            // ---------------------------------------------
+
+            document.getElementById(
+                "modalPrintInvoice"
+            ).href = printUrl;
+
+
+            // ---------------------------------------------
+            // DEBUG
+            // ---------------------------------------------
+
+            console.log(
+                "Billing Modal Data:",
+                {
+                    invoiceNumber,
+                    guest,
+                    reservation,
+                    room,
+                    paymentMethod,
+                    status,
+                    subtotal,
+                    tax,
+                    discount,
+                    total,
+                    paid,
+                    balance
+                }
+            );
+
+        }
+    );
+
+}
     }
 );
 

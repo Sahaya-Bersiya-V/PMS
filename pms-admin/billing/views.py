@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
@@ -26,18 +26,61 @@ def billing_dashboard(request):
     hotels = Hotel.objects.all().order_by("name")
 
     # -----------------------------------------------------
-    # Filters
+    # Active Tab
     # -----------------------------------------------------
 
-    hotel = request.GET.get("hotel", "").strip()
-    search = request.GET.get("search", "").strip()
-    status = request.GET.get("status", "").strip()
-    from_date = request.GET.get("from_date", "").strip()
-    to_date = request.GET.get("to_date", "").strip()
+    active_tab = request.GET.get("tab", "invoice").strip()
 
-    # -----------------------------------------------------
-    # Invoices
-    # -----------------------------------------------------
+    if active_tab not in ["invoice", "transaction"]:
+        active_tab = "invoice"
+
+    # =====================================================
+    # INVOICE FILTERS
+    # =====================================================
+
+    invoice_hotel = request.GET.get(
+        "hotel", ""
+    ).strip()
+
+    invoice_search = request.GET.get(
+        "search", ""
+    ).strip()
+
+    invoice_status = request.GET.get(
+        "status", ""
+    ).strip()
+
+    invoice_from_date = request.GET.get(
+        "from_date", ""
+    ).strip()
+
+    invoice_to_date = request.GET.get(
+        "to_date", ""
+    ).strip()
+
+    # =====================================================
+    # TRANSACTION FILTERS
+    # =====================================================
+
+    transaction_hotel = request.GET.get(
+        "transaction_hotel", ""
+    ).strip()
+
+    transaction_search = request.GET.get(
+        "transaction_search", ""
+    ).strip()
+
+    transaction_from_date = request.GET.get(
+        "transaction_from_date", ""
+    ).strip()
+
+    transaction_to_date = request.GET.get(
+        "transaction_to_date", ""
+    ).strip()
+
+    # =====================================================
+    # INVOICES
+    # =====================================================
 
     invoices = Invoice.objects.select_related(
         "reservation",
@@ -49,65 +92,134 @@ def billing_dashboard(request):
         "refunds",
     ).order_by("-issued_at")
 
-    # Hotel filter
+    # -----------------------------------------------------
+    # Invoice Hotel
+    # -----------------------------------------------------
 
-    if hotel:
+    if invoice_hotel:
         invoices = invoices.filter(
-            reservation__hotel_id=hotel
-        )
-
-    # Search
-
-    if search:
-
-        invoices = invoices.filter(
-            guest__first_name__icontains=search
-        ) | invoices.filter(
-            guest__last_name__icontains=search
-        ) | invoices.filter(
-            guest__phone__icontains=search
-        ) | invoices.filter(
-            invoice_number__icontains=search
-        )
-
-    # Status
-
-    if status:
-        invoices = invoices.filter(
-            status=status
-        )
-
-    # From date
-
-    if from_date:
-        invoices = invoices.filter(
-            issued_at__date__gte=from_date
-        )
-
-    # To date
-
-    if to_date:
-        invoices = invoices.filter(
-            issued_at__date__lte=to_date
+            reservation__hotel_id=invoice_hotel
         )
 
     # -----------------------------------------------------
-    # Payments / Transactions
+    # Invoice Search
+    # Invoice Number / Guest Name / Phone
     # -----------------------------------------------------
+
+    if invoice_search:
+
+        invoices = invoices.filter(
+            Q(invoice_number__icontains=invoice_search)
+            |
+            Q(guest__first_name__icontains=invoice_search)
+            |
+            Q(guest__last_name__icontains=invoice_search)
+            |
+            Q(guest__phone__icontains=invoice_search)
+        ).distinct()
+
+    # -----------------------------------------------------
+    # Invoice Status
+    # -----------------------------------------------------
+
+    if invoice_status:
+
+        invoices = invoices.filter(
+            status=invoice_status
+        )
+
+    # -----------------------------------------------------
+    # Invoice From Date
+    # -----------------------------------------------------
+
+    if invoice_from_date:
+
+        invoices = invoices.filter(
+            issued_at__date__gte=invoice_from_date
+        )
+
+    # -----------------------------------------------------
+    # Invoice To Date
+    # -----------------------------------------------------
+
+    if invoice_to_date:
+
+        invoices = invoices.filter(
+            issued_at__date__lte=invoice_to_date
+        )
+
+    # =====================================================
+    # PAYMENTS / TRANSACTIONS
+    # =====================================================
 
     transactions = Payment.objects.select_related(
         "invoice",
         "invoice__guest",
+        "invoice__reservation",
+        "invoice__reservation__room",
+        "invoice__reservation__hotel",
     ).order_by("-payment_date")
 
-    if hotel:
+    # -----------------------------------------------------
+    # Transaction Hotel
+    # -----------------------------------------------------
+
+    if transaction_hotel:
+
         transactions = transactions.filter(
-            invoice__reservation__hotel_id=hotel
+            invoice__reservation__hotel_id=transaction_hotel
         )
 
     # -----------------------------------------------------
-    # Refunds
+    # Transaction Search
+    #
+    # Supports:
+    # 1. Transaction ID
+    # 2. Invoice Number
+    # 3. Guest First Name
+    # 4. Guest Last Name
+    # 5. Guest Phone
     # -----------------------------------------------------
+
+    if transaction_search:
+
+        transactions = transactions.filter(
+
+            Q(transaction_id__icontains=transaction_search)
+            |
+            Q(invoice__invoice_number__icontains=transaction_search)
+            |
+            Q(invoice__guest__first_name__icontains=transaction_search)
+            |
+            Q(invoice__guest__last_name__icontains=transaction_search)
+            |
+            Q(invoice__guest__phone__icontains=transaction_search)
+
+        ).distinct()
+
+    # -----------------------------------------------------
+    # Transaction From Date
+    # -----------------------------------------------------
+
+    if transaction_from_date:
+
+        transactions = transactions.filter(
+            payment_date__date__gte=transaction_from_date
+        )
+
+    # -----------------------------------------------------
+    # Transaction To Date
+    # -----------------------------------------------------
+
+    if transaction_to_date:
+
+        transactions = transactions.filter(
+            payment_date__date__lte=transaction_to_date
+        )
+
+    # =====================================================
+    # REFUNDS
+    # =====================================================
 
     refunds = Refund.objects.select_related(
         "invoice",
@@ -117,9 +229,11 @@ def billing_dashboard(request):
         "invoice__reservation__hotel",
     ).order_by("-created_at")
 
-    if hotel:
+    # Refund hotel filter follows invoice filter
+    if invoice_hotel:
+
         refunds = refunds.filter(
-            invoice__reservation__hotel_id=hotel
+            invoice__reservation__hotel_id=invoice_hotel
         )
 
     # =====================================================
@@ -142,7 +256,7 @@ def billing_dashboard(request):
     )
 
     # -----------------------------------------------------
-    # Current pages
+    # Current Pages
     # -----------------------------------------------------
 
     invoice_page_number = request.GET.get(
@@ -161,7 +275,7 @@ def billing_dashboard(request):
     )
 
     # -----------------------------------------------------
-    # Page objects
+    # Page Objects
     # -----------------------------------------------------
 
     invoices_page = invoice_paginator.get_page(
@@ -182,9 +296,10 @@ def billing_dashboard(request):
 
     all_invoices = Invoice.objects.all()
 
-    if hotel:
+    if invoice_hotel:
+
         all_invoices = all_invoices.filter(
-            reservation__hotel_id=hotel
+            reservation__hotel_id=invoice_hotel
         )
 
     total_billed = (
@@ -211,11 +326,11 @@ def billing_dashboard(request):
     # Total Refunds
     # -----------------------------------------------------
 
-    if hotel:
+    if invoice_hotel:
 
         total_refunds = (
             Refund.objects.filter(
-                invoice__reservation__hotel_id=hotel
+                invoice__reservation__hotel_id=invoice_hotel
             ).aggregate(
                 total=Sum("amount")
             )["total"] or 0
@@ -288,23 +403,41 @@ def billing_dashboard(request):
     context = {
 
         # -------------------------------------------------
-        # Filters
+        # General
         # -------------------------------------------------
 
         "hotels": hotels,
 
-        "selected_hotel": hotel,
-
-        "search": search,
-
-        "status": status,
-
-        "from_date": from_date,
-
-        "to_date": to_date,
+        "active_tab": active_tab,
 
         # -------------------------------------------------
-        # Paginated data
+        # Invoice Filters
+        # -------------------------------------------------
+
+        "selected_hotel": invoice_hotel,
+
+        "search": invoice_search,
+
+        "status": invoice_status,
+
+        "from_date": invoice_from_date,
+
+        "to_date": invoice_to_date,
+
+        # -------------------------------------------------
+        # Transaction Filters
+        # -------------------------------------------------
+
+        "transaction_hotel": transaction_hotel,
+
+        "transaction_search": transaction_search,
+
+        "transaction_from_date": transaction_from_date,
+
+        "transaction_to_date": transaction_to_date,
+
+        # -------------------------------------------------
+        # Paginated Data
         # -------------------------------------------------
 
         "invoices": invoices_page,
@@ -324,7 +457,7 @@ def billing_dashboard(request):
         "refund_paginator": refund_paginator,
 
         # -------------------------------------------------
-        # Page objects
+        # Page Objects
         # -------------------------------------------------
 
         "invoices_page": invoices_page,
@@ -353,18 +486,14 @@ def billing_dashboard(request):
 
         "status_counts": status_counts,
 
-        "monthly_revenue": 
-            monthly_revenue
-        ,
+        "monthly_revenue": monthly_revenue,
     }
 
     return render(
         request,
         "billing/billing.html",
-        context,
+        context
     )
-
-
 # =========================================================
 # EXPORT BILLING REPORT
 # =========================================================

@@ -17,6 +17,37 @@ from .serializers import (
 )
 from billing.models import Invoice, Payment,Refund
 from django.core.paginator import Paginator
+
+
+def normalize_datetime(value):
+    """
+    Convert incoming datetime strings to timezone-aware datetime objects.
+    If value is already a datetime, return it as-is after making it aware.
+    """
+
+    if not value:
+        return value
+
+    # Already a datetime object
+    if hasattr(value, "tzinfo"):
+        if timezone.is_naive(value):
+            return timezone.make_aware(value)
+
+        return value
+
+    # Convert string to datetime
+    parsed = parse_datetime(str(value))
+
+    if parsed is None:
+        raise ValueError(
+            f"Invalid datetime value: {value}"
+        )
+
+    # Make naive datetime timezone-aware
+    if timezone.is_naive(parsed):
+        parsed = timezone.make_aware(parsed)
+
+    return parsed
 def reservation_ui_detail(request, pk):
 
     reservation = get_object_or_404(
@@ -116,25 +147,123 @@ class GuestListView(APIView):
 def create_invoice_for_reservation(reservation):
     """
     Create or update the invoice for a reservation.
-    If the reservation is paid, create a payment and transaction ID.
+
+    Billing calculation:
+        Subtotal = room rate × number of nights
+        Taxable Amount = subtotal - discount
+        Tax = 18% of taxable amount
+        Grand Total = taxable amount + tax
     """
+
+    from decimal import Decimal
+    from django.utils import timezone
+
+    # -----------------------------------------
+    # BILLING CALCULATION
+    # -----------------------------------------
+
+    room_rate = Decimal(
+        str(reservation.room_rate or 0)
+    )
+
+    # Calculate number of nights
+    # -----------------------------------------
+# CALCULATE NUMBER OF NIGHTS
+# -----------------------------------------
+
+    check_in = normalize_datetime(
+        reservation.check_in
+    )
+
+    check_out = normalize_datetime(
+        reservation.check_out
+    )
+
+    if check_in and check_out:
+
+        difference = check_out - check_in
+
+        nights = max(
+            0,
+            difference.days
+        )
+
+    else:
+
+        nights = 0
+
+    # Prevent zero-night calculation
+    if nights <= 0:
+        nights = 1
+
+    subtotal = (
+        room_rate * Decimal(nights)
+    )
+    # -----------------------------------------
+    # DISCOUNT
+    # -----------------------------------------
+    discount_amount = Decimal("0.00")
+
+    # Your current Reservation model does not
+    # appear to store discount separately.
+    # Therefore use zero unless you add a
+    # discount field to Reservation.
+    
+    taxable_amount = max(
+        Decimal("0.00"),
+        subtotal - discount_amount
+    )
+
+    # -----------------------------------------
+    # TAX - 18%
+    # -----------------------------------------
+
+    tax_amount = (
+        taxable_amount * Decimal("0.18")
+    ).quantize(
+        Decimal("0.01")
+    )
+
+    # -----------------------------------------
+    # GRAND TOTAL
+    # -----------------------------------------
+
+    total_amount = (
+        taxable_amount + tax_amount
+    ).quantize(
+        Decimal("0.01")
+    )
+
+    # -----------------------------------------
+    # INVOICE NUMBER
+    # -----------------------------------------
 
     invoice_number = (
         f"INV{reservation.reservation_number.replace('RES', '')}"
     )
+
+    # -----------------------------------------
+    # CREATE / GET INVOICE
+    # -----------------------------------------
 
     invoice, created = Invoice.objects.get_or_create(
         reservation=reservation,
         defaults={
             "invoice_number": invoice_number,
             "guest": reservation.guest,
-            "subtotal": reservation.total_amount,
-            "tax_amount": 0,
-            "discount_amount": 0,
-            "total_amount": reservation.total_amount,
+
+            "subtotal": subtotal,
+
+            "tax_amount": tax_amount,
+
+            "discount_amount": discount_amount,
+
+            "total_amount": total_amount,
+
             "paid_amount": (
                 reservation.advance_amount
             ),
+
             "status": (
                 "paid"
                 if reservation.payment_status == "paid"
@@ -146,21 +275,33 @@ def create_invoice_for_reservation(reservation):
     )
 
     # -----------------------------------------
-    # Synchronize existing invoice
+    # UPDATE EXISTING INVOICE
     # -----------------------------------------
 
     if not created:
 
         invoice.guest = reservation.guest
-        invoice.total_amount = reservation.total_amount
+
+        invoice.subtotal = subtotal
+
+        invoice.tax_amount = tax_amount
+
+        invoice.discount_amount = discount_amount
+
+        invoice.total_amount = total_amount
 
         if reservation.payment_status == "paid":
 
-            invoice.paid_amount = reservation.total_amount
+            invoice.paid_amount = total_amount
+
             invoice.status = "paid"
 
         else:
-            invoice.paid_amount = reservation.advance_amount
+
+            invoice.paid_amount = (
+                reservation.advance_amount
+            )
+
             invoice.status = (
                 "partially_paid"
                 if reservation.advance_amount > 0
@@ -180,29 +321,34 @@ def create_invoice_for_reservation(reservation):
             status="successful"
         ).first()
 
-        # Create payment if it doesn't exist
         if not payment:
 
             payment = Payment.objects.create(
                 invoice=invoice,
-                amount=reservation.total_amount,
+                amount=invoice.total_amount,
                 payment_method="cash",
                 status="successful",
-                notes="Cash payment received during reservation"
+                notes=(
+                    "Cash payment received "
+                    "during reservation"
+                )
             )
 
         # -----------------------------------------
-        # GENERATE TRANSACTION ID
+        # TRANSACTION ID
         # -----------------------------------------
 
         if not payment.transaction_id:
 
             payment.transaction_id = (
-                f"TXN{timezone.now().year}{payment.id:04d}"
+                f"TXN{timezone.now().year}"
+                f"{payment.id:04d}"
             )
 
             payment.save(
-                update_fields=["transaction_id"]
+                update_fields=[
+                    "transaction_id"
+                ]
             )
 
     return invoice
@@ -912,15 +1058,19 @@ class ReservationDetailView(APIView):
         reservation.room_id
     )
 
-        check_in = update_data.get(
-        "check_in",
-        reservation.check_in
-    )
+        check_in = normalize_datetime(
+    update_data.get(
+                "check_in",
+                reservation.check_in
+            )
+        )
 
-        check_out = update_data.get(
-        "check_out",
-        reservation.check_out
-    )
+        check_out = normalize_datetime(
+            update_data.get(
+                "check_out",
+                reservation.check_out
+            )
+        )
 
     # =========================================
     # VALIDATE HOTEL
@@ -1033,27 +1183,32 @@ class ReservationDetailView(APIView):
     # =========================================
 
         normal_fields = [
-        "check_in",
-        "check_out",
-        "adults",
-        "children",
-        "number_of_rooms",
-        "room_rate",
-        "total_amount",
-        "advance_amount",
-        "booking_source",
-        "special_requests",
-    ]
+            "check_in",
+            "check_out",
+            "adults",
+            "children",
+            "number_of_rooms",
+            "room_rate",
+            "total_amount",
+            "advance_amount",
+            "booking_source",
+            "special_requests",
+        ]
 
         for field in normal_fields:
 
             if field in update_data:
 
+                value = update_data[field]
+
+                if field in ["check_in", "check_out"]:
+                    value = normalize_datetime(value)
+
                 setattr(
-                reservation,
-                field,
-                update_data[field]
-            )
+                    reservation,
+                    field,
+                    value
+                )
 
     # =========================================
     # PAYMENT STATUS

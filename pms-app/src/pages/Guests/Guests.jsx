@@ -6,7 +6,6 @@ import GuestToolbar from "./components/GuestToolbar";
 import GuestTable from "./components/GuestTable";
 import GuestViewModal from "./components/GuestViewModal";
 
-
 const API_URL =
     `${import.meta.env.VITE_API_URL}/api/reservations/guests`;
 
@@ -14,7 +13,6 @@ const RESERVATIONS_API_URL =
     `${import.meta.env.VITE_API_URL}/api/reservations/`;
 
 const RECORDS_PER_PAGE = 5;
-
 
 const Guests = () => {
     const [reservations, setReservations] = useState([]);
@@ -73,8 +71,6 @@ const Guests = () => {
             const response = await fetch(
                 `${API_URL}/?${params.toString()}`
             );
-
-
             if (!response.ok) {
 
                 throw new Error(

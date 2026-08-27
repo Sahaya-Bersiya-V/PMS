@@ -1,5 +1,5 @@
 from django.db import models
-
+import os
 
 class RoomType(models.Model):
 
@@ -45,6 +45,47 @@ class RoomType(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
+
+    def save(self, *args, **kwargs):
+
+        old_image = None
+
+        if self.pk:
+
+            try:
+                old_room_type = RoomType.objects.get(
+                    pk=self.pk
+                )
+
+                old_image = old_room_type.image
+
+            except RoomType.DoesNotExist:
+                pass
+
+        super().save(*args, **kwargs)
+
+        if (
+            old_image
+            and old_image.name
+            and old_image.name != self.image.name
+        ):
+
+            if os.path.isfile(old_image.path):
+
+                os.remove(old_image.path)
+
+    def delete(self, *args, **kwargs):
+
+        image = self.image
+
+        super().delete(*args, **kwargs)
+
+        if image and image.name:
+
+            if os.path.isfile(image.path):
+
+                os.remove(image.path)
+
 
     def __str__(self):
         
