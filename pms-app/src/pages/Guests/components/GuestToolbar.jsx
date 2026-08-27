@@ -4,7 +4,9 @@ import "./GuestToolbar.css";
 
 const GuestToolbar = ({
     search,
-    onSearch
+    onSearch,
+    guestFilter,
+    onFilter
 }) => {
 
     return (
@@ -12,6 +14,23 @@ const GuestToolbar = ({
         <div className="guest-toolbar">
 
             <div className="toolbar-left">
+
+                <div className="guest-filter-tabs" role="tablist" aria-label="Guest stay filters">
+                    {[
+                        ["all", "All Guests"],
+                        ["in_house", "In House"],
+                        ["upcoming", "Upcoming"],
+                    ].map(([value, label]) => (
+                        <button
+                            type="button"
+                            key={value}
+                            className={guestFilter === value ? "active" : ""}
+                            onClick={() => onFilter(value)}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
 
                 <div className="search-box">
 

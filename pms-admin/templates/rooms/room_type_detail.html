@@ -62,11 +62,42 @@
 
     </div>
 
+<!-- ================= IMAGE + QUICK SUMMARY ================= -->
 
-    <!-- ================= QUICK SUMMARY ================= -->
+<div class="room-type-hero-grid">
+
+    <!-- ROOM IMAGE -->
+
+    <div class="room-type-image-card">
+
+        {% if room_type.image %}
+
+            <img
+                src="{{ room_type.image.url }}"
+                alt="{{ room_type.name }} Room"
+                class="room-type-detail-image"
+            >
+
+        {% else %}
+
+            <div class="room-type-image-placeholder">
+
+                <i class="bi bi-image"></i>
+
+                <span>
+                    No room image available
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- QUICK SUMMARY -->
 
     <div class="room-summary-grid">
-
 
         <!-- Hotel -->
 
@@ -77,13 +108,11 @@
             </div>
 
             <div>
-
                 <span>Hotel</span>
 
                 <strong>
                     {{ room_type.hotel.name }}
                 </strong>
-
             </div>
 
         </div>
@@ -98,19 +127,17 @@
             </div>
 
             <div>
-
                 <span>Room Type</span>
 
                 <strong>
                     {{ room_type.name }}
                 </strong>
-
             </div>
 
         </div>
 
 
-        <!-- Capacity -->
+        <!-- Occupancy -->
 
         <div class="room-summary-card">
 
@@ -119,19 +146,17 @@
             </div>
 
             <div>
-
                 <span>Maximum Occupancy</span>
 
                 <strong>
                     {{ room_type.capacity }} Guests
                 </strong>
-
             </div>
 
         </div>
 
 
-        <!-- Price -->
+        <!-- Base Price -->
 
         <div class="room-summary-card">
 
@@ -140,213 +165,109 @@
             </div>
 
             <div>
-
                 <span>Base Price</span>
 
                 <strong class="room-price">
                     ₹{{ room_type.base_price|floatformat:2 }}
                 </strong>
-
             </div>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- ================= MAIN CONTENT ================= -->
+<!-- ================= AMENITIES + DESCRIPTION ================= -->
 
-    <div class="room-type-content-grid">
+<div class="room-type-lower-grid">
 
+    <!-- ================= AMENITIES ================= -->
 
-        <!-- ================= ROOM TYPE INFORMATION ================= -->
+    <div class="room-status-card amenities-card">
 
-        <div class="room-info-card">
+        <div class="room-section-header">
 
-            <div class="room-section-header">
-
-                <div class="room-section-icon blue">
-                    <i class="bi bi-grid-3x3-gap"></i>
-                </div>
-
-                <div>
-
-                    <h3>Room Type Information</h3>
-
-                    <p>
-                        Basic information about this room category
-                    </p>
-
-                </div>
-
+            <div class="room-section-icon green">
+                <i class="bi bi-stars"></i>
             </div>
 
-
-            <div class="room-info-grid">
-
-
-                <!-- Hotel -->
-
-                <div class="room-info-item">
-
-                    <span>
-                        <i class="bi bi-buildings"></i>
-                        Hotel
-                    </span>
-
-                    <strong>
-                        {{ room_type.hotel.name }}
-                    </strong>
-
-                </div>
-
-
-                <!-- Room Type -->
-
-                <div class="room-info-item">
-
-                    <span>
-                        <i class="bi bi-grid"></i>
-                        Room Type Name
-                    </span>
-
-                    <strong>
-                        {{ room_type.name }}
-                    </strong>
-
-                </div>
-
-
-                <!-- Capacity -->
-
-                <div class="room-info-item">
-
-                    <span>
-                        <i class="bi bi-people"></i>
-                        Maximum Occupancy
-                    </span>
-
-                    <strong>
-                        {{ room_type.capacity }} Guests
-                    </strong>
-
-                </div>
-
-
-                <!-- Price -->
-
-                <div class="room-info-item">
-
-                    <span>
-                        <i class="bi bi-currency-rupee"></i>
-                        Base Price
-                    </span>
-
-                    <strong class="price-value">
-                        ₹{{ room_type.base_price|floatformat:2 }}
-                    </strong>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= AMENITIES ================= -->
-
-        <div class="room-status-card amenities-card">
-
-            <div class="room-section-header">
-
-                <div class="room-section-icon green">
-                    <i class="bi bi-stars"></i>
-                </div>
-
-                <div>
-
-                    <h3>Amenities</h3>
-
-                    <p>
-                        Facilities included with this room type
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="room-type-text-content">
-
-                {% if room_type.amenities %}
-
-                    <div class="amenities-content">
-
-                        <i class="bi bi-check2-circle"></i>
-
-                        <p>
-                            {{ room_type.amenities }}
-                        </p>
-
-                    </div>
-
-                {% else %}
-
-                    <div class="empty-content">
-
-                        <i class="bi bi-info-circle"></i>
-
-                        <p>
-                            No amenities added.
-                        </p>
-
-                    </div>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= DESCRIPTION ================= -->
-
-        <div class="room-notes-card">
-
-            <div class="room-section-header">
-
-                <div class="room-section-icon purple">
-                    <i class="bi bi-card-text"></i>
-                </div>
-
-                <div>
-
-                    <h3>Description</h3>
-
-                    <p>
-                        Additional information about this room category
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="room-type-description">
-
-                <i class="bi bi-info-circle"></i>
+            <div>
+                <h3>Amenities</h3>
 
                 <p>
-                    {{ room_type.description|default:"No description added." }}
+                    Facilities included with this room type
                 </p>
-
             </div>
 
         </div>
 
+        <div class="room-type-text-content">
+
+            {% if room_type.amenities %}
+
+                <div class="amenities-content">
+
+                    <i class="bi bi-check2-circle"></i>
+
+                    <p>
+                        {{ room_type.amenities }}
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-content">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    <p>
+                        No amenities added.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
 
     </div>
 
+
+    <!-- ================= DESCRIPTION ================= -->
+
+    <div class="room-notes-card description-card">
+
+        <div class="room-section-header">
+
+            <div class="room-section-icon purple">
+                <i class="bi bi-card-text"></i>
+            </div>
+
+            <div>
+                <h3>Description</h3>
+
+                <p>
+                    Additional information about this room category
+                </p>
+            </div>
+
+        </div>
+
+        <div class="room-type-description">
+
+            <i class="bi bi-info-circle"></i>
+
+            <p>
+                {{ room_type.description|default:"No description added." }}
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
 </div>
 
 {% endblock %}

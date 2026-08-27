@@ -48,8 +48,9 @@ const GuestViewModal = ({
 
                     <div className="guest-view-title">
 
-                        <div className="guest-view-icon">
-                            <FaUser />
+                        <div className={`guest-view-icon ${String(guest.gender || "").toLowerCase()}`}>
+                            {String(guest.gender || "").toLowerCase() === "female" ? "♀" :
+                                String(guest.gender || "").toLowerCase() === "male" ? "♂" : <FaUser />}
                         </div>
 
                         <div>
@@ -86,15 +87,15 @@ const GuestViewModal = ({
                     </span>
 
                     <span
-                        className={
-                            guest.status === "active"
-                                ? "guest-detail-status active"
-                                : "guest-detail-status inactive"
-                        }
+                        className={`guest-detail-status ${guest.stayStatus || guest.status || "inactive"}`}
                     >
-                        {guest.status === "active"
-                            ? "Active"
-                            : "Inactive"}
+                        {guest.stayStatus === "in_house" ? "In House" :
+                            guest.stayStatus === "checking_out" ? "Checking Out" :
+                                guest.stayStatus === "upcoming" ? "Upcoming" :
+                                    guest.stayStatus === "checked_out" ? "Checked Out" :
+                                        guest.stayStatus === "cancelled" ? "Cancelled" :
+                                            guest.stayStatus === "no_show" ? "No Show" :
+                                                guest.status === "active" ? "Active" : "Inactive"}
                     </span>
 
                 </div>

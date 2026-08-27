@@ -262,3 +262,13 @@
     }
 
 }
+
+.guest-view-icon.female { background: #fce7f3; color: #be185d; }
+.guest-view-icon.male { background: #dbeafe; color: #1d4ed8; }
+
+.guest-detail-status.in_house { background: #dcfce7; color: #15803d; }
+.guest-detail-status.upcoming { background: #fef3c7; color: #a16207; }
+.guest-detail-status.checking_out { background: #fee2e2; color: #b91c1c; }
+.guest-detail-status.checked_out { background: #e2e8f0; color: #475569; }
+.guest-detail-status.cancelled { background: #f1f5f9; color: #64748b; }
+.guest-detail-status.no_show { background: #fef3c7; color: #92400e; }

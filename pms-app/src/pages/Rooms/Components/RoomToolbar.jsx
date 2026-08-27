@@ -6,9 +6,13 @@ const RoomToolbar = ({
     status,
     roomType,
     roomTypes,
+    hotel,
+    hotels,
     onSearchChange,
     onStatusChange,
     onRoomTypeChange,
+    onHotelChange,
+    onReset,
 }) => {
 
     return (
@@ -16,6 +20,18 @@ const RoomToolbar = ({
         <div className="room-toolbar">
 
             <div className="room-toolbar-left">
+
+                <select
+                    value={hotel}
+                    onChange={(e) => onHotelChange(e.target.value)}
+                >
+                    <option value="all">All Hotels</option>
+                    {hotels.map((hotelItem) => (
+                        <option key={hotelItem.id} value={hotelItem.id}>
+                            {hotelItem.name}
+                        </option>
+                    ))}
+                </select>
 
                 {/* Search */}
 
@@ -61,7 +77,7 @@ const RoomToolbar = ({
                     </option>
 
                     <option value="cleaning">
-                        Needs Cleaning
+                        Cleaning
                     </option>
 
                     <option value="maintenance">
@@ -96,6 +112,14 @@ const RoomToolbar = ({
                     ))}
 
                 </select>
+
+                <button
+                    type="button"
+                    className="room-reset-button"
+                    onClick={onReset}
+                >
+                    Reset
+                </button>
 
             </div>
 

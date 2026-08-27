@@ -106,3 +106,37 @@
 
     transform:translateY(-2px);
 }
+.guest-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.guest-name-cell strong { color: #172b4d; }
+.guest-avatar {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 36px;
+    border-radius: 50%;
+    background: #e8f0ff;
+    color: #2563eb;
+    font-size: 18px;
+    font-weight: 800;
+}
+.guest-avatar.female { background: #fce7f3; color: #be185d; }
+.guest-avatar.male { background: #dbeafe; color: #1d4ed8; }
+.guest-stay-status {
+    display: inline-flex;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+}
+.guest-stay-status.in_house { background: #dcfce7; color: #15803d; }
+.guest-stay-status.upcoming { background: #fef3c7; color: #a16207; }
+.guest-stay-status.checking_out { background: #fee2e2; color: #b91c1c; }
+.guest-stay-status.checked_out { background: #e2e8f0; color: #475569; }
+.guest-stay-status.cancelled { background: #f1f5f9; color: #64748b; }
+.guest-stay-status.no_show { background: #fef3c7; color: #92400e; }
+.guest-stay-status.no_reservation { background: #f1f5f9; color: #64748b; }

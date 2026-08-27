@@ -35,7 +35,7 @@
 
     <div class="card-body p-4">
 
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
 
             {% csrf_token %}
 
@@ -63,6 +63,28 @@
                     {{ form.name }}
 
                 </div>
+
+                <!-- ROOM IMAGE -->
+
+<div class="col-12 mb-4">
+
+    <label class="form-label">
+        Room Type Image
+    </label>
+
+    {{ form.image }}
+
+    {% if form.image.errors %}
+        <div class="text-danger small mt-1">
+            {{ form.image.errors }}
+        </div>
+    {% endif %}
+
+    <div class="form-text">
+        Upload a room image. JPG, PNG or WebP recommended.
+    </div>
+
+</div>
 
 
                 <div class="col-md-6 mb-3">

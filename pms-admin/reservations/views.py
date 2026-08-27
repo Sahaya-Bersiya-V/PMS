@@ -1,6 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from rest_framework import status
@@ -133,13 +133,13 @@ def create_invoice_for_reservation(reservation):
             "discount_amount": 0,
             "total_amount": reservation.total_amount,
             "paid_amount": (
-                reservation.total_amount
-                if reservation.payment_status == "paid"
-                else 0
+                reservation.advance_amount
             ),
             "status": (
                 "paid"
                 if reservation.payment_status == "paid"
+                else "partially_paid"
+                if reservation.advance_amount > 0
                 else "unpaid"
             ),
         }
@@ -160,9 +160,12 @@ def create_invoice_for_reservation(reservation):
             invoice.status = "paid"
 
         else:
-
-            invoice.paid_amount = 0
-            invoice.status = "unpaid"
+            invoice.paid_amount = reservation.advance_amount
+            invoice.status = (
+                "partially_paid"
+                if reservation.advance_amount > 0
+                else "unpaid"
+            )
 
         invoice.save()
 
@@ -2017,6 +2020,18 @@ def reservation_list_page(request):
         payment_status="pending"
     ).count()
 
+    pending_payment_amount = reservations.filter(
+        payment_status="pending"
+    ).aggregate(
+        total=Sum("total_amount")
+    )["total"] or 0
+
+    pending_payment_amount -= reservations.filter(
+        payment_status="pending"
+    ).aggregate(
+        total=Sum("advance_amount")
+    )["total"] or 0
+
 
     # ==========================================
     # PAGINATION
@@ -2080,6 +2095,9 @@ def reservation_list_page(request):
 
         "pending_payment_count":
             pending_payment_count,
+
+        "pending_payment_amount":
+            pending_payment_amount,
 
     }
 

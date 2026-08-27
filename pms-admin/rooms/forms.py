@@ -10,6 +10,7 @@ class RoomTypeForm(forms.ModelForm):
         fields = [
             "hotel",
             "name",
+            "image",
             "description",
             "capacity",
             "base_price",
@@ -35,6 +36,13 @@ class RoomTypeForm(forms.ModelForm):
                     "class": "form-control",
                     "rows": 4,
                     "placeholder": "Enter description"
+                }
+            ),
+
+            "image": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control",
+                    "accept": "image/*"
                 }
             ),
 

@@ -8,10 +8,10 @@ import "../styles/FrontDeskDashboard.css";
 import { useNavigate } from "react-router-dom";
 
 const RESERVATION_API =
-    "http://127.0.0.1:8000/api/reservations/";
+    `${import.meta.env.VITE_API_URL}/api/reservations/`;
 
 const ROOM_API =
-    "http://127.0.0.1:8000/api/rooms/";
+   `${import.meta.env.VITE_API_URL}/api/rooms/`;
 
 
 const FrontDeskDashboard = () => {
@@ -41,6 +41,12 @@ const FrontDeskDashboard = () => {
     const [showAllRooms, setShowAllRooms] =
         useState(false);
 
+    const [showStatusRooms, setShowStatusRooms] =
+        useState(false);
+
+    const [statusRoomsTitle, setStatusRoomsTitle] =
+        useState("");
+
 
     const [selectedFloor, setSelectedFloor] =
         useState(null);
@@ -52,7 +58,7 @@ const FrontDeskDashboard = () => {
     try {
 
         await fetch(
-            "http://127.0.0.1:8000/accounts/frontdesk/logout/",
+           `${import.meta.env.VITE_API_URL}/accounts/frontdesk/logout/`,
             {
                 method: "GET",
                 credentials: "include",
@@ -580,6 +586,20 @@ const FrontDeskDashboard = () => {
                 room.floor ===
                 selectedFloor
         );
+
+    const visibleStatusRooms = filteredRooms.slice(0, 11);
+
+    const hiddenStatusRoomCount = Math.max(
+        0,
+        filteredRooms.length - visibleStatusRooms.length
+    );
+
+    const openStatusRooms = () => {
+        setStatusRoomsTitle(
+            roomFilter === "All" ? "All Room Statuses" : `${roomFilter} Rooms`
+        );
+        setShowStatusRooms(true);
+    };
 
 
     /*
@@ -1220,7 +1240,7 @@ const FrontDeskDashboard = () => {
                             setShowAllRooms(true)
                         }
                     >
-                        View All Rooms →
+                        View by Floor →
                     </button>
 
                 </div>
@@ -1268,8 +1288,7 @@ const FrontDeskDashboard = () => {
 
                 <div className="rooms-grid">
 
-                    {filteredRooms
-                        .slice(0, 8)
+                    {visibleStatusRooms
                         .map(
                             (room) => (
 
@@ -1337,6 +1356,18 @@ const FrontDeskDashboard = () => {
 
                             )
                         )}
+
+                    {hiddenStatusRoomCount > 0 && (
+                        <button
+                            type="button"
+                            className="room-card room-overflow-card"
+                            onClick={openStatusRooms}
+                        >
+                            <strong>+{hiddenStatusRoomCount}</strong>
+                            <span>More {roomFilter === "All" ? "rooms" : `${roomFilter.toLowerCase()} rooms`}</span>
+                            <small>View all</small>
+                        </button>
+                    )}
 
 
                     {filteredRooms.length === 0 && (
@@ -1546,6 +1577,43 @@ const FrontDeskDashboard = () => {
 
             )}
 
+
+            {showStatusRooms && (
+                <div className="modal-overlay">
+                    <div className="rooms-modal status-rooms-modal">
+                        <div className="modal-header">
+                            <div>
+                                <h3>{statusRoomsTitle}</h3>
+                                <span>{filteredRooms.length} rooms across all floors</span>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowStatusRooms(false)}
+                                aria-label="Close room status list"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <div className="rooms-grid all-room-grid">
+                            {filteredRooms.map((room) => (
+                                <div
+                                    className={`room-card ${normalizeStatus(room.status)}`}
+                                    key={room.id}
+                                >
+                                    <div className="room-icon">
+                                        <i className="bi bi-door-closed"></i>
+                                    </div>
+                                    <h4>{room.number}</h4>
+                                    <span>{room.type}</span>
+                                    <small>Floor {room.floor}</small>
+                                    <strong>{room.status}</strong>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* =================================================
                 ALL ROOMS MODAL

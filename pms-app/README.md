@@ -1,16 +1,109 @@
-# React + Vite
+# 🏨 Hotel Property Management System (PMS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack Hotel Property Management System developed to manage hotel operations through an Admin Dashboard and Front Desk application.
 
-Currently, two official plugins are available:
+The system allows hotel administrators and front-desk employees to manage hotels, rooms, room types, employees, reservations, billing, reports, and daily hotel operations.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Admin Dashboard
+- Hotel management
+- Room management
+- Room type management
+- Employee management
+- Roles & permissions
+- Reservation management
+- Billing & payments
+- Reports
+- Profile and settings
 
-## Expanding the ESLint configuration
+### Room Management
+- Add, edit and delete rooms
+- Manage multiple floors
+- Assign rooms to hotels
+- Assign rooms to room types
+- Manage room status
+- Track available, occupied, reserved, cleaning and maintenance rooms
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Employee Management
+- Add and edit employees
+- Assign employees to hotels
+- Assign roles
+- Manage departments and designations
+- Employee account management
+- Password management
+
+### Reservation Management
+- Search reservations
+- Filter by status
+- Filter by room type
+- Filter by date
+- View reservation details
+- Check-in
+- Check-out
+- Cancel reservation
+- Export reservations
+- Grid/List view
+
+### Front Desk
+- Front desk login
+- Reservation management
+- Guest information
+- Room information
+- Check-in and check-out operations
+- Hotel-specific employee access
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend
+- Python
+- Django 6.1
+- Django REST Framework
+- MySQL
+
+### Frontend
+- React 19
+- Vite
+- React Router
+- React Icons
+- Recharts
+
+### Other
+- HTML
+- CSS
+- Bootstrap
+- Git & GitHub
+
+---
+
+## 📁 Project Structure
+
+```text
+PMS/
+│
+├── README.md
+├── .gitignore
+│
+├── pms-admin/
+│   ├── manage.py
+│   ├── config/
+│   ├── accounts/
+│   ├── dashboard/
+│   ├── hotels/
+│   ├── rooms/
+│   ├── employees/
+│   ├── reservations/
+│   ├── billing/
+│   ├── reports/
+│   ├── settingsapp/
+│   ├── templates/
+│   └── static/
+│
+└── pms-app/
+    ├── package.json
+    ├── public/
+    └── src/

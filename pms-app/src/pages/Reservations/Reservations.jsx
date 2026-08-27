@@ -15,7 +15,7 @@ API
 // const API_BASE_URL =
 //   "http://127.0.0.1:8000/api";
 const API_BASE_URL =
-  "http://127.0.0.1:8000/api";
+  `${import.meta.env.VITE_API_URL}/api`;
 
 const RESERVATION_API =
   `${API_BASE_URL}/reservations`;
@@ -25,6 +25,9 @@ const HOTEL_API =
 
 const ROOM_TYPE_API =
   `${API_BASE_URL}/room-types`;
+
+const ROOM_API =
+  `${API_BASE_URL}/rooms`;
 
 
 /*
@@ -168,6 +171,9 @@ const formatReservation = (item) => {
     room:
       item.room || "",
 
+    roomId:
+      item.room || "",
+
     roomNumber:
       item.room_number || "",
 
@@ -297,6 +303,9 @@ const [selectedGuestId, setSelectedGuestId] =
   const [availableRooms, setAvailableRooms] =
     useState([]);
 
+  const [rooms, setRooms] =
+    useState([]);
+
   const [loading, setLoading] =
     useState(false);
 
@@ -306,6 +315,9 @@ const [selectedGuestId, setSelectedGuestId] =
 
   const [selectedReservation, setSelectedReservation] =
     useState(null);
+
+  const [openedFromReservedTile, setOpenedFromReservedTile] =
+    useState(false);
 
   const [isDetailsOpen, setIsDetailsOpen] =
     useState(false);
@@ -323,7 +335,10 @@ const [selectedGuestId, setSelectedGuestId] =
     search: "",
     status: "All",
     roomType: "All",
-    date: "",
+    floor: "All",
+    hotel: "All",
+    checkIn: "",
+    checkOut: "",
   });
 
   const [appliedFilters, setAppliedFilters] =
@@ -331,7 +346,10 @@ const [selectedGuestId, setSelectedGuestId] =
       search: "",
       status: "All",
       roomType: "All",
-      date: "",
+      floor: "All",
+      hotel: "All",
+      checkIn: "",
+      checkOut: "",
     });
 
   const [showRoomBrowser, setShowRoomBrowser] =
@@ -344,6 +362,24 @@ const [selectedGuestId, setSelectedGuestId] =
 
   const [currentPage, setCurrentPage] = useState(1);  
 
+  const today = new Date().toISOString().split("T")[0];
+
+  const fetchRooms = async () => {
+    try {
+      const response = await fetch(`${ROOM_API}/`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch rooms.");
+      }
+
+      const data = await response.json();
+      setRooms(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Room fetch error:", error);
+      setRooms([]);
+    }
+  };
+
   /*
   =======================================================
   INITIAL DATA
@@ -354,6 +390,7 @@ const [selectedGuestId, setSelectedGuestId] =
 
     fetchReservations();
     fetchHotels();
+    fetchRooms();
 
   }, []);
 
@@ -398,6 +435,7 @@ const [selectedGuestId, setSelectedGuestId] =
     setLoading(false);
   }
 };
+
 
 const searchGuests = async () => {
 
@@ -715,6 +753,10 @@ const fetchHotels = async () => {
     const roomTypeId =
       e.target.value;
 
+    const selectedRoomType = roomTypes.find(
+      (type) => String(type.id) === String(roomTypeId)
+    );
+
     setFormData(
       (previous) => ({
         ...previous,
@@ -724,7 +766,7 @@ const fetchHotels = async () => {
 
         room: "",
         roomNumber: "",
-        price: 0,
+        price: Number(selectedRoomType?.base_price || 0),
       })
     );
 
@@ -747,7 +789,11 @@ const fetchHotels = async () => {
 
     roomNumber: room.room_number,
 
-    price: Number(room.price || 0),
+    price: Number(
+      room.price ||
+      roomTypes.find((type) => String(type.id) === String(formData.roomType))?.base_price ||
+      0
+    ),
   }));
 
   setShowRoomBrowser(false);
@@ -803,8 +849,25 @@ const fetchHotels = async () => {
   ]);
 
 
+  const selectedRoom = rooms.find(
+    (room) => String(room.id) === String(formData.room)
+  ) || availableRooms.find(
+    (room) => String(room.id) === String(formData.room)
+  );
+
+  const selectedRoomType = roomTypes.find(
+    (type) => String(type.id) === String(formData.roomType)
+  );
+
+  const effectiveRoomRate = Number(
+    formData.price ||
+    selectedRoom?.price ||
+    selectedRoomType?.base_price ||
+    0
+  );
+
   const subtotal =
-    Number(formData.price || 0) *
+    effectiveRoomRate *
     nights;
 
 
@@ -827,6 +890,7 @@ const fetchHotels = async () => {
 
   const grandTotal =
     taxableAmount + tax;
+
 
 
   /*
@@ -862,15 +926,15 @@ const createReservation = async () => {
         number_of_rooms: 1,
 
         room_rate:
-            Number(formData.price),
+          effectiveRoomRate,
 
         total_amount:
             Number(grandTotal),
 
         advance_amount:
-            formData.payment === "Paid"
-                ? Number(grandTotal)
-                : 0,
+          formData.payment === "Paid"
+            ? Number(grandTotal)
+            : 0,
 
         booking_source: "walk_in",
 
@@ -986,7 +1050,7 @@ const updateReservation = async () => {
       number_of_rooms: 1,
 
       room_rate:
-        Number(formData.price),
+        effectiveRoomRate,
 
       total_amount:
         Number(grandTotal),
@@ -1156,7 +1220,6 @@ const updateReservation = async () => {
 
       return;
     }
-
 
     try {
 
@@ -1479,6 +1542,32 @@ const updateReservationStatus = async (
   }
 };
 
+const handleMarkPaid = async (databaseId, checkoutAfterPayment = false) => {
+  try {
+    const response = await fetch(`${RESERVATION_API}/${databaseId}/mark-paid/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Unable to mark payment as paid.");
+    }
+
+    await fetchReservations();
+
+    if (checkoutAfterPayment) {
+      await updateReservationStatus(databaseId, "checked_out");
+      setIsDetailsOpen(false);
+      return;
+    }
+
+    setSelectedReservation(formatReservation(data));
+  } catch (error) {
+    window.alert(error.message);
+  }
+};
+
 
   /*
   =======================================================
@@ -1489,6 +1578,15 @@ const updateReservationStatus = async (
   const handleCheckIn = (
     databaseId
   ) => {
+
+    const reservation = reservations.find(
+      (item) => item.databaseId === databaseId
+    );
+
+    if (reservation?.payment !== "Paid") {
+      window.alert("Please click Mark as Paid before checking in this guest.");
+      return;
+    }
 
     updateReservationStatus(
       databaseId,
@@ -1506,11 +1604,14 @@ const updateReservationStatus = async (
   const handleCheckOut = (
     databaseId
   ) => {
+    const reservation = reservations.find((item) => item.databaseId === databaseId);
 
-    updateReservationStatus(
-      databaseId,
-      "checked_out"
-    );
+    if (reservation?.payment !== "Paid") {
+      window.alert(`This guest needs to pay ₹${Number(reservation?.balance || 0).toLocaleString()} before checkout.`);
+      return;
+    }
+
+    updateReservationStatus(databaseId, "checked_out");
   };
 
 
@@ -1549,12 +1650,15 @@ const updateReservationStatus = async (
   */
 
   const openDetails = (
-    reservation
+    reservation,
+    fromReservedTile = false
   ) => {
 
     setSelectedReservation(
       reservation
     );
+
+    setOpenedFromReservedTile(fromReservedTile);
 
     setIsDetailsOpen(true);
   };
@@ -1588,7 +1692,10 @@ const updateReservationStatus = async (
       search: "",
       status: "All",
       roomType: "All",
-      date: "",
+      floor: "All",
+      hotel: "All",
+      checkIn: "",
+      checkOut: "",
     };
 
 
@@ -1602,6 +1709,35 @@ const updateReservationStatus = async (
     setCurrentPage(1);
   };
 
+  const roomStatusLabels = {
+    occupied: "Occupied",
+    reserved: "Reserved",
+  };
+
+  const reservationMatchesRoom = (reservation, room) => {
+    const roomReferences = [reservation.roomId, reservation.room, reservation.roomNumber];
+    const reservationHotelId = String(
+      reservation.hotel?.id || reservation.hotel
+    );
+    const roomHotelId = String(
+      room.hotel?.id || room.hotel
+    );
+
+    const sameHotel =
+      reservationHotelId !== "undefined" &&
+      reservationHotelId !== "null" &&
+      roomHotelId !== "undefined" &&
+      roomHotelId !== "null" &&
+      reservationHotelId === roomHotelId;
+
+    const sameRoom = roomReferences.some(
+      (reference) => String(reference?.id || reference) === String(room.id) ||
+        String(reference?.room_number || reference) === String(room.room_number)
+    );
+
+    return sameHotel && sameRoom;
+  };
+
 
   /*
   =======================================================
@@ -1609,9 +1745,52 @@ const updateReservationStatus = async (
   =======================================================
   */
 
+  const roomStatusFor = (room) => {
+    const activeReservation = reservations.find(
+      (reservation) => reservationMatchesRoom(reservation, room)
+        && ["Pending", "Confirmed", "Checked In"].includes(reservation.status)
+    );
+
+    if (activeReservation) {
+      return activeReservation.status === "Checked In" ? "occupied" : "reserved";
+    }
+
+    return room.status || "available";
+  };
+
+  const uniqueRooms = Array.from(
+    new Map(rooms.map((room) => [String(room.id), room])).values()
+  );
+
+  const roomTiles = uniqueRooms.map((room) => ({
+    ...room,
+    status: roomStatusFor(room),
+    reservation: reservations.find(
+      (reservation) => reservationMatchesRoom(reservation, room)
+        && ["Pending", "Confirmed", "Checked In"].includes(reservation.status)
+    ),
+  })).filter(
+    (room) => ["reserved", "occupied"].includes(room.status)
+  );
+
+  const floors = [...new Set(uniqueRooms.map((room) => room.floor).filter((floor) => floor !== null && floor !== undefined))]
+    .sort((first, second) => Number(first) - Number(second));
+
+  const todaysCheckIns = reservations.filter((reservation) =>
+    reservation.checkIn === today && !["Cancelled", "No Show"].includes(reservation.status)
+  ).length;
+
+  const todaysCheckOuts = reservations.filter((reservation) =>
+    reservation.checkOut === today && !["Cancelled", "No Show"].includes(reservation.status)
+  ).length;
+
+  const revenue = reservations.reduce((total, reservation) =>
+    total + Number(reservation.advance || 0), 0
+  );
+
   const filteredReservations =
-    reservations.filter(
-      (reservation) => {
+    roomTiles.filter(
+      (room) => {
 
 
 
@@ -1625,25 +1804,25 @@ const updateReservationStatus = async (
           !search ||
 
           String(
-            reservation.id || ""
+            room.room_number || ""
           )
             .toLowerCase()
             .includes(search) ||
 
           String(
-            reservation.guestName || ""
+            room.room_type_name || ""
           )
             .toLowerCase()
             .includes(search) ||
 
           String(
-            reservation.roomNumber || ""
+            room.reservation?.guestName || ""
           )
             .toLowerCase()
             .includes(search) ||
 
           String(
-            reservation.phone || ""
+            room.reservation?.phone || ""
           )
             .toLowerCase()
             .includes(search);
@@ -1653,7 +1832,7 @@ const updateReservationStatus = async (
           appliedFilters.status ===
             "All" ||
 
-          reservation.status ===
+          room.status ===
             appliedFilters.status;
 
 
@@ -1661,15 +1840,25 @@ const updateReservationStatus = async (
           appliedFilters.roomType ===
             "All" ||
 
-          reservation.roomType ===
+          room.room_type_name ===
             appliedFilters.roomType;
 
+        const matchesFloor =
+          appliedFilters.floor === "All" ||
+          String(room.floor) === String(appliedFilters.floor);
 
-        const matchesDate =
-          !appliedFilters.date ||
 
-          reservation.checkIn ===
-            appliedFilters.date;
+        const matchesHotel =
+          appliedFilters.hotel === "All" ||
+          String(room.hotel?.id || room.hotel) === String(appliedFilters.hotel);
+
+        const matchesCheckIn =
+          !appliedFilters.checkIn ||
+          room.reservation?.checkIn === appliedFilters.checkIn;
+
+        const matchesCheckOut =
+          !appliedFilters.checkOut ||
+          room.reservation?.checkOut === appliedFilters.checkOut;
 
         
 
@@ -1678,7 +1867,10 @@ const updateReservationStatus = async (
           matchesSearch &&
           matchesStatus &&
           matchesRoomType &&
-          matchesDate
+          matchesFloor &&
+          matchesHotel &&
+          matchesCheckIn &&
+          matchesCheckOut
         );
       }
     );
@@ -1874,6 +2066,21 @@ const validateIdentityNumber = () => {
 
       </div>
 
+      <div className="reservation-summary-grid">
+        {[
+          ["Total Rooms", rooms.length, "rooms in inventory", "rooms"],
+          ["Today's Check-ins", todaysCheckIns, "arrivals scheduled", "checkins"],
+          ["Today's Check-outs", todaysCheckOuts, "departures scheduled", "checkouts"],
+          ["Revenue", `₹${revenue.toLocaleString()}`, "amount collected", "revenue"],
+        ].map(([label, value, description, tone]) => (
+          <div className={`reservation-summary-card ${tone}`} key={label}>
+            <span>{label}</span>
+            <strong>{value}</strong>
+            <small>{description}</small>
+          </div>
+        ))}
+      </div>
+
 
       {/* =================================
           FILTER BAR
@@ -1910,25 +2117,12 @@ const validateIdentityNumber = () => {
             All Status
           </option>
 
-          <option value="Pending">
-            Pending
-          </option>
-
-          <option value="Confirmed">
-            Confirmed
-          </option>
-
-          <option value="Checked In">
-            Checked In
-          </option>
-
-          <option value="Checked Out">
-            Checked Out
-          </option>
-
-          <option value="Cancelled">
-            Cancelled
-          </option>
+          {[
+            ["occupied", "Occupied"],
+            ["reserved", "Reserved"],
+          ].map(([value, label]) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
 
         </select>
 
@@ -1948,14 +2142,17 @@ const validateIdentityNumber = () => {
             All Room Types
           </option>
 
-          {roomTypes.map(
+          {[...new Set([
+            ...roomTypes.map((type) => type.name),
+            ...rooms.map((room) => room.room_type_name),
+          ].filter(Boolean))].map(
             (type) => (
 
               <option
-                key={type.id}
-                value={type.name}
+                key={type}
+                value={type}
               >
-                {type.name}
+                {type}
               </option>
 
             )
@@ -1963,16 +2160,47 @@ const validateIdentityNumber = () => {
 
         </select>
 
+        <select
+          value={filters.floor}
+          onChange={(e) =>
+            setFilters({ ...filters, floor: e.target.value })
+          }
+        >
+          <option value="All">All Floors</option>
+          {floors.map((floor) => (
+            <option key={floor} value={floor}>Floor {floor}</option>
+          ))}
+        </select>
+
+        <select
+          value={filters.hotel}
+          onChange={(e) =>
+            setFilters({ ...filters, hotel: e.target.value })
+          }
+        >
+          <option value="All">All Hotels</option>
+          {hotels.map((hotel) => (
+            <option key={hotel.id} value={hotel.id}>{hotel.name}</option>
+          ))}
+        </select>
 
         <input
           type="date"
-          value={filters.date}
+          aria-label="Filter by check-in date"
+          title="Check-in date"
+          value={filters.checkIn}
           onChange={(e) =>
-            setFilters({
-              ...filters,
-              date:
-                e.target.value,
-            })
+            setFilters({ ...filters, checkIn: e.target.value })
+          }
+        />
+
+        <input
+          type="date"
+          aria-label="Filter by check-out date"
+          title="Check-out date"
+          value={filters.checkOut}
+          onChange={(e) =>
+            setFilters({ ...filters, checkOut: e.target.value })
           }
         />
 
@@ -1993,7 +2221,7 @@ const validateIdentityNumber = () => {
             handleClearFilter
           }
         >
-          Clear
+          Reset
         </button>
 
 
@@ -2014,6 +2242,60 @@ const validateIdentityNumber = () => {
       ================================= */}
 
       <div className="reservation-table-card">
+
+        <div className="room-board-heading">
+          <div>
+            <span className="section-kicker">Live inventory</span>
+            <h3>Room floor plan</h3>
+          </div>
+          <div className="room-legend" aria-label="Room status legend">
+            {[["occupied", "Occupied"], ["reserved", "Reserved"]].map(([value, label]) => (
+              <span key={value}><i className={`legend-dot ${value}`} />{label}</span>
+            ))}
+          </div>
+        </div>
+
+        {loading && <div className="room-board-empty">Loading rooms...</div>}
+        {!loading && rooms.length === 0 && (
+          <div className="room-board-empty">No rooms found in the backend.</div>
+        )}
+        {!loading && rooms.length > 0 && filteredReservations.length === 0 && (
+          <div className="room-board-empty">No rooms match these filters.</div>
+        )}
+        {!loading && rooms.length > 0 && filteredReservations.length > 0 && (
+          <div className="room-grid">
+            {filteredReservations.map((room) => (
+              <article className={`room-tile ${room.status}`} key={room.id}>
+                <div className="room-tile-topline">
+                  <span className="room-number">{room.room_number}</span>
+                  <span className="room-status">{roomStatusLabels[room.status] || room.status}</span>
+                </div>
+                <div className="room-door"><span>ROOM</span><strong>{room.room_number}</strong></div>
+                <div className="room-tile-details">
+                  <span>{room.room_type_name || "Room type unavailable"}</span>
+                  <span>Floor {room.floor} - {room.capacity || 0} guests</span>
+                </div>
+                {room.reservation ? (
+                  <div className="room-guest">
+                    <strong>{room.reservation.guestName || "Guest details unavailable"}</strong>
+                    <span>{room.reservation.checkIn} to {room.reservation.checkOut}</span>
+                  </div>
+                ) : (
+                  <div className="room-guest vacant">Ready for check-in</div>
+                )}
+                {room.reservation && (
+                  <button
+                    type="button"
+                    className={`details-btn ${room.status === "reserved" ? "reserved-details-btn" : ""}`}
+                    onClick={() => openDetails(room.reservation, room.status === "reserved")}
+                  >
+                    {room.status === "reserved" ? "View Reserved Details" : "View Details"}
+                  </button>
+                )}
+              </article>
+            ))}
+          </div>
+        )}
 
         {loading ? (
 
@@ -2584,21 +2866,27 @@ const validateIdentityNumber = () => {
 
                 <button
                   className="edit-btn"
-                  onClick={() =>
-                    handleEdit(
-                      selectedReservation
-                    )
-                  }
+                  onClick={() => handleEdit(selectedReservation)}
                 >
                   Edit
                 </button>
 
+                {openedFromReservedTile &&
+                  selectedReservation.payment === "Pending" && (
+                    <button
+                      className="pay-checkout-btn"
+                      onClick={() => handleMarkPaid(selectedReservation.databaseId)}
+                    >
+                      Mark as Paid
+                    </button>
+                  )}
 
-                {selectedReservation.payment ===
-                  "Paid" &&
 
-                  selectedReservation.status ===
-                    "Confirmed" && (
+                {((openedFromReservedTile &&
+                  ["Pending", "Confirmed"].includes(selectedReservation.status)) ||
+                  (!openedFromReservedTile &&
+                    selectedReservation.payment === "Paid" &&
+                    selectedReservation.status === "Confirmed")) && (
 
                     <button
                       className="checkin-btn"
@@ -2617,21 +2905,25 @@ const validateIdentityNumber = () => {
                 {selectedReservation.status ===
                   "Checked In" && (
 
-                    <button
-                      className="checkout-btn"
-                      onClick={() =>
-                        handleCheckOut(
-                          selectedReservation.databaseId
-                        )
-                      }
-                    >
-                      Check-Out
-                    </button>
+                    selectedReservation.payment === "Paid" ? (
+                      <button
+                        className="checkout-btn"
+                        onClick={() => handleCheckOut(selectedReservation.databaseId)}
+                      >
+                        Check-Out
+                      </button>
+                    ) : (
+                      <button
+                        className="pay-checkout-btn"
+                        onClick={() => handleMarkPaid(selectedReservation.databaseId, true)}
+                      >
+                        Paid, then Check-Out
+                      </button>
+                    )
 
                   )}
 
-
-                {[
+                {!openedFromReservedTile && [
                   "Pending",
                   "Confirmed",
                 ].includes(
@@ -3602,62 +3894,6 @@ const validateIdentityNumber = () => {
 
               </div>
 
-
-              {/* =================================
-                  PAYMENT
-              ================================= */}
-
-              <h3>
-                Payment Status
-              </h3>
-
-
-              <div className="payment-options">
-
-                <button
-                  type="button"
-
-                  className={
-                    formData.payment ===
-                    "Pending"
-                      ? "payment-option active pending"
-                      : "payment-option"
-                  }
-
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      payment:
-                        "Pending",
-                    })
-                  }
-                >
-                  Pending
-                </button>
-
-
-                <button
-                  type="button"
-
-                  className={
-                    formData.payment ===
-                    "Paid"
-                      ? "payment-option active paid"
-                      : "payment-option"
-                  }
-
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      payment:
-                        "Paid",
-                    })
-                  }
-                >
-                  Paid
-                </button>
-
-              </div>
 
               <h3>
   Reservation Status

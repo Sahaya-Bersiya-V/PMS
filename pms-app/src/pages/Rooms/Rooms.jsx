@@ -2,15 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import "./Rooms.css";
 
 import RoomToolbar from "./Components/RoomToolbar";
-import RoomTable from "./Components/RoomTable";
 import RoomDetailsPanel from "./Components/RoomDetailsPanel";
 
 
 const API_URL =
-    "http://127.0.0.1:8000/api/rooms/";
-
-const RECORDS_PER_PAGE = 5;
-
+    `${import.meta.env.VITE_API_URL}/api/rooms/`;
 
 const Rooms = () => {
 
@@ -30,6 +26,12 @@ const Rooms = () => {
         useState("all");
 
     const [roomType, setRoomType] =
+        useState("all");
+
+    const [hotel, setHotel] =
+        useState("all");
+
+    const [floor, setFloor] =
         useState("all");
 
     // ============================================================
@@ -54,6 +56,9 @@ const Rooms = () => {
 
             hotelName:
                 room.hotel_name || "",
+
+            hotelId:
+                room.hotel,
 
             roomNumber:
                 room.room_number || "",
@@ -214,6 +219,14 @@ const Rooms = () => {
 
     };
 
+    const handleReset = () => {
+        setSearch("");
+        setStatus("all");
+        setRoomType("all");
+        setHotel("all");
+        setFloor("all");
+    };
+
 
     /*
     ============================================================
@@ -299,7 +312,9 @@ const Rooms = () => {
             return (
                 matchesSearch &&
                 matchesStatus &&
-                matchesRoomType
+                matchesRoomType &&
+                (hotel === "all" || String(room.hotelId) === String(hotel)) &&
+                (floor === "all" || String(room.floor) === String(floor))
             );
 
         });
@@ -308,121 +323,34 @@ const Rooms = () => {
         rooms,
         search,
         status,
-        roomType
+        roomType,
+        hotel,
+        floor
     ]);
 
 
-    /*
-    ============================================================
-    RESET PAGE WHEN FILTER / SEARCH CHANGES
-    ============================================================
-    */
+    const hotels = useMemo(() => {
+        return Array.from(
+            new Map(
+                rooms.map((room) => [String(room.hotelId), {
+                    id: room.hotelId,
+                    name: room.hotelName,
+                }])
+            ).values()
+        ).filter((item) => item.id !== undefined && item.id !== null);
+    }, [rooms]);
 
-    useEffect(() => {
+    const floors = useMemo(() => {
+        return [...new Set(rooms.map((room) => room.floor).filter((value) => value !== ""))]
+            .sort((first, second) => Number(first) - Number(second));
+    }, [rooms]);
 
-        setCurrentPage(1);
-
-    }, [
-        search,
-        status,
-        roomType
-    ]);
-
-
-    /*
-    ============================================================
-    PAGINATION
-    ============================================================
-    */
-
-    const totalPages =
-        Math.ceil(
-            filteredRooms.length /
-            RECORDS_PER_PAGE
-        );
-
-
-    /*
-    If current page becomes invalid
-    after filtering or auto refresh.
-    */
-
-    useEffect(() => {
-
-        if (
-            totalPages > 0 &&
-            currentPage > totalPages
-        ) {
-
-            setCurrentPage(totalPages);
-
-        }
-
-        if (totalPages === 0) {
-
-            setCurrentPage(1);
-
-        }
-
-    }, [
-        totalPages,
-        currentPage
-    ]);
-
-
-    /*
-    ============================================================
-    GET CURRENT 5 RECORDS
-    ============================================================
-    */
-
-    const paginatedRooms =
-        useMemo(() => {
-
-            const startIndex =
-                (currentPage - 1) *
-                RECORDS_PER_PAGE;
-
-            const endIndex =
-                startIndex +
-                RECORDS_PER_PAGE;
-
-            return filteredRooms.slice(
-                startIndex,
-                endIndex
-            );
-
-        }, [
-            filteredRooms,
-            currentPage
-        ]);
-
-
-    /*
-    ============================================================
-    PAGINATION BUTTONS
-    ============================================================
-    */
-
-    const handlePreviousPage = () => {
-
-        setCurrentPage((page) =>
-            Math.max(page - 1, 1)
-        );
-
-    };
-
-
-    const handleNextPage = () => {
-
-        setCurrentPage((page) =>
-            Math.min(
-                page + 1,
-                totalPages
-            )
-        );
-
-    };
+    const summary = [
+        ["Total Rooms", rooms.length, "All rooms", "total"],
+        ["Available Rooms", rooms.filter((room) => room.status === "available").length, "Ready for booking", "available"],
+        ["Occupied Rooms", rooms.filter((room) => room.status === "occupied").length, "Currently in use", "occupied"],
+        ["Cleaning Rooms", rooms.filter((room) => room.status === "cleaning").length, "Awaiting housekeeping", "cleaning"],
+    ];
 
 
     /*
@@ -457,17 +385,13 @@ const Rooms = () => {
 
                 <div className="rooms-header-summary">
 
-                    <div className="rooms-count">
-
-                        <strong>
-                            {rooms.length}
-                        </strong>
-
-                        <span>
-                            Total Rooms
-                        </span>
-
-                    </div>
+                    {summary.map(([label, value, description, tone]) => (
+                        <div className={`room-summary-card ${tone}`} key={label}>
+                            <span>{label}</span>
+                            <strong>{value}</strong>
+                            <small>{description}</small>
+                        </div>
+                    ))}
 
                 </div>
 
@@ -488,11 +412,19 @@ const Rooms = () => {
 
                 roomTypes={roomTypes}
 
+                hotel={hotel}
+
+                hotels={hotels}
+
                 onSearchChange={setSearch}
 
                 onStatusChange={setStatus}
 
                 onRoomTypeChange={setRoomType}
+
+                onHotelChange={setHotel}
+
+                onReset={handleReset}
 
             />
 
@@ -534,91 +466,39 @@ const Rooms = () => {
 
                 <>
 
-                    <RoomTable
+                    <div className="floor-filter" aria-label="Filter rooms by floor">
+                        <button type="button" className={floor === "all" ? "active" : ""} onClick={() => setFloor("all")}>
+                            All Floors
+                        </button>
+                        {floors.map((floorValue) => (
+                            <button type="button" className={String(floor) === String(floorValue) ? "active" : ""} key={floorValue} onClick={() => setFloor(floorValue)}>
+                                Floor {floorValue}
+                            </button>
+                        ))}
+                    </div>
 
-                        rooms={paginatedRooms}
-
-                        onView={handleView}
-
-                    />
-
-
-                    {/* ==================================================
-                        PAGINATION
-                    ================================================== */}
-
-                    {filteredRooms.length > 0 && (
-                        
-                        <div className="rooms-pagination">
-
-                            <div className="pagination-info">
-
-                                Showing{" "}
-
-                                <strong>
-                                    {(
-                                        (currentPage - 1) *
-                                        RECORDS_PER_PAGE
-                                    ) + 1}
-                                </strong>
-
-                                {" "}to{" "}
-
-                                <strong>
-                                    {Math.min(
-                                        currentPage *
-                                        RECORDS_PER_PAGE,
-                                        filteredRooms.length
-                                    )}
-                                </strong>
-
-                                {" "}of{" "}
-
-                                <strong>
-                                    {filteredRooms.length}
-                                </strong>
-
-                                {" "}rooms
-
-                            </div>
-
-
-                            <div className="pagination-controls">
-
-                                <button
-                                    type="button"
-                                    className="pagination-arrow"
-                                    onClick={handlePreviousPage}
-                                    disabled={currentPage === 1}
-                                >
-                                    &lt;
+                    <div className="room-tile-grid">
+                        {filteredRooms.map((room) => (
+                            <article className={`room-tile ${room.status}`} key={room.id}>
+                                <div className="room-tile-head">
+                                    <span>Room {room.roomNumber}</span>
+                                    <strong>{room.status.replaceAll("_", " ")}</strong>
+                                </div>
+                                <div className="room-tile-door">{room.roomNumber}</div>
+                                <div className="room-tile-info">
+                                    <strong>{room.roomType || "Room type unavailable"}</strong>
+                                    <span>Floor {room.floor} · {room.capacity} guests</span>
+                                    <span>₹{Number(room.price).toLocaleString()} / night</span>
+                                </div>
+                                <button type="button" className="room-view-button" onClick={() => handleView(room)}>
+                                    View Details
                                 </button>
-
-
-                                <span className="pagination-page">
-
-                                    {currentPage}
-
-                                </span>
-
-
-                                <button
-                                    type="button"
-                                    className="pagination-arrow"
-                                    onClick={handleNextPage}
-                                    disabled={
-                                        currentPage === totalPages
-                                    }
-                                >
-                                    &gt;
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    )}
-
+                            </article>
+                        ))}
+                        {filteredRooms.length === 0 && (
+                            <div className="rooms-empty-tile">No rooms match the selected filters.</div>
+                        )}
+                    </div>
 
                     {/* ==================================================
                         ROOM DETAILS PANEL

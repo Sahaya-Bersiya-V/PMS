@@ -87,6 +87,22 @@ const RoomTypeDetailsPanel = ({
 
                 </div>
 
+                {/* ROOM TYPE IMAGE */}
+<div className="roomtype-image-section">
+    {roomType.image ? (
+        <img
+            src={roomType.image}
+            alt={`${roomType.name} room`}
+            className="roomtype-details-image"
+        />
+    ) : (
+        <div className="roomtype-image-placeholder">
+            <MdMeetingRoom size={42} />
+            <span>No image available</span>
+        </div>
+    )}
+</div>
+
 
                 {/* STATUS */}
 

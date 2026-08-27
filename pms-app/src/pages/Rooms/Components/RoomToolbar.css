@@ -28,6 +28,20 @@
     gap: 12px;
 }
 
+.room-toolbar {
+    padding: 18px;
+    border: 1px solid #dce5f0;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 10px 28px rgba(30, 64, 110, .07);
+    backdrop-filter: blur(14px);
+}
+
+.room-toolbar-left {
+    display: grid;
+    grid-template-columns: minmax(250px, 1.7fr) repeat(3, minmax(150px, .9fr)) auto;
+}
+
 
 /* Search */
 
@@ -132,4 +146,38 @@
         width: 100%;
     }
 
+}
+
+.room-search-box input,
+.room-toolbar select {
+    height: 52px;
+    border: 1px solid #d5dfeb;
+    border-radius: 11px;
+    background: #fff;
+    color: #243552;
+    font-size: 14px;
+}
+
+.room-toolbar select {
+    width: 100%;
+    padding: 0 16px;
+}
+
+.room-reset-button {
+    height: 52px;
+    padding: 0 20px;
+    border: 1px solid #d7e1ed;
+    border-radius: 11px;
+    background: #fff;
+    color: #5e708b;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.room-reset-button:hover {
+    border-color: #93b5ee;
+    background: #f5f9ff;
+    color: #245bc7;
 }

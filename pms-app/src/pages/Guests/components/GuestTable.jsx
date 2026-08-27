@@ -22,6 +22,8 @@ const GuestTable = ({
 
                         <th>Guest Name</th>
 
+                        <th>Stay Status</th>
+
                         <th>Phone</th>
 
                         <th>Email</th>
@@ -74,7 +76,24 @@ const GuestTable = ({
                             <tr key={guest.id}>
 
                                 <td>
-                                    {guest.guest_name}
+                                    <div className="guest-name-cell">
+                                        <span className={`guest-avatar ${String(guest.gender || "").toLowerCase()}`}>
+                                            {String(guest.gender || "").toLowerCase() === "female" ? "♀" :
+                                                String(guest.gender || "").toLowerCase() === "male" ? "♂" : "G"}
+                                        </span>
+                                        <strong>{guest.guest_name}</strong>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span className={`guest-stay-status ${guest.stayStatus}`}>
+                                        {guest.stayStatus === "in_house" ? "In House" :
+                                            guest.stayStatus === "checking_out" ? "Checking Out" :
+                                                guest.stayStatus === "upcoming" ? "Upcoming" :
+                                                    guest.stayStatus === "checked_out" ? "Checked Out" :
+                                                        guest.stayStatus === "cancelled" ? "Cancelled" :
+                                                            guest.stayStatus === "no_show" ? "No Show" : "No Reservation"}
+                                    </span>
                                 </td>
 
                                 <td>

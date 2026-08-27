@@ -614,7 +614,7 @@ def add_room_type(request):
 
     if request.method == "POST":
 
-        form = RoomTypeForm(request.POST)
+        form = RoomTypeForm(request.POST,request.FILES)
 
         if form.is_valid():
 
@@ -667,6 +667,7 @@ def edit_room_type(request, pk):
 
         form = RoomTypeForm(
             request.POST,
+            request.FILES,
             instance=room_type
         )
 

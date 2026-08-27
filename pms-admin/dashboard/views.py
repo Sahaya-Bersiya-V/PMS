@@ -159,6 +159,19 @@ def dashboard(request):
 
     todays_revenue = revenue_data["total"] or 0
 
+    pending_amount_data = reservations.filter(
+        payment_status="pending"
+    ).aggregate(
+        total=Sum("total_amount"),
+        paid=Sum("advance_amount"),
+    )
+
+    pending_amount = (
+        pending_amount_data["total"] or 0
+    ) - (
+        pending_amount_data["paid"] or 0
+    )
+
 
     # =====================================================
     # RECENT RESERVATIONS
@@ -188,6 +201,7 @@ def dashboard(request):
         "occupied_rooms": occupied_rooms,
         "available_rooms": available_rooms,
         "todays_revenue": todays_revenue,
+        "pending_amount": pending_amount,
         "today_checkins": today_checkins,
         "today_checkouts": today_checkouts,
         "total_employees": total_employees,

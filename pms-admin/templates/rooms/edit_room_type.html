@@ -36,7 +36,7 @@
 
     <div class="card-body p-4">
 
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
 
             {% csrf_token %}
 
@@ -81,6 +81,47 @@
                     {{ form.name }}
 
                 </div>
+
+                <!-- ROOM TYPE IMAGE -->
+
+<div class="col-12 mb-4">
+
+    <label class="form-label">
+        Room Type Image
+    </label>
+
+    {% if room_type.image %}
+
+        <div class="mb-3">
+
+            <img
+                src="{{ room_type.image.url }}"
+                alt="{{ room_type.name }}"
+                class="img-fluid rounded"
+                style="
+                    width: 320px;
+                    height: 200px;
+                    object-fit: cover;
+                "
+            >
+
+        </div>
+
+    {% endif %}
+
+    {{ form.image }}
+
+    {% if form.image.errors %}
+        <div class="text-danger small mt-1">
+            {{ form.image.errors }}
+        </div>
+    {% endif %}
+
+    <div class="form-text">
+        Select a new image if you want to replace the current image.
+    </div>
+
+</div>
 
 
                 <!-- CAPACITY -->

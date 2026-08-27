@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import "./Guests.css";
 
@@ -8,12 +8,17 @@ import GuestViewModal from "./components/GuestViewModal";
 
 
 const API_URL =
-    "http://127.0.0.1:8000/api/reservations/guests";
+    `${import.meta.env.VITE_API_URL}/api/reservations/guests`;
+
+const RESERVATIONS_API_URL =
+    `${import.meta.env.VITE_API_URL}/api/reservations/`;
 
 const RECORDS_PER_PAGE = 5;
 
 
 const Guests = () => {
+    const [reservations, setReservations] = useState([]);
+    const [guestFilter, setGuestFilter] = useState("all");
 
     const [guests, setGuests] = useState([]);
 
@@ -105,6 +110,20 @@ const Guests = () => {
 
     };
 
+    const fetchReservations = async () => {
+        try {
+            const response = await fetch(RESERVATIONS_API_URL);
+            if (!response.ok) {
+                throw new Error("Failed to fetch reservations");
+            }
+            const data = await response.json();
+            setReservations(Array.isArray(data) ? data : data.results || []);
+        } catch (error) {
+            console.error("Guest reservation status error:", error);
+            setReservations([]);
+        }
+    };
+
 
     /*
     ============================================================
@@ -117,6 +136,7 @@ const Guests = () => {
         const timer = setTimeout(() => {
 
             fetchGuests();
+            fetchReservations();
 
         }, 300);
 
@@ -124,7 +144,7 @@ const Guests = () => {
         return () =>
             clearTimeout(timer);
 
-    }, [search]);
+    }, [search, guestFilter]);
 
 
     /*
@@ -146,9 +166,59 @@ const Guests = () => {
     ============================================================
     */
 
+    const today = new Date().toISOString().split("T")[0];
+
+    const guestRows = useMemo(() => guests.map((guest) => {
+        const guestReservations = reservations.filter(
+            (reservation) => String(reservation.guest?.id || reservation.guest) === String(guest.id)
+        );
+        const active = guestReservations.find((reservation) =>
+            String(reservation.status).toLowerCase() === "checked_in"
+        );
+        const checkingOut = guestReservations.some((reservation) =>
+            String(reservation.check_out || "").split("T")[0] === today &&
+            !["checked_out", "cancelled", "no_show"].includes(String(reservation.status).toLowerCase())
+        );
+        const upcoming = guestReservations.some((reservation) =>
+            ["pending", "confirmed"].includes(String(reservation.status).toLowerCase()) &&
+            String(reservation.check_in || "").split("T")[0] >= today
+        );
+
+        const latestReservation = [...guestReservations].sort(
+            (first, second) => String(second.updated_at || second.check_out || "")
+                .localeCompare(String(first.updated_at || first.check_out || ""))
+        )[0];
+
+        const latestStatus = String(latestReservation?.status || "").toLowerCase();
+
+        let stayStatus = "no_reservation";
+
+        if (active) {
+            stayStatus = checkingOut ? "checking_out" : "in_house";
+        } else if (upcoming) {
+            stayStatus = "upcoming";
+        } else if (latestStatus === "checked_out") {
+            stayStatus = "checked_out";
+        } else if (latestStatus === "cancelled") {
+            stayStatus = "cancelled";
+        } else if (latestStatus === "no_show") {
+            stayStatus = "no_show";
+        }
+
+        return {
+            ...guest,
+            stayStatus,
+            gender: guest.gender || "",
+        };
+    }), [guests, reservations, today]);
+
+    const filteredGuests = useMemo(() => guestFilter === "all"
+        ? guestRows
+        : guestRows.filter((guest) => guest.stayStatus === guestFilter), [guestRows, guestFilter]);
+
     const totalPages =
         Math.ceil(
-            guests.length /
+            filteredGuests.length /
             RECORDS_PER_PAGE
         );
 
@@ -200,7 +270,7 @@ const Guests = () => {
 
 
     const paginatedGuests =
-        guests.slice(
+        filteredGuests.slice(
             startIndex,
             endIndex
         );
@@ -270,7 +340,15 @@ const Guests = () => {
                 await response.json();
 
 
-            setSelectedGuest(data);
+            const derivedGuest = guestRows.find(
+                (item) => String(item.id) === String(guest.id)
+            );
+
+            setSelectedGuest({
+                ...data,
+                stayStatus: derivedGuest?.stayStatus || "upcoming",
+                gender: derivedGuest?.gender || data.gender || "",
+            });
 
             setIsViewOpen(true);
 
@@ -294,7 +372,6 @@ const Guests = () => {
     */
 
     return (
-
         <div className="guests-page">
 
 
@@ -322,7 +399,7 @@ const Guests = () => {
                     <div className="guests-count">
 
                         <strong>
-                            {guests.length}
+                            {filteredGuests.length}
                         </strong>
 
                         <span>
@@ -346,6 +423,10 @@ const Guests = () => {
 
                 onSearch={setSearch}
 
+                guestFilter={guestFilter}
+
+                onFilter={setGuestFilter}
+
             />
 
 
@@ -368,7 +449,7 @@ const Guests = () => {
                 PAGINATION
             ====================================== */}
 
-            {guests.length > 0 && (
+            {filteredGuests.length > 0 && (
 
                 <div className="guests-pagination">
 
@@ -395,7 +476,7 @@ const Guests = () => {
                         {" "}of{" "}
 
                         <strong>
-                            {guests.length}
+                            {filteredGuests.length}
                         </strong>
 
                         {" "}guests

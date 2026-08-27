@@ -17,7 +17,7 @@ import RoomTypeDetailsPanel
 
 
 const API_URL =
-    "http://127.0.0.1:8000/api/room-types/";
+    `${import.meta.env.VITE_API_URL}/api/room-types/`;
 
 const RECORDS_PER_PAGE = 5;
 
@@ -99,6 +99,9 @@ const RoomTypes = () => {
 
                         name:
                             type.name || "",
+
+                        image:
+                            type.image || null,
 
                         description:
                             type.description || "",

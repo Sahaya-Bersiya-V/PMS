@@ -26,7 +26,10 @@ class RoomTypeListAPIView(APIView):
 
         serializer = RoomTypeSerializer(
             room_types,
-            many=True
+            many=True,
+            context={
+        "request": request
+    }
         )
 
         return Response(serializer.data)

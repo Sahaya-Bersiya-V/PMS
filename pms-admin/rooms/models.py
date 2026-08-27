@@ -18,6 +18,12 @@ class RoomType(models.Model):
         null=True
     )
 
+    image = models.ImageField(
+        upload_to="room_types/",
+        blank=True,
+        null=True
+    )
+
     capacity = models.PositiveIntegerField(
         default=2
     )

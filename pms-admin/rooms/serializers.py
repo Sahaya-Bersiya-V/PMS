@@ -16,7 +16,7 @@ class RoomTypeSerializer(
         source="hotel.status",
         read_only=True
     )
-
+    image = serializers.SerializerMethodField()
     total_rooms = serializers.SerializerMethodField()
 
     class Meta:
@@ -29,7 +29,7 @@ class RoomTypeSerializer(
             "hotel_name",
 
             "name",
-
+            "image",
             "description",
 
             "capacity",
@@ -45,6 +45,19 @@ class RoomTypeSerializer(
             "created_at",
             "updated_at",
         ]
+    def get_image(self, obj):
+
+        if not obj.image:
+            return None
+
+        request = self.context.get("request")
+
+        if request:
+            return request.build_absolute_uri(
+                obj.image.url
+            )
+
+        return obj.image.url
 
     def get_total_rooms(self, obj):
 

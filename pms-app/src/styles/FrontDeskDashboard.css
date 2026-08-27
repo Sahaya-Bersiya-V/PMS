@@ -518,6 +518,33 @@
 .room-card:hover {
   transform: translateY(-2px);
 
+
+.room-overflow-card {
+  appearance: none;
+  border: 1px dashed #93a4bd;
+  background: #f8fafc;
+  color: #334155;
+  cursor: pointer;
+}
+
+.room-overflow-card strong {
+  color: #2563eb;
+  font-size: 2rem;
+}
+
+.room-overflow-card span {
+  color: #334155;
+  font-weight: 700;
+}
+
+.room-overflow-card small {
+  color: #64748b;
+}
+
+.status-rooms-modal .all-room-grid {
+  max-height: 66vh;
+  overflow-y: auto;
+}
   box-shadow:
     0 6px 15px rgba(15, 23, 42, 0.08);
 }

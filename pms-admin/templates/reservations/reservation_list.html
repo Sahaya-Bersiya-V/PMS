@@ -154,11 +154,11 @@
                 </span>
 
                 <strong class="stat-number">
-                    {{ pending_payment_count }}
+                    ₹{{ pending_payment_amount|floatformat:0 }}
                 </strong>
 
                 <span class="stat-description">
-                    Awaiting payment
+                    {{ pending_payment_count }} reservations awaiting payment
                 </span>
 
             </div>
@@ -679,7 +679,7 @@
     class="btn btn-view"
 >
     <i class="bi bi-eye"></i>
-    View
+    View Details
 </a>
 
                         </td>

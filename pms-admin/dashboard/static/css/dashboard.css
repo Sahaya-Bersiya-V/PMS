@@ -108,6 +108,19 @@
     transition: transform .15s ease, box-shadow .15s ease;
 }
 
+.dashboard-page > .row.g-4 {
+    align-items: stretch;
+}
+
+.dashboard-page > .row.g-4 > [class*="col-"] {
+    display: flex;
+}
+
+.dashboard-page > .row.g-4 .dashboard-card {
+    width: 100%;
+    min-height: 184px;
+}
+
 .dashboard-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(16, 24, 40, 0.06), 0 14px 32px rgba(16, 24, 40, 0.08);
